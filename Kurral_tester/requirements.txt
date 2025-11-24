@@ -1,0 +1,9 @@
+# Core dependencies
+pydantic>=2.5.0
+click>=8.1.7
+rich>=13.7.0
+
+# Optional: LLM clients (install as needed)
+# openai>=1.0.0
+# anthropic>=0.18.0
+

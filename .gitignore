@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+**/.env
+**/.env.local
+level*agent/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ChromaDB
+chroma_db/
+*.db
+*.sqlite
+
+# PDFs (optional - uncomment if you don't want to track PDFs)
+# *.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Index files
+level3agent/index/
+level3agent/file_hashes.json
+

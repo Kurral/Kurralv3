@@ -1,0 +1,10 @@
+openai>=1.0.0
+google-generativeai>=0.3.0
+langchain>=0.1.0
+langchain-openai>=0.0.5
+langchain-google-genai>=0.0.6
+langchain-community>=0.0.20
+chromadb>=0.4.0
+pypdf>=3.17.0
+tavily-python>=0.3.0
+python-dotenv>=1.0.0

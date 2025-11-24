@@ -1,0 +1,167 @@
+{
+  "kurral_id": "139dcbb1-bed4-42ee-a6fc-eac96ba9851e",
+  "run_id": "local_run_graph_with_kurral_1763731175",
+  "tenant_id": "agent1",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-21T08:20:22.880027",
+  "deterministic": false,
+  "determinism_report": {
+    "overall_score": 0.0,
+    "breakdown": {},
+    "missing_fields": [],
+    "warnings": []
+  },
+  "inputs": {
+    "user_input": "What is the price of Tesla stock right now?"
+  },
+  "outputs": {
+    "question": "What is the price of Tesla stock right now?",
+    "output": "According to the latest information provided by CNBC, the current price of TSLA shares has decreased $8.76 since the market last closed, which is a 2.17% drop. However, in after-hours trading, the stock has risen $2.40. The exact current price is not explicitly stated, but it can be inferred that it is around $395.52 (the closing price mentioned earlier) plus or minus the changes since market close and after-hours trading.",
+    "max_retries": 5,
+    "current_loop": 1,
+    "final_docs": [
+      {
+        "page_content": "397.63 ; Volume: 113.55M � 65 Day Avg: 89.12M ; 394.74 Day Range 428.94 ; 214.25 52 Week Range 488.54\n| Tesla Historical Annual Stock Price Data | | | | | | |\n ---  ---  --- \n| Year | Average Stock Price | Year Open | Year High | Year Low | Year Close | Annual % Change |\n ---  ---  --- \n| 2025 | 345.3120 | 379.2800 | 468.3700 | 221.8600 | 395.5200 | -2.06% |\n| 2024 | 230.6150 | 248.4200 | 479.8600 | 142.0500 | 403.8400 | 62.52% |\n| 2023 | 217.4752 | 108.1000 | 293.3400 | 108.1000 | 248.4800 | 101.72% |\n| 2022 | 263.0928 | 399.9260 | 399.9260 | 109.1000 | 123.1800 | -65.03% | [...] | Sector | Industry | Market Cap | Revenue |\n ---  --- |\n| Auto/Tires/Trucks | Auto Manufacturers - Domestic | $1343.598B | $97.690B | [...] | 2021 | 259.9978 | 243.2560 | 409.9700 | 187.6670 | 352.2600 | 49.76% |\n| 2020 | 96.6656 | 28.6840 | 235.2230 | 24.0813 | 235.2230 | 743.44% |\n| 2019 | 18.2353 | 20.6746 | 28.7293 | 11.9313 | 27.8886 | 25.70% |\n| 2018 | 21.1540 | 21.3687 | 25.3046 | 16.7040 | 22.1866 | 6.89% |\n| 2017 | 20.9544 | 14.4660 | 25.6666 | 14.4660 | 20.7566 | 45.70% |\n| 2016 | 13.9845 | 14.8940 | 17.6946 | 9.5780 | 14.2460 | -10.97% |\n| 2015 | 15.3362 | 14.6207 | 18.8173 | 12.3333 | 16.0007 | 7.91% |\n### CNN values your feedback\n\n# Tesla, Inc.\n\nTSLA\n\nTSLA is trading in the middle of its 52-week range and above its 200-day simple moving average.\n\nThe price of TSLA shares has decreased $8.76 since the market last closed. This is a 2.17% drop.\n\nThe stock has since risen $2.40 in after-hours trading.\n\n### Key terms\n\n## About TSLA [...] Jones Indices LLC and have been licensed for use to S&P Opco, LLC and CNN. Standard & Poor뭩 and S&P are registered trademarks of Standard & Poor뭩 Financial Services LLC and Dow Jones is a registered trademark of Dow Jones Trademark Holdings LLC. All content of the Dow Jones branded indices Copyright S&P Dow Jones Indices LLC and/or its affiliates. Fair value provided by IndexArb.com. Market holidays and trading hours provided by Copp Clark Limited. [...] generation, energy storage products, and related services and sales of solar energy systems incentives. The company was founded by Jeffrey B. Straubel, Elon Reeve Musk, Martin Eberhard, and Marc Tarpenning on July 1, 2003 and is headquartered in Austin, TX.\nDiscover historical prices for TSLA stock on Yahoo Finance. View daily ... Nov 21, 2024 - Nov 21, 2025. Historical Prices. Daily. Currency in USD. Download\nCNBC\nJoin IC\nJoin Pro\nJoin IC\nJoin Pro\n\n# Tesla Inc TSLA:NASDAQ\n\ndownload chart\nquote price arrow down\nLoading...\n\n## Latest On Tesla Inc\n\n## Key Stats\n\n## Latest On Tesla Inc\n\n### KEY STATS\n\n### RATIOS/PROFITABILITY\n\n### EVENTS\n\n## Content From Our Affiliates\n\n### Related Video\n\nStifel's Stephen Gengaro shares his bull case for Tesla\n\n### Profile\n\nCNBC logo\n\n#### News Tips\n\nGot a confidential news tip? We want to hear from you.\n\n#### CNBC Newsletters [...] Sign up for free newsletters and get more CNBC delivered to your inbox\n\nGet this delivered to your inbox, and more info about our products and services.\n\n#### Advertise With Us\n\nCalifornia Consumer Privacy Act (CCPA) Opt-Out Icon\n\n� 2025 CNBC LLC. All Rights Reserved. A Division of NBCUniversal\n\nData is a real-time snapshot \\Data is delayed at least 15 minutes.\nGlobal Business and Financial News, Stock Quotes, and Market Data\nand Analysis.\n\nData also provided byReuters logo\n\nReuters logo",
+        "metadata": {}
+      }
+    ],
+    "web_search": "Yes",
+    "run_id": "run_20251121_031935_4703",
+    "is_replay": false,
+    "current_node": "send_email",
+    "last_action": "sending_final_email",
+    "error": "",
+    "tool_calls": [
+      {
+        "tool_name": "web_search",
+        "inputs": {
+          "query": "What is the price of Tesla stock right now?"
+        },
+        "outputs": {
+          "doc_count": 1,
+          "documents": [
+            {
+              "page_content": "397.63 ; Volume: 113.55M � 65 Day Avg: 89.12M ; 394.74 Day Range 428.94 ; 214.25 52 Week Range 488.54\n| Tesla Historical Annual Stock Price Data | | | | | | |\n ---  ---  --- \n| Year | Average Stock Price | Year Open | Year High | Year Low | Year Close | Annual % Change |\n ---  ---  --- \n| 2025 | 345.3120 | 379.2800 | 468.3700 | 221.8600 | 395.5200 | -2.06% |\n| 2024 | 230.6150 | 248.4200 | 479.8600 | 142.0500 | 403.8400 | 62.52% |\n| 2023 | 217.4752 | 108.1000 | 293.3400 | 108.1000 | 248.4800 | 101.72% |\n| 2022 | 263.0928 | 399.9260 | 399.9260 | 109.1000 | 123.1800 | -65.03% | [...] | Sector | Industry | Market Cap | Revenue |\n ---  --- |\n| Auto/Tires/Trucks | Auto Manufacturers - Domestic | $1343.598B | $97.690B | [...] | 2021 | 259.9978 | 243.2560 | 409.9700 | 187.6670 | 352.2600 | 49.76% |\n| 2020 | 96.6656 | 28.6840 | 235.2230 | 24.0813 | 235.2230 | 743.44% |\n| 2019 | 18.2353 | 20.6746 | 28.7293 | 11.9313 | 27.8886 | 25.70% |\n| 2018 | 21.1540 | 21.3687 | 25.3046 | 16.7040 | 22.1866 | 6.89% |\n| 2017 | 20.9544 | 14.4660 | 25.6666 | 14.4660 | 20.7566 | 45.70% |\n| 2016 | 13.9845 | 14.8940 | 17.6946 | 9.5780 | 14.2460 | -10.97% |\n| 2015 | 15.3362 | 14.6207 | 18.8173 | 12.3333 | 16.0007 | 7.91% |\n### CNN values your feedback\n\n# Tesla, Inc.\n\nTSLA\n\nTSLA is trading in the middle of its 52-week range and above its 200-day simple moving average.\n\nThe price of TSLA shares has decreased $8.76 since the market last closed. This is a 2.17% drop.\n\nThe stock has since risen $2.40 in after-hours trading.\n\n### Key terms\n\n## About TSLA [...] Jones Indices LLC and have been licensed for use to S&P Opco, LLC and CNN. Standard & Poor뭩 and S&P are registered trademarks of Standard & Poor뭩 Financial Services LLC and Dow Jones is a registered trademark of Dow Jones Trademark Holdings LLC. All content of the Dow Jones branded indices Copyright S&P Dow Jones Indices LLC and/or its affiliates. Fair value provided by IndexArb.com. Market holidays and trading hours provided by Copp Clark Limited. [...] generation, energy storage products, and related services and sales of solar energy systems incentives. The company was founded by Jeffrey B. Straubel, Elon Reeve Musk, Martin Eberhard, and Marc Tarpenning on July 1, 2003 and is headquartered in Austin, TX.\nDiscover historical prices for TSLA stock on Yahoo Finance. View daily ... Nov 21, 2024 - Nov 21, 2025. Historical Prices. Daily. Currency in USD. Download\nCNBC\nJoin IC\nJoin Pro\nJoin IC\nJoin Pro\n\n# Tesla Inc TSLA:NASDAQ\n\ndownload chart\nquote price arrow down\nLoading...\n\n## Latest On Tesla Inc\n\n## Key Stats\n\n## Latest On Tesla Inc\n\n### KEY STATS\n\n### RATIOS/PROFITABILITY\n\n### EVENTS\n\n## Content From Our Affiliates\n\n### Related Video\n\nStifel's Stephen Gengaro shares his bull case for Tesla\n\n### Profile\n\nCNBC logo\n\n#### News Tips\n\nGot a confidential news tip? We want to hear from you.\n\n#### CNBC Newsletters [...] Sign up for free newsletters and get more CNBC delivered to your inbox\n\nGet this delivered to your inbox, and more info about our products and services.\n\n#### Advertise With Us\n\nCalifornia Consumer Privacy Act (CCPA) Opt-Out Icon\n\n� 2025 CNBC LLC. All Rights Reserved. A Division of NBCUniversal\n\nData is a real-time snapshot \\Data is delayed at least 15 minutes.\nGlobal Business and Financial News, Stock Quotes, and Market Data\nand Analysis.\n\nData also provided byReuters logo\n\nReuters logo",
+              "metadata": {}
+            }
+          ]
+        },
+        "timestamp": "2025-11-21T08:19:41.914196"
+      },
+      {
+        "tool_name": "send_email",
+        "inputs": {
+          "receiver": "jayjani482001@gmail.com",
+          "subject": "Requested Summary"
+        },
+        "outputs": {
+          "status": "sent"
+        },
+        "timestamp": "2025-11-21T08:20:22.871823"
+      }
+    ],
+    "llm_calls": []
+  },
+  "llm_config": {
+    "model_name": "llama3.1",
+    "provider": "ollama",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "",
+    "variables": {
+      "question": "What is the price of Tesla stock right now?"
+    },
+    "variables_hash": "f029b8074015a7659e01365b63bf295994aad99af4fdecb100b44ebede21afb7",
+    "final_text": "What is the price of Tesla stock right now?",
+    "final_text_hash": "12097f7d5798c0fa4d10d605bd0da8d06ffb9db3d1789fc550cb724011b6661f"
+  },
+  "tool_calls": [
+    {
+      "id": "4a3fbb80-5e8b-4bc3-a59d-636846ab0aa3",
+      "tool_name": "web_search",
+      "start_time": "2025-11-21T08:20:22.880027",
+      "timestamp": "2025-11-21T08:19:41.914196",
+      "input": {
+        "query": "What is the price of Tesla stock right now?"
+      },
+      "input_hash": "af130956c59fc15e5ba555ef8466cf90fc12e2343c3ede66587c386800231cce",
+      "output": {
+        "doc_count": 1,
+        "documents": [
+          {
+            "page_content": "397.63 ; Volume: 113.55M � 65 Day Avg: 89.12M ; 394.74 Day Range 428.94 ; 214.25 52 Week Range 488.54\n| Tesla Historical Annual Stock Price Data | | | | | | |\n ---  ---  --- \n| Year | Average Stock Price | Year Open | Year High | Year Low | Year Close | Annual % Change |\n ---  ---  --- \n| 2025 | 345.3120 | 379.2800 | 468.3700 | 221.8600 | 395.5200 | -2.06% |\n| 2024 | 230.6150 | 248.4200 | 479.8600 | 142.0500 | 403.8400 | 62.52% |\n| 2023 | 217.4752 | 108.1000 | 293.3400 | 108.1000 | 248.4800 | 101.72% |\n| 2022 | 263.0928 | 399.9260 | 399.9260 | 109.1000 | 123.1800 | -65.03% | [...] | Sector | Industry | Market Cap | Revenue |\n ---  --- |\n| Auto/Tires/Trucks | Auto Manufacturers - Domestic | $1343.598B | $97.690B | [...] | 2021 | 259.9978 | 243.2560 | 409.9700 | 187.6670 | 352.2600 | 49.76% |\n| 2020 | 96.6656 | 28.6840 | 235.2230 | 24.0813 | 235.2230 | 743.44% |\n| 2019 | 18.2353 | 20.6746 | 28.7293 | 11.9313 | 27.8886 | 25.70% |\n| 2018 | 21.1540 | 21.3687 | 25.3046 | 16.7040 | 22.1866 | 6.89% |\n| 2017 | 20.9544 | 14.4660 | 25.6666 | 14.4660 | 20.7566 | 45.70% |\n| 2016 | 13.9845 | 14.8940 | 17.6946 | 9.5780 | 14.2460 | -10.97% |\n| 2015 | 15.3362 | 14.6207 | 18.8173 | 12.3333 | 16.0007 | 7.91% |\n### CNN values your feedback\n\n# Tesla, Inc.\n\nTSLA\n\nTSLA is trading in the middle of its 52-week range and above its 200-day simple moving average.\n\nThe price of TSLA shares has decreased $8.76 since the market last closed. This is a 2.17% drop.\n\nThe stock has since risen $2.40 in after-hours trading.\n\n### Key terms\n\n## About TSLA [...] Jones Indices LLC and have been licensed for use to S&P Opco, LLC and CNN. Standard & Poor뭩 and S&P are registered trademarks of Standard & Poor뭩 Financial Services LLC and Dow Jones is a registered trademark of Dow Jones Trademark Holdings LLC. All content of the Dow Jones branded indices Copyright S&P Dow Jones Indices LLC and/or its affiliates. Fair value provided by IndexArb.com. Market holidays and trading hours provided by Copp Clark Limited. [...] generation, energy storage products, and related services and sales of solar energy systems incentives. The company was founded by Jeffrey B. Straubel, Elon Reeve Musk, Martin Eberhard, and Marc Tarpenning on July 1, 2003 and is headquartered in Austin, TX.\nDiscover historical prices for TSLA stock on Yahoo Finance. View daily ... Nov 21, 2024 - Nov 21, 2025. Historical Prices. Daily. Currency in USD. Download\nCNBC\nJoin IC\nJoin Pro\nJoin IC\nJoin Pro\n\n# Tesla Inc TSLA:NASDAQ\n\ndownload chart\nquote price arrow down\nLoading...\n\n## Latest On Tesla Inc\n\n## Key Stats\n\n## Latest On Tesla Inc\n\n### KEY STATS\n\n### RATIOS/PROFITABILITY\n\n### EVENTS\n\n## Content From Our Affiliates\n\n### Related Video\n\nStifel's Stephen Gengaro shares his bull case for Tesla\n\n### Profile\n\nCNBC logo\n\n#### News Tips\n\nGot a confidential news tip? We want to hear from you.\n\n#### CNBC Newsletters [...] Sign up for free newsletters and get more CNBC delivered to your inbox\n\nGet this delivered to your inbox, and more info about our products and services.\n\n#### Advertise With Us\n\nCalifornia Consumer Privacy Act (CCPA) Opt-Out Icon\n\n� 2025 CNBC LLC. All Rights Reserved. A Division of NBCUniversal\n\nData is a real-time snapshot \\Data is delayed at least 15 minutes.\nGlobal Business and Financial News, Stock Quotes, and Market Data\nand Analysis.\n\nData also provided byReuters logo\n\nReuters logo",
+            "metadata": {}
+          }
+        ]
+      },
+      "output_hash": "633f06b1a225ee8f27a20faab79b3ebce514dbd8c4b2b1a04c11064281f8ae83",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:be0145366b641dff68f7a10d2989777d51bd1556adf379fe62e63f2774bf2914",
+      "stubbed_in_replay": false,
+      "metadata": {},
+      "inputs": {
+        "query": "What is the price of Tesla stock right now?"
+      },
+      "outputs": {
+        "doc_count": 1,
+        "documents": [
+          {
+            "page_content": "397.63 ; Volume: 113.55M � 65 Day Avg: 89.12M ; 394.74 Day Range 428.94 ; 214.25 52 Week Range 488.54\n| Tesla Historical Annual Stock Price Data | | | | | | |\n ---  ---  --- \n| Year | Average Stock Price | Year Open | Year High | Year Low | Year Close | Annual % Change |\n ---  ---  --- \n| 2025 | 345.3120 | 379.2800 | 468.3700 | 221.8600 | 395.5200 | -2.06% |\n| 2024 | 230.6150 | 248.4200 | 479.8600 | 142.0500 | 403.8400 | 62.52% |\n| 2023 | 217.4752 | 108.1000 | 293.3400 | 108.1000 | 248.4800 | 101.72% |\n| 2022 | 263.0928 | 399.9260 | 399.9260 | 109.1000 | 123.1800 | -65.03% | [...] | Sector | Industry | Market Cap | Revenue |\n ---  --- |\n| Auto/Tires/Trucks | Auto Manufacturers - Domestic | $1343.598B | $97.690B | [...] | 2021 | 259.9978 | 243.2560 | 409.9700 | 187.6670 | 352.2600 | 49.76% |\n| 2020 | 96.6656 | 28.6840 | 235.2230 | 24.0813 | 235.2230 | 743.44% |\n| 2019 | 18.2353 | 20.6746 | 28.7293 | 11.9313 | 27.8886 | 25.70% |\n| 2018 | 21.1540 | 21.3687 | 25.3046 | 16.7040 | 22.1866 | 6.89% |\n| 2017 | 20.9544 | 14.4660 | 25.6666 | 14.4660 | 20.7566 | 45.70% |\n| 2016 | 13.9845 | 14.8940 | 17.6946 | 9.5780 | 14.2460 | -10.97% |\n| 2015 | 15.3362 | 14.6207 | 18.8173 | 12.3333 | 16.0007 | 7.91% |\n### CNN values your feedback\n\n# Tesla, Inc.\n\nTSLA\n\nTSLA is trading in the middle of its 52-week range and above its 200-day simple moving average.\n\nThe price of TSLA shares has decreased $8.76 since the market last closed. This is a 2.17% drop.\n\nThe stock has since risen $2.40 in after-hours trading.\n\n### Key terms\n\n## About TSLA [...] Jones Indices LLC and have been licensed for use to S&P Opco, LLC and CNN. Standard & Poor뭩 and S&P are registered trademarks of Standard & Poor뭩 Financial Services LLC and Dow Jones is a registered trademark of Dow Jones Trademark Holdings LLC. All content of the Dow Jones branded indices Copyright S&P Dow Jones Indices LLC and/or its affiliates. Fair value provided by IndexArb.com. Market holidays and trading hours provided by Copp Clark Limited. [...] generation, energy storage products, and related services and sales of solar energy systems incentives. The company was founded by Jeffrey B. Straubel, Elon Reeve Musk, Martin Eberhard, and Marc Tarpenning on July 1, 2003 and is headquartered in Austin, TX.\nDiscover historical prices for TSLA stock on Yahoo Finance. View daily ... Nov 21, 2024 - Nov 21, 2025. Historical Prices. Daily. Currency in USD. Download\nCNBC\nJoin IC\nJoin Pro\nJoin IC\nJoin Pro\n\n# Tesla Inc TSLA:NASDAQ\n\ndownload chart\nquote price arrow down\nLoading...\n\n## Latest On Tesla Inc\n\n## Key Stats\n\n## Latest On Tesla Inc\n\n### KEY STATS\n\n### RATIOS/PROFITABILITY\n\n### EVENTS\n\n## Content From Our Affiliates\n\n### Related Video\n\nStifel's Stephen Gengaro shares his bull case for Tesla\n\n### Profile\n\nCNBC logo\n\n#### News Tips\n\nGot a confidential news tip? We want to hear from you.\n\n#### CNBC Newsletters [...] Sign up for free newsletters and get more CNBC delivered to your inbox\n\nGet this delivered to your inbox, and more info about our products and services.\n\n#### Advertise With Us\n\nCalifornia Consumer Privacy Act (CCPA) Opt-Out Icon\n\n� 2025 CNBC LLC. All Rights Reserved. A Division of NBCUniversal\n\nData is a real-time snapshot \\Data is delayed at least 15 minutes.\nGlobal Business and Financial News, Stock Quotes, and Market Data\nand Analysis.\n\nData also provided byReuters logo\n\nReuters logo",
+            "metadata": {}
+          }
+        ]
+      }
+    },
+    {
+      "id": "e9f3668c-de53-4f70-aaba-e407e0f181e0",
+      "tool_name": "send_email",
+      "start_time": "2025-11-21T08:20:22.880027",
+      "timestamp": "2025-11-21T08:20:22.871823",
+      "input": {
+        "receiver": "jayjani482001@gmail.com",
+        "subject": "Requested Summary"
+      },
+      "input_hash": "910c86c0b85cfd63c5f514d6a08d4f15864d6c122a4fe53d2a44aa8fa4082e1b",
+      "output": {
+        "status": "sent"
+      },
+      "output_hash": "e610d4e5d4a621dc4c4658b077ddacdba11fecd3a78150a6dc7af515ef95b9b9",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:db0b12bd564e62d3ac0ab4c0c8244a7086fd4b06a9c3295c7158487926c35cc7",
+      "stubbed_in_replay": false,
+      "metadata": {},
+      "inputs": {
+        "receiver": "jayjani482001@gmail.com",
+        "subject": "Requested Summary"
+      },
+      "outputs": {
+        "status": "sent"
+      }
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-21T08:20:22.880027",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-21T08:20:22.880027",
+    "environment_vars": {},
+    "feature_flags": {}
+  },
+  "duration_ms": 47029,
+  "token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  },
+  "tags": {}
+}

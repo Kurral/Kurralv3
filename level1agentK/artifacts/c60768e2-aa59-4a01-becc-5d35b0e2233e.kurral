@@ -1,0 +1,78 @@
+{
+  "kurral_id": "c60768e2-aa59-4a01-becc-5d35b0e2233e",
+  "run_id": "local_agent_1764064104",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-25T04:48:25.715367",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "What is the full form of CPU?"
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is the full form of CPU?",
+        "output": "Central Procesing Unit"
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "models/gemini-2.0-flash-lite",
+    "provider": "google",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090",
+    "variables": {
+      "input": "What is the full form of CPU?",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "50980ff605dcaaef7de4dce19439baf83c987357cf6abd02c23e0449d7d10653",
+    "final_text": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090"
+  },
+  "graph_version": {
+    "graph_hash": "acaf942a9b3fe84ef3d31fc8a53ca597deb3652324ead42eb39234ce460c8adc",
+    "tool_schemas_hash": "848fd7a1557835cde2b106a7c665b7d2280f0e791d3b119cfb9c88a4cea43505"
+  },
+  "tool_calls": [
+    {
+      "id": "8c8322e5-eeb3-4e7d-9aa1-d17447a9ad8f",
+      "tool_name": "get_full_form",
+      "start_time": "2025-11-25T04:48:25.102355",
+      "end_time": "2025-11-25T04:48:25.103368",
+      "latency_ms": 1,
+      "timestamp": "2025-11-25T04:48:25.103368",
+      "input": {
+        "input": "CPU"
+      },
+      "input_hash": "84090f045c434ab0d8694875f9eb3100cbbcf746981e2c3b97a4ce501be968ec",
+      "output": {
+        "output": "Central Procesing Unit"
+      },
+      "output_hash": "2286bf902fb838c7aca1b416b37e989b244e7fd056b8dec67ce2ab4646f9293d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:b0a2a93a4c9374f1758816a617932155539da8aff8ee13103019f64cd2217448",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-25T04:48:13.457376",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-25T04:48:13.457376"
+  },
+  "duration_ms": 18169
+}

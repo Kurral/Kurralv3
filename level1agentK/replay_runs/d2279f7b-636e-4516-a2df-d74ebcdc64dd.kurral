@@ -1,0 +1,78 @@
+{
+  "kurral_id": "d2279f7b-636e-4516-a2df-d74ebcdc64dd",
+  "run_id": "replay_local_agent_1764063105_1764064327",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-25T04:52:07.852632",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "11a6a4bd-30c5-44f6-8037-48f8e5426e3b",
+    "original_run_id": "local_agent_1764063105",
+    "replay_type": "A",
+    "determinism_score": 1.0,
+    "changes_detected": "No changes detected"
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is 6 multiply 6",
+        "output": "36.0"
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090",
+    "variables": {
+      "input": "What is 6 multiply 6",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "2b44d8dabc25242fd32e7b813e6814c92838842a3fc1cb38821ea6ebc781cfc2",
+    "final_text": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090"
+  },
+  "graph_version": {
+    "graph_hash": "acaf942a9b3fe84ef3d31fc8a53ca597deb3652324ead42eb39234ce460c8adc",
+    "tool_schemas_hash": "848fd7a1557835cde2b106a7c665b7d2280f0e791d3b119cfb9c88a4cea43505"
+  },
+  "tool_calls": [
+    {
+      "id": "9c1150f0-b749-4e76-af2d-958aa1028ab6",
+      "tool_name": "multiply",
+      "start_time": "2025-11-25T04:31:46.732560",
+      "end_time": "2025-11-25T04:31:46.733578",
+      "latency_ms": 1,
+      "timestamp": "2025-11-25T04:31:46.733578",
+      "input": {
+        "input": "6,6"
+      },
+      "input_hash": "7450e0e4ee1d4e88f445dc46a085c156a3dd796001c6f99ab30fdab099206b11",
+      "output": {
+        "output": "37.0"
+      },
+      "output_hash": "9a641c243b39915b3f94b18fc6f88b4960b9dba9d03bebf17e7058430fdc1085",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:9bc6640aa28aed511a18de210685757d7d35bef1d5055446a0a6cd954224d847",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-25T04:52:07.852632",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-25T04:52:07.852632"
+  },
+  "duration_ms": 0
+}

@@ -1,0 +1,104 @@
+{
+  "kurral_id": "0c630d5f-9963-4349-996a-9941f8ab74cd",
+  "run_id": "replay_local_agent_1764065173_1764066703",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-25T05:31:43.439900",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "2962b521-6a17-46f7-bdfc-24bb6346e629",
+    "original_run_id": "local_agent_1764065173",
+    "replay_type": "B",
+    "determinism_score": 0.375,
+    "changes_detected": {
+      "llm_config": {
+        "model_name": {
+          "artifact": "llama-3.3-70b-versatile",
+          "current": "models/gemini-2.0-flash-lite"
+        },
+        "provider": {
+          "artifact": "openai",
+          "current": "google"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is the full form of HTML?",
+        "output": "HyperText Markup Langauge"
+      }
+    ],
+    "ars": {
+      "ars_score": 0.825,
+      "output_similarity": 0.75,
+      "tool_accuracy": 1.0,
+      "breakdown": {
+        "output_scores": [
+          0.75
+        ],
+        "total_original_tools": 1,
+        "total_replayed_tools": 1,
+        "used_original_tools": 1,
+        "new_tools": 0,
+        "unused_tools": 0
+      }
+    }
+  },
+  "llm_config": {
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090",
+    "variables": {
+      "input": "What is the full form of HTML?",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "b3a57f0333c12852f9e95275d992a43e718e44f7d69f2cdb42e776403a341b20",
+    "final_text": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090"
+  },
+  "graph_version": {
+    "graph_hash": "acaf942a9b3fe84ef3d31fc8a53ca597deb3652324ead42eb39234ce460c8adc",
+    "tool_schemas_hash": "848fd7a1557835cde2b106a7c665b7d2280f0e791d3b119cfb9c88a4cea43505"
+  },
+  "tool_calls": [
+    {
+      "id": "112ab070-ca8c-4c23-bce4-fd17389abde6",
+      "tool_name": "get_full_form",
+      "start_time": "2025-11-25T05:06:14.644981",
+      "end_time": "2025-11-25T05:06:14.645996",
+      "latency_ms": 1,
+      "timestamp": "2025-11-25T05:06:14.645996",
+      "input": {
+        "input": "HTML"
+      },
+      "input_hash": "697fa9cc6d5952353028ef37e09f7d78a37fb3195ecb1414ec4c35e652121197",
+      "output": {
+        "output": "HyperText Markup Langauge"
+      },
+      "output_hash": "ae88c7fccd50215370881ef8017d7ad39b11541788ad5ffeb2f98db80c46cb95",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:6e139d0fba81a896acd1e73ce5e7b2da15ffb2f0e1ad7276d6025adc0f6abc17",
+      "stubbed_in_replay": true,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-25T05:31:43.439900",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-25T05:31:43.439900"
+  },
+  "duration_ms": 1145
+}

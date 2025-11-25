@@ -62,7 +62,28 @@
       "created_at": "2025-11-25T04:31:47.119041",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "c60768e2-aa59-4a01-becc-5d35b0e2233e",
+      "run_id": "local_agent_1764064104",
+      "created_at": "2025-11-25T04:48:25.715367",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "c13cb8dd-0b75-47b1-bb70-8b926c077340",
+      "run_id": "local_agent_1764064160",
+      "created_at": "2025-11-25T04:49:24.344919",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "2962b521-6a17-46f7-bdfc-24bb6346e629",
+      "run_id": "local_agent_1764065173",
+      "created_at": "2025-11-25T05:06:15.159787",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-11-25T04:31:49.229466"
+  "updated_at": "2025-11-25T05:06:19.894050"
 }

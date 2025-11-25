@@ -104,7 +104,28 @@
       "created_at": "2025-11-25T05:31:43.439900",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d621c6a5-c4bd-45e2-a762-a2abe11151da",
+      "run_id": "replay_local_agent_1764067906_1764068088",
+      "created_at": "2025-11-25T05:54:48.829615",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "4a81c630-24c5-4661-9f55-0306c01da1ef",
+      "run_id": "replay_local_agent_1764067906_1764068293",
+      "created_at": "2025-11-25T05:58:13.400067",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "0044c3a6-127c-4fff-95f3-5b085823f0fc",
+      "run_id": "replay_local_agent_1764067906_1764068424",
+      "created_at": "2025-11-25T06:00:24.682581",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-11-25T05:31:43.441901"
+  "updated_at": "2025-11-25T06:00:24.696215"
 }

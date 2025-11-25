@@ -2,7 +2,9 @@
 Level 1 Agent - Short Form to Full Form Converter
 A ReAct agent that uses tools to convert short forms to full forms.
 """
-
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 import os
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_react_agent

@@ -1,0 +1,105 @@
+{
+  "kurral_id": "0ce635f3-e6d3-4a08-b3b7-f6484ad770bc",
+  "run_id": "replay_local_agent_1764060282_1764062866",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-25T04:27:46.268046",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "810c48c1-fc9c-4ec4-a4f5-7fb7ed86506d",
+    "original_run_id": "local_agent_1764060282",
+    "replay_type": "A",
+    "determinism_score": 1.0,
+    "changes_detected": "No changes detected"
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is the full form of ML?",
+        "output": "Machine Learning"
+      },
+      {
+        "input": "What is 6 multiply 6?",
+        "output": "36.0"
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090",
+    "variables": {
+      "input": "What is the full form of ML?",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "5547088c182d008e1d8640555e83c9de6e7ef3ddec09c8ce5baf1a2020786e9f",
+    "final_text": "\nYou are a helpful assistant that converts short forms to full forms and performs calculations.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nOnly give the final answer based on the output provided by the tools, no need to validate the answer.\nFinal Answer: the final answer to the original input question\nIMPORTANT: When you have the answer from the tool. go directly to final answer section and give the answer.\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "60783be7ff45eb491fba8bae01115fcf1862750a1dd207b5d421535f25890090"
+  },
+  "graph_version": {
+    "graph_hash": "acaf942a9b3fe84ef3d31fc8a53ca597deb3652324ead42eb39234ce460c8adc",
+    "tool_schemas_hash": "848fd7a1557835cde2b106a7c665b7d2280f0e791d3b119cfb9c88a4cea43505"
+  },
+  "tool_calls": [
+    {
+      "id": "a401cbcd-1165-4d6a-b51a-3f63518a9576",
+      "tool_name": "get_full_form",
+      "start_time": "2025-11-25T03:44:42.593316",
+      "end_time": "2025-11-25T03:44:42.593316",
+      "latency_ms": 0,
+      "timestamp": "2025-11-25T03:44:42.593316",
+      "input": {
+        "input": "ML"
+      },
+      "input_hash": "0b9e05712fb2d0e26fb0996aa09d4c81f6bbc1fc4ce20a50c97583e8c60cbde6",
+      "output": {
+        "output": "Machine Lerning"
+      },
+      "output_hash": "1a0ed42326b603ded0f719e3b57a2d7232cc6de8e8deb9ef96e77fe95932dc1c",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:e12dfc330af908c55398a6110c13db7227c7b3c7b9a6d3e68444efa62339629a",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "450a6407-4e76-4bc7-8084-c4c56bff056d",
+      "tool_name": "multiply",
+      "start_time": "2025-11-25T03:44:57.470828",
+      "end_time": "2025-11-25T03:44:57.470828",
+      "latency_ms": 0,
+      "timestamp": "2025-11-25T03:44:57.470828",
+      "input": {
+        "input": "6,6"
+      },
+      "input_hash": "7450e0e4ee1d4e88f445dc46a085c156a3dd796001c6f99ab30fdab099206b11",
+      "output": {
+        "output": "37.0"
+      },
+      "output_hash": "9a641c243b39915b3f94b18fc6f88b4960b9dba9d03bebf17e7058430fdc1085",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:9bc6640aa28aed511a18de210685757d7d35bef1d5055446a0a6cd954224d847",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-25T04:27:46.268046",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-25T04:27:46.268046"
+  },
+  "duration_ms": 0
+}

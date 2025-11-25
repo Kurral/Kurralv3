@@ -424,6 +424,9 @@ def replay_artifact(
         "cache_hits": result.cache_hits,
         "cache_misses": result.cache_misses,
         "duration_ms": result.duration_ms,
+        "tool_calls": result.tool_calls,
+        "new_tool_calls": result.new_tool_calls,
+        "unused_tool_calls": result.unused_tool_calls,
         "validation": {
             "hash_match": result.validation.hash_match if result.validation else None,
             "structural_match": result.validation.structural_match if result.validation else None,

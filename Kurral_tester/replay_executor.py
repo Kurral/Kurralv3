@@ -40,6 +40,10 @@ class ReplayExecutor:
             cache_backend: Cache backend for tool responses (defaults to MemoryCache)
         """
         self.cache = cache_backend or MemoryCache()
+        # Track which artifact tool calls were used during replay
+        self._used_tool_call_keys: set[str] = set()
+        # Track new tool calls (not in artifact)
+        self._new_tool_calls: list[ToolCall] = []
     
     async def execute_replay(
         self,
@@ -111,6 +115,10 @@ class ReplayExecutor:
             for tc in artifact.tool_calls
         ]
         
+        # All artifact tool calls were used (A replay uses all of them)
+        self._used_tool_call_keys = {tc.cache_key for tc in artifact.tool_calls}
+        unused_tool_calls = []  # None unused in A replay
+        
         return ReplayResult(
             kurral_id=artifact.kurral_id,
             replay_timestamp=start_time,
@@ -121,6 +129,8 @@ class ReplayExecutor:
             duration_ms=duration_ms,
             cache_hits=len(artifact.tool_calls),
             cache_misses=0,
+            new_tool_calls=self._new_tool_calls,
+            unused_tool_calls=unused_tool_calls,
             stream=self._reconstruct_output_stream(artifact.outputs),
             graph_version=artifact.graph_version,
             llm_state=llm_state,
@@ -263,9 +273,21 @@ class ReplayExecutor:
         )
         
         # Mark tool calls as stubbed (they should use cache)
+        # Note: In actual agent execution, we'd track which ones were used
+        # For now, we assume all artifact tool calls were available but may not all be used
         stubbed_tool_calls = [
             tc.model_copy(update={"stubbed_in_replay": True})
             for tc in artifact.tool_calls
+        ]
+        
+        # Identify unused tool calls (from artifact but not used)
+        # In a real implementation, we'd track cache hits to know which were used
+        # For now, we'll mark all as potentially used (this will be enhanced when we
+        # actually intercept tool calls during agent execution)
+        artifact_tool_keys = {tc.cache_key for tc in artifact.tool_calls}
+        unused_tool_calls = [
+            tc for tc in artifact.tool_calls
+            if tc.cache_key not in self._used_tool_call_keys
         ]
         
         return ReplayResult(
@@ -277,8 +299,10 @@ class ReplayExecutor:
             tool_calls=stubbed_tool_calls,
             error=error,
             duration_ms=duration_ms,
-            cache_hits=len(artifact.tool_calls),  # All tool calls should hit cache
-            cache_misses=0,
+            cache_hits=len(self._used_tool_call_keys),
+            cache_misses=len(self._new_tool_calls),
+            new_tool_calls=self._new_tool_calls,
+            unused_tool_calls=unused_tool_calls,
             stream=self._reconstruct_output_stream(outputs),
             graph_version=artifact.graph_version,
             llm_state=llm_state,
@@ -312,6 +336,8 @@ class ReplayExecutor:
     
     def _prime_cache_from_artifact(self, artifact: KurralArtifact) -> None:
         """Prime cache with all tool calls from artifact"""
+        self._used_tool_call_keys.clear()
+        self._new_tool_calls.clear()
         for tool_call in artifact.tool_calls:
             stub_payload = self._build_tool_stub_payload(tool_call)
             if stub_payload:

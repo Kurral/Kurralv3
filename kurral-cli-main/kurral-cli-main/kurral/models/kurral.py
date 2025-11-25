@@ -1,6 +1,5 @@
 """
 Core Pydantic models for .kurral artifact schema
-Copied from kurral-cli for independent operation
 """
 
 import json
@@ -8,7 +7,7 @@ import hashlib
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional, List, Union
+from typing import Any, Optional, List
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -16,14 +15,16 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 
 class ReplayLevel(str, Enum):
     """
-    Replay classification levels for A/B testing
+    Determinism classification levels for replay fidelity
     
-    A: Deterministic replay - everything matches, return artifact outputs directly
-    B: Non-deterministic replay - something changed, re-execute LLM with cached tool calls
+    A: Byte-for-byte identical output (frozen model + frozen tools + frozen clock)
+    B: Structurally equivalent output (identical tool I/O + sampler, model may differ)
+    C: Task-level equivalence only (use recorded tool outputs, assert task metrics)
     """
 
-    A = "A"  # Deterministic replay (determinism score below threshold)
-    B = "B"  # Non-deterministic replay (determinism score above threshold or tools changed)
+    A = "A"  # Byte-for-byte replay (score >= 0.90)
+    B = "B"  # Structural equivalence (0.50 <= score < 0.90)
+    C = "C"  # Task-level equivalence (score < 0.50)
 
 
 class LLMParameters(BaseModel):
@@ -295,11 +296,11 @@ class TimeEnvironment(BaseModel):
     timezone: str = Field(default="UTC")
     wall_clock_time: str = Field(..., description="Human-readable time")
     locale: Optional[str] = Field(None, description="Locale setting (e.g., en_US)")
-    environment_vars: Optional[dict[str, str]] = Field(
-        None, description="Relevant env vars (sanitized)"
+    environment_vars: dict[str, str] = Field(
+        default_factory=dict, description="Relevant env vars (sanitized)"
     )
-    feature_flags: Optional[dict[str, Any]] = Field(
-        None, description="Feature flags active during execution"
+    feature_flags: dict[str, Any] = Field(
+        default_factory=dict, description="Feature flags active during execution"
     )
     clock_freeze: Optional[bool] = Field(None, description="Was time frozen for testing? (omitted if false/null)")
 
@@ -322,6 +323,122 @@ class DeterminismReport(BaseModel):
         return v
 
 
+class CachePrimerSource(str, Enum):
+    """Source of cache primer data"""
+    PRODUCTION = "production"
+    KURRAL = ".kurral"
+    MANUAL = "manual"
+
+
+class HashChain(BaseModel):
+    """Hash chain for replay integrity verification"""
+    
+    root: str = Field(..., description="Root hash of the chain")
+    spans: list[str] = Field(default_factory=list, description="Hash spans for verification")
+
+
+class CachePrimer(BaseModel):
+    """Cache primer information for replay"""
+    
+    source: CachePrimerSource = Field(..., description="Source of cache data")
+    ref_id: Optional[str] = Field(None, description="Reference ID to source")
+
+
+class ReplayEvidence(BaseModel):
+    """Evidence and metadata from replay execution"""
+    
+    replay_id: str = Field(..., description="Unique replay execution ID")
+    replay_start_at: datetime = Field(..., description="Replay start timestamp")
+    replay_end_at: datetime = Field(..., description="Replay end timestamp")
+    cache_primer: CachePrimer = Field(..., description="Cache primer information")
+    effects_stubbed_count: int = Field(default=0, description="Number of effects stubbed")
+    effects_executed_count: int = Field(default=0, description="Number of effects executed")
+    hash_chain: HashChain = Field(..., description="Hash chain for integrity")
+
+
+class Governance(BaseModel):
+    """Governance and policy tracking"""
+    
+    policy_version: Optional[str] = Field(None, description="Policy version applied")
+    policy_bundle_hash: Optional[str] = Field(None, description="SHA256 of policy bundle")
+    eval_version: Optional[str] = Field(None, description="Evaluation framework version")
+    eval_defs_hash: Optional[str] = Field(None, description="SHA256 of eval definitions")
+
+
+class DataSnapshot(BaseModel):
+    """Data snapshot reference for reproducibility"""
+    
+    name: str = Field(..., description="Snapshot name/identifier")
+    uri: str = Field(..., description="URI to snapshot data")
+    hash: str = Field(..., description="SHA256 hash of snapshot")
+    version: Optional[str] = Field(None, description="Snapshot version")
+
+
+class MCPServer(BaseModel):
+    """MCP Server metadata"""
+    
+    server_id: str = Field(..., description="Server identifier")
+    version: Optional[str] = Field(None, description="Server version")
+    namespace_hint: Optional[str] = Field(None, description="Suggested namespace")
+    tool_count: int = Field(default=0, description="Number of tools provided")
+    tested_models: list[str] = Field(default_factory=list, description="Models tested with")
+    notes: Optional[str] = Field(None, description="Additional notes")
+
+
+class MCPTool(BaseModel):
+    """MCP Tool metadata"""
+    
+    fq_tool: str = Field(..., description="Fully qualified tool name")
+    raw_name: str = Field(..., description="Raw tool name")
+    server_id: str = Field(..., description="Server providing this tool")
+    schema_depth_max: int = Field(default=0, description="Maximum schema depth")
+    param_count: int = Field(default=0, description="Number of parameters")
+    requires_auth: bool = Field(default=False, description="Requires authentication")
+
+
+class MCPCallStats(BaseModel):
+    """Statistics for MCP tool calls"""
+    
+    fq_tool: str = Field(..., description="Fully qualified tool name")
+    avg_tokens: Optional[int] = Field(None, description="Average tokens used")
+    max_tokens: Optional[int] = Field(None, description="Maximum tokens used")
+    latency_ms: Optional[int] = Field(None, description="Average latency")
+    error_flag: bool = Field(default=False, description="Had errors")
+    error_text_present: bool = Field(default=False, description="Error text available")
+    resource_link_used: bool = Field(default=False, description="Used resource links")
+
+
+class MCPCatalogStats(BaseModel):
+    """Statistics about MCP tool catalog"""
+    
+    tool_count_enabled: int = Field(default=0, description="Number of enabled tools")
+    name_collisions: list[str] = Field(default_factory=list, description="Tool name collisions")
+    semantically_similar: list[list[str]] = Field(
+        default_factory=list, description="Semantically similar tool groups"
+    )
+    schema_depth_histogram: dict[str, int] = Field(
+        default_factory=dict, description="Distribution of schema depths"
+    )
+
+
+class MCPContext(BaseModel):
+    """MCP-specific context and statistics"""
+    
+    servers: list[MCPServer] = Field(default_factory=list, description="MCP servers used")
+    tools: list[MCPTool] = Field(default_factory=list, description="Available tools")
+    calls: list[MCPCallStats] = Field(default_factory=list, description="Call statistics")
+    catalog_stats: Optional[MCPCatalogStats] = Field(None, description="Catalog statistics")
+
+
+class Extensions(BaseModel):
+    """Extension fields for additional context"""
+    
+    mcp_context: Optional[MCPContext] = Field(None, description="MCP-specific context")
+    namespace_map: dict[str, str] = Field(
+        default_factory=dict, description="Mapping from raw names to fully qualified names"
+    )
+
+
 class KurralArtifact(BaseModel):
     """
     Complete .kurral artifact - the core data structure
@@ -341,10 +458,10 @@ class KurralArtifact(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     created_by: Optional[str] = Field(None, description="User/service that created artifact")
 
-    # Determinism (determined during replay, not during artifact generation)
-    deterministic: bool = Field(False, description="Overall determinism flag - determined during replay")
-    replay_level: Optional[ReplayLevel] = Field(None, description="Replay reliability level (A/B) - determined during replay")
-    determinism_report: Optional[DeterminismReport] = Field(None, description="Detailed scoring - calculated during replay")
+    # Determinism
+    deterministic: bool = Field(..., description="Overall determinism flag")
+    replay_level: ReplayLevel = Field(..., description="Replay reliability level (A/B/C)")
+    determinism_report: DeterminismReport = Field(..., description="Detailed scoring")
 
     # Execution Data
     inputs: dict[str, Any] = Field(..., description="Function/agent inputs")
@@ -367,25 +484,61 @@ class KurralArtifact(BaseModel):
     # Metrics
     duration_ms: int = Field(..., ge=0, description="Total execution time")
     cost_usd: Optional[float] = Field(None, ge=0.0, description="Estimated cost in USD")
-    token_usage: Optional[TokenUsage] = Field(
-        None, description="Comprehensive token usage and cost metrics"
+    token_usage: TokenUsage = Field(
+        default_factory=TokenUsage, description="Comprehensive token usage and cost metrics"
     )
 
     # Storage
     object_storage_uri: Optional[str] = Field(
         None, description="R2/storage URI if stored externally"
     )
-    tags: Optional[dict[str, str]] = Field(None, description="Custom tags")
+    tags: dict[str, str] = Field(default_factory=dict, description="Custom tags")
+    
+    # New Enhanced Fields
+    replay_evidence: Optional[ReplayEvidence] = Field(
+        None, description="Evidence from replay execution"
+    )
+    governance: Optional[Governance] = Field(
+        None, description="Governance and policy information"
+    )
+    data_snapshots: list[DataSnapshot] = Field(
+        default_factory=list, description="Data snapshots for reproducibility"
+    )
+    extensions: Optional[Extensions] = Field(
+        None, description="Extension fields including MCP context"
+    )
 
-    # Note: replay_level and deterministic are set during replay, not during artifact generation
-    # No validation needed here - these fields are optional during generation
+    @model_validator(mode="after")
+    def validate_replay_level(self) -> "KurralArtifact":
+        """Ensure replay level matches determinism score"""
+        score = self.determinism_report.overall_score
+
+        expected_level = ReplayLevel.C
+        if score >= 0.90:
+            expected_level = ReplayLevel.A
+        elif score >= 0.50:
+            expected_level = ReplayLevel.B
+
+        if self.replay_level != expected_level:
+            raise ValueError(
+                f"Replay level {self.replay_level} doesn't match score {score} "
+                f"(expected {expected_level})"
+            )
+
+        # Set deterministic flag based on score
+        if score >= 0.90:
+            object.__setattr__(self, "deterministic", True)
+        else:
+            object.__setattr__(self, "deterministic", False)
+
+        return self
 
     def to_json(self, pretty: bool = False) -> str:
         """Serialize to JSON string"""
         indent = 2 if pretty else None
         return self.model_dump_json(indent=indent, exclude_none=True)
 
-    def save(self, filepath: Union[str, Path]) -> None:
+    def save(self, filepath: str | Path) -> None:
         """Save artifact to .kurral file"""
         path = Path(filepath)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -394,7 +547,7 @@ class KurralArtifact(BaseModel):
             f.write(self.to_json(pretty=True))
 
     @classmethod
-    def load(cls, filepath: Union[str, Path]) -> "KurralArtifact":
+    def load(cls, filepath: str | Path) -> "KurralArtifact":
         """Load artifact from .kurral file"""
         with open(filepath, "r") as f:
             data = json.load(f)
@@ -438,14 +591,6 @@ class ReplayResult(BaseModel):
     duration_ms: int = Field(..., ge=0)
     cache_hits: int = Field(default=0, ge=0)
     cache_misses: int = Field(default=0, ge=0)
-    new_tool_calls: list[ToolCall] = Field(
-        default_factory=list,
-        description="Tool calls made during replay that were not in original artifact"
-    )
-    unused_tool_calls: list[ToolCall] = Field(
-        default_factory=list,
-        description="Tool calls from original artifact that were not used during replay"
-    )
     stream: Optional[dict[str, Any]] = Field(
         None,
         description="Reconstructed output stream with items/full_text/stream_map",
@@ -504,4 +649,29 @@ class ReplayMetadata(BaseModel):
     record_ref: str
     replay_level: ReplayLevel
     assertion_results: List[AssertionResult] = Field(default_factory=list)
+
+
+class BacktestRequest(BaseModel):
+    """Request for backtest execution"""
+
+    baseline_artifacts: list[UUID] = Field(..., description="Baseline artifact IDs")
+    candidate_config: dict[str, Any] = Field(..., description="New agent configuration")
+    threshold: float = Field(default=0.90, ge=0.0, le=1.0)
+    sample_strategy: str = Field(default="adaptive", description="Sampling strategy")
+    max_replays: int = Field(default=100, ge=1)
+
+
+class BacktestResult(BaseModel):
+    """Result of backtest execution"""
+
+    backtest_id: UUID = Field(default_factory=uuid4)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    baseline_count: int = Field(..., ge=0)
+    replays_executed: int = Field(..., ge=0)
+    ars_score: float = Field(..., ge=0.0, le=1.0, description="Agent Regression Score")
+    passed: bool = Field(..., description="Whether backtest passed threshold")
+    threshold: float = Field(..., ge=0.0, le=1.0)
+    breakdown: dict[str, Any] = Field(default_factory=dict)
+    failures: list[dict[str, Any]] = Field(default_factory=list)
+    summary: str = Field(..., description="Human-readable summary")
 

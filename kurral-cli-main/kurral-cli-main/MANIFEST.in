@@ -1,0 +1,7 @@
+include README.md
+include LICENSE
+include pyproject.toml
+include setup.py
+recursive-include kurral *.py
+recursive-exclude tests *
+recursive-exclude kurral-api *

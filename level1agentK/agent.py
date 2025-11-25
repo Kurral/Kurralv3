@@ -11,6 +11,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from tools import get_full_form, multiply, add
+from Kurral_tester.agent_decorator import trace_agent, trace_agent_invoke
 
 # Load environment variables
 load_dotenv()
@@ -59,6 +60,7 @@ def create_tools():
         ),
     ]
 
+@trace_agent()
 def main():
     """Main function to run the Level 1 agent."""
     print("=" * 60)
@@ -113,7 +115,7 @@ Thought: {agent_scratchpad}
                 continue
             
             try:
-                result = agent_executor.invoke({"input": user_input})
+                result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
                 print(f"\nAgent: {result['output']}")
             except Exception as e:
                 print(f"\nError: {str(e)}")

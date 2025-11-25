@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: kurral
+      POSTGRES_USER: kurral
+      POSTGRES_PASSWORD: kurral
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kurral"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Note: Cloudflare R2 storage is used for artifact storage
+  # Configure R2 credentials via environment variables:
+  #   KURRAL_R2_BUCKET=your-bucket-name
+  #   KURRAL_R2_ACCOUNT_ID=your-cloudflare-account-id
+  #   KURRAL_R2_ACCESS_KEY_ID=your-r2-access-key
+  #   KURRAL_R2_SECRET_ACCESS_KEY=your-r2-secret-key
+  #
+  # To create an R2 bucket:
+  # 1. Log into Cloudflare Dashboard
+  # 2. Navigate to R2 Object Storage
+  # 3. Create a new bucket (e.g., "kurral-artifacts")
+  # 4. Create API tokens with read/write permissions
+  # 5. Add credentials to your .env file
+
+volumes:
+  postgres_data:
+  redis_data:
+

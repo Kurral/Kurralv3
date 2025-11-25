@@ -1,0 +1,68 @@
+{
+  "kurral_id": "a9ae12b5-9ad6-493a-b11a-bc9da402ffba",
+  "run_id": "local_agent_1764058626",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-25T03:17:07.761940",
+  "deterministic": false,
+  "inputs": {
+    "input": "what is the full form of AI"
+  },
+  "outputs": {
+    "output": "Artificial Intelligence"
+  },
+  "llm_config": {
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "ReAct agent prompt (template not extractable)",
+    "template_hash": "6cb6bf734304c55b2512e7133f5ea40d897740988f6a07ff2aeec7dd5dd89f24",
+    "variables": {
+      "input": "what is the full form of AI"
+    },
+    "variables_hash": "1eeda1df54e7180612a8b77a42cf17dc2b22a1cb40a0d5b219a487de10d863ad",
+    "final_text": "ReAct agent prompt (template not extractable)",
+    "final_text_hash": "6cb6bf734304c55b2512e7133f5ea40d897740988f6a07ff2aeec7dd5dd89f24"
+  },
+  "graph_version": {
+    "graph_hash": "7239f7bab6bd3eef6e211c18b3b8525893b14af2186eb9aa3b8d2fbdcd836d77",
+    "tool_schemas_hash": "848fd7a1557835cde2b106a7c665b7d2280f0e791d3b119cfb9c88a4cea43505"
+  },
+  "tool_calls": [
+    {
+      "id": "02943f68-050c-47a0-ab4c-e0c1b4c3c77f",
+      "tool_name": "get_full_form",
+      "start_time": "2025-11-25T03:17:07.247192",
+      "end_time": "2025-11-25T03:17:07.247192",
+      "latency_ms": 0,
+      "timestamp": "2025-11-25T03:17:07.247192",
+      "input": {
+        "input": "AI"
+      },
+      "input_hash": "9b5b3d2600e01346cd51ff0d641f58cd121fd52fbe3389e414ecc5c010b9be48",
+      "output": {
+        "output": "Artifical Inteligence"
+      },
+      "output_hash": "6b7186e5f6568d410a58fd143956409abe2f5f66b45d41b3af0d3f618f313852",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:9fbccbbf69aa7e395ee17e3b6d4e516558bd0b6b9688b228bc9128c414bbf636",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-25T03:17:07.761940",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-25T03:17:07.761940"
+  },
+  "duration_ms": 1218
+}

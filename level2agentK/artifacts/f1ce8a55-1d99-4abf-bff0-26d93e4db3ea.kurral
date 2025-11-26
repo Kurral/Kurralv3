@@ -1,0 +1,101 @@
+{
+  "kurral_id": "f1ce8a55-1d99-4abf-bff0-26d93e4db3ea",
+  "run_id": "local_agent_1764149486",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-26T04:31:44.569991",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "what is the time in India. Give me me exact time including the seconds"
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "what is the time in India. Give me me exact time including the seconds",
+        "output": "I'm sorry, but I can't provide the exact current time in India with seconds using my current capabilities. I recommend checking a reliable world clock or time zone converter for the most accurate information."
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "what is the time in India. Give me me exact time including the seconds",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "18728515e6eff1dbd8dcaa9119eab1b2156ab21ad3d205aee8a5bcde7ef6a9a7",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "4b85df4b7eae1d4d883e0e77d29b9d3a11f287d02a5812d85626a203dbfcf471",
+    "tool_schemas_hash": "a4282f3d8a30130ca6de8ca3ed7a1352c0a8844b5e3f05edcfe1552e2ffbf26e"
+  },
+  "tool_calls": [
+    {
+      "id": "b3535ccf-5dc1-465d-84ab-573fd04e66eb",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-26T04:31:29.587093",
+      "end_time": "2025-11-26T04:31:31.545457",
+      "latency_ms": 1958,
+      "timestamp": "2025-11-26T04:31:31.545457",
+      "input": {
+        "input": "current time in India with seconds"
+      },
+      "input_hash": "e4431abf2592a355a995a5f77969693336cc850882e6f537574a4c4440abcd14",
+      "output": {
+        "output": "Title: India Standard Time\nURL: https://time.is/IST\nContent: Time.is. India Standard Time now. Your clock is 47 minutes and 35.3 seconds behind. Accuracy of synchronization was ±0.005 seconds. 09:17:40am. Wednesday\n\n---\nTitle: Current local time in India\nURL: https://www.worldtimeserver.com/current_time_in_IN.aspx\nContent: Current Time in India. What Time Is It In India?Local Time. 12:12:19 PM ... Executed in 0.251 seconds. DST Reminders Close. 2025; 2026; 2027; 2028; 2029; 2030.\n\n---\nTitle: Local time in India right now\nURL: https://24timezones.com/India/time\nContent: Exact time and daylight saving time in India in 2025. Current time in IN. 3:44:24 PM, Sunday 23, November 2025 IST\n\n---\nTitle: Current Local Time in India - The Time Now\nURL: https://www.thetimenow.com/india\nContent: Current local time and weather in India. 12 hour 24 hour. 3:07:17 AM. UTC/GMT +5:30 hours. 25. Tuesday. Nov 2025. Compare Time Difference Between 2 Cities.\n\n---\nTitle: Time now in India\nURL: https://greenwichmeantime.com/time/india/\nContent: India flag. India has 1 standard time zone. India. 8:46:59 AM 11/25/2025 GMT +05:30. Help video ondemand_video. search. Mumbai icon Mumbai. 8:46 AM Tue 25th.\n"
+      },
+      "output_hash": "96c82f600c4e6dc8c26fe96a6273039afbbbba60f865dd7e70fe5ad2f63497aa",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:eebdb63a7a1572f4c8aee37726b423f09a2bf384372c19f6c596f1373b706654",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "210c27b6-8637-4746-acd6-a368c310bdd1",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-26T04:31:36.350880",
+      "end_time": "2025-11-26T04:31:39.572062",
+      "latency_ms": 3221,
+      "timestamp": "2025-11-26T04:31:39.572062",
+      "input": {
+        "input": "exact current time in India with seconds"
+      },
+      "input_hash": "4816cbc84d3e1e8b540198cea7b8749002aa36a05990f4ac7213bf7ee5326179",
+      "output": {
+        "output": "Title: Current time in India\nURL: https://en.true-time.com/in/\nContent: Live exact time in India with seconds. Includes daylight saving time transitions for India. Current time zone UTC+05:30.\n\n---\nTitle: India Standard Time\nURL: https://time.is/IST\nContent: Time.is. India Standard Time now. Your clock is 47 minutes and 35.3 seconds behind. Accuracy of synchronization was ±0.005 seconds. 09:17:40am. Wednesday\n\n---\nTitle: Current time in India - Clocks.world\nURL: https://clocks.world/time/india/\nContent: Current time in India. India. 1:53:37 AM Sunday November 23, 2025. Local ... India uses India Standard Time IST. IST is UTC +0530. The time in India is\n\n---\nTitle: Local time in India right now - 24TimeZones.com\nURL: https://24timezones.com/India/time\nContent: Current local time in India. India. 34424PM. Sunday, November 23, 2025. Exact time and daylight saving time in India in 2025. Current time in IN.\n\n---\nTitle: Current local time in India - WorldTimeServer.com\nURL: https://www.worldtimeserver.com/current_time_in_IN.aspx\nContent: World Time Database. Current Time in India. What Time Is It In India?Local Time. 12:12:19 PM. Tuesday, November 25, 2025. India Standard Time (IST) +0530 UTC.\n"
+      },
+      "output_hash": "4898954e9bda90cc047e1606d73f91d383e777eee6044a9cf5363d2d4ca5f4e8",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:77eeb5b52deaa0bb6d83f00ab6c7febd98da1069ce0c927bd6e2decc13aabf0e",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-26T04:31:25.495486",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-26T04:31:25.495486"
+  },
+  "duration_ms": 19074
+}

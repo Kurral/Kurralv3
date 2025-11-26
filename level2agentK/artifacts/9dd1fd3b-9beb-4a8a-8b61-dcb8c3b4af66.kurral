@@ -1,0 +1,108 @@
+{
+  "kurral_id": "9dd1fd3b-9beb-4a8a-8b61-dcb8c3b4af66",
+  "run_id": "local_agent_1764150039",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-26T04:40:52.467483",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "Can you visit time.is and tell me what is the current time?"
+      },
+      {
+        "input": "What is my current location?"
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Can you visit time.is and tell me what is the current time?",
+        "output": "I'm sorry, but I am unable to provide the current time from time.is. I recommend visiting the site directly to get the most accurate time."
+      },
+      {
+        "error": "An output parsing error occurred. In order to pass this error back to the agent and have it try again, pass `handle_parsing_errors=True` to the AgentExecutor. This is the error: Could not parse LLM output: `I'm sorry, but as an AI, I don't have access to your personal data unless you provide it. I respect user privacy and confidentiality. Therefore, I can't determine your current location.`\nFor troubleshooting, visit: https://python.langchain.com/docs/troubleshooting/errors/OUTPUT_PARSING_FAILURE "
+      }
+    ]
+  },
+  "error": "One or more interactions failed",
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Can you visit time.is and tell me what is the current time?",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "ade2dc670a44f5f56205dc17939fc1b288db70eee4f1d0a219c412547861e59d",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "4b85df4b7eae1d4d883e0e77d29b9d3a11f287d02a5812d85626a203dbfcf471",
+    "tool_schemas_hash": "a4282f3d8a30130ca6de8ca3ed7a1352c0a8844b5e3f05edcfe1552e2ffbf26e"
+  },
+  "tool_calls": [
+    {
+      "id": "f710575f-ef43-44f0-abf4-09f4b279c204",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-26T04:40:41.292177",
+      "end_time": "2025-11-26T04:40:44.182562",
+      "latency_ms": 2890,
+      "timestamp": "2025-11-26T04:40:44.182562",
+      "input": {
+        "input": "current time on time.is"
+      },
+      "input_hash": "5df206196186a592114cc87d3b0632f0123811e7123d309c9211dd008236e5ee",
+      "output": {
+        "output": "Title: Time.is - exact time, any time zone\nURL: https://time.is/\nContent: Time.is - exact time for any time zone ... Time.is displays exact, official atomic clock time for any time zone (more than 7 million locations) in 58 languages.\n\n---\nTitle: Time.now: Current Time Now\nURL: https://time.now/\nContent: View your current local time on Time.now. Browse cities, countries, and timezones with their current times. Updated Live.\n\n---\nTitle: World Clock — current time around the world\nURL: https://24timezones.com/\nContent: Our Global Timezone Map displays the current time now around the world. The map also reflects the daylight, night and midnight in real-time.\n\n---\nTitle: What time is it - Exact time - Any time zone - vClock - Alarm Clock\nURL: https://vclock.com/time/\nContent: Time Now ; New York. 6:33:15 PM. Today, +3 H ; Chicago, Illinois. 5:33:15 PM. Today, +2 H ; Denver, Colorado. 4:33:15 PM. Today, +1 H ; Los Angeles, California. 3:\n\n---\nTitle: Time.gov\nURL: https://www.time.gov/\nContent: 06:00:05 P.M.. Your clock is off by: -1630.292 s.\n"
+      },
+      "output_hash": "6677b0a10c41b89061344df6bd6c1777587ded682c674bb8fa754733b385733d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:f2c0cc885c35e5c757428d13d3bd0ea58aa6a776b7b90744ecd89bc0dc4f134a",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "a70a720a-1071-47dd-9202-36cf0b14cad4",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-26T04:40:48.751530",
+      "end_time": "2025-11-26T04:40:49.907703",
+      "latency_ms": 1156,
+      "timestamp": "2025-11-26T04:40:49.907703",
+      "input": {
+        "input": "exact current time on time.is"
+      },
+      "input_hash": "9f41e60777b368075c710008b72d9d66238f04499f288a547165efdf6872171b",
+      "output": {
+        "output": "Title: Time.is - exact time, any time zone\nURL: https://time.is/\nContent: 7 million locations, 58 languages, synchronized with atomic clock time.\n\n---\nTitle: What time is it - Exact time - Any time zone - vClock\nURL: https://vclock.com/time/\nContent: On this website, you can find out the current time and date in any country and city in the world. You can also view the time difference between your location\n\n---\nTitle: Exact Time Clock Now (With Seconds, Milliseconds)\nURL: https://clock.zone/\nContent: This clock shows time from our dedicated server synchronised with atomic clock. More details and demonstration video you can find on this page.\n\n---\nTitle: Time.now: Current Time Now\nURL: https://time.now/\nContent: View your current local time on Time.now. Browse cities, countries, and timezones with their current times. Updated Live.\n\n---\nTitle: The Time Now: What Time Is It\nURL: https://www.thetimenow.com/\nContent: Current local time in United States · 12 hour 24 hour. 10:32:23 PM.\n"
+      },
+      "output_hash": "9694acf9ecfe88114649b3b658fdb648cdeae298bc02174ba4bd84528920c9fe",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:dde5e7a59aeff3e1b61a15d3939bc38c5f1c6d660c25eaa93a678e96c657e2b4",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-26T04:40:22.652900",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-26T04:40:22.652900"
+  },
+  "duration_ms": 89114
+}

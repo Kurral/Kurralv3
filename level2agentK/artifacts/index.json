@@ -13,7 +13,28 @@
       "created_at": "2025-11-26T04:34:59.583570",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "9dd1fd3b-9beb-4a8a-8b61-dcb8c3b4af66",
+      "run_id": "local_agent_1764150039",
+      "created_at": "2025-11-26T04:40:52.467483",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "4babbd1c-d250-4c7a-8e4b-25a1ac134f89",
+      "run_id": "local_agent_1764150131",
+      "created_at": "2025-11-26T04:42:37.176459",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "e9b8029e-94ef-4dfe-a64f-d9704c4fb0c5",
+      "run_id": "local_agent_1764152004",
+      "created_at": "2025-11-26T05:13:30.236814",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-11-26T04:36:04.531816"
+  "updated_at": "2025-11-26T05:13:36.645935"
 }

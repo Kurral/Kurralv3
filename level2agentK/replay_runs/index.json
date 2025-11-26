@@ -1,0 +1,208 @@
+{
+  "artifacts": [
+    {
+      "kurral_id": "8700ae8e-918d-458b-b49f-54fce7963f30",
+      "run_id": "replay_local_agent_1764150131_1764150247",
+      "created_at": "2025-11-26T04:44:07.090754",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d99cf226-a5e8-4669-a308-dff8e3e40b17",
+      "run_id": "replay_local_agent_1764150131_1764151400",
+      "created_at": "2025-11-26T05:03:20.256603",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "46e9688d-a88b-462c-a2ed-fad5e90b2048",
+      "run_id": "replay_local_agent_1764150131_1764151553",
+      "created_at": "2025-11-26T05:05:53.294718",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "8de32f3e-6a8b-4dd1-a1e5-e1acdf866296",
+      "run_id": "replay_local_agent_1764150131_1764151599",
+      "created_at": "2025-11-26T05:06:39.596298",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "2bc8b3c9-558d-472d-a5f9-8af538c0e6e2",
+      "run_id": "replay_local_agent_1764150131_1764151637",
+      "created_at": "2025-11-26T05:07:17.272863",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "b4f2edba-7075-4bbb-8d73-2a43978099b5",
+      "run_id": "replay_local_agent_1764150131_1764151661",
+      "created_at": "2025-11-26T05:07:41.143702",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "0e93becd-796b-415c-b604-b9b06c3f4126",
+      "run_id": "replay_local_agent_1764150131_1764151720",
+      "created_at": "2025-11-26T05:08:40.172586",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "e2eafbda-938f-47c6-a870-8fa077dc38f3",
+      "run_id": "replay_local_agent_1764150131_1764151965",
+      "created_at": "2025-11-26T05:12:45.714452",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "0f07b5ce-5c29-4ad5-a711-88065e5838f2",
+      "run_id": "replay_local_agent_1764152004_1764152080",
+      "created_at": "2025-11-26T05:14:40.456221",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "24457581-3ff4-4089-8555-ddf484dd497b",
+      "run_id": "replay_local_agent_1764150131_1764152102",
+      "created_at": "2025-11-26T05:15:02.518578",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "00d163cf-f444-4b5f-9f16-86b96463a1ad",
+      "run_id": "replay_local_agent_1764150131_1764152461",
+      "created_at": "2025-11-26T05:21:01.348602",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "1f6847a6-1dc8-43fc-bcdc-0a8df465a4dc",
+      "run_id": "replay_local_agent_1764150131_1764152480",
+      "created_at": "2025-11-26T05:21:20.958375",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "13b685a3-c116-4ba7-b39d-c835da61ccd9",
+      "run_id": "replay_local_agent_1764150131_1764152564",
+      "created_at": "2025-11-26T05:22:44.573051",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "71bf7c74-9ef4-4ad6-9ee6-b20cceb07f96",
+      "run_id": "replay_local_agent_1764150131_1764152692",
+      "created_at": "2025-11-26T05:24:52.292539",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d1cf2548-0e26-458e-a11f-ce1e3dc25edf",
+      "run_id": "replay_local_agent_1764150131_1764152795",
+      "created_at": "2025-11-26T05:26:35.260938",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d9154c8b-393b-42cc-a64c-6f5fc98ee319",
+      "run_id": "replay_local_agent_1764150131_1764154539",
+      "created_at": "2025-11-26T05:55:39.463052",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "520420d1-2920-4b5f-83cf-a7aec850702f",
+      "run_id": "replay_local_agent_1764150131_1764156439",
+      "created_at": "2025-11-26T06:27:19.571784",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "0654e3d9-51b9-4fe1-a1a3-82d8bab0853d",
+      "run_id": "replay_local_agent_1764150131_1764156903",
+      "created_at": "2025-11-26T06:35:03.224997",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "208099f7-9a2b-4ed9-8c11-c07ad94a0cfd",
+      "run_id": "replay_local_agent_1764150131_1764157062",
+      "created_at": "2025-11-26T06:37:42.907904",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "ce0f54a7-619e-444b-8654-025718ed1ca0",
+      "run_id": "replay_local_agent_1764150131_1764157100",
+      "created_at": "2025-11-26T06:38:20.440903",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "44947daf-d6cc-4750-8ad9-f77f460d04cc",
+      "run_id": "replay_local_agent_1764150131_1764157274",
+      "created_at": "2025-11-26T06:41:14.597192",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "ba198737-10db-493b-94db-d3df468df801",
+      "run_id": "replay_local_agent_1764150131_1764157696",
+      "created_at": "2025-11-26T06:48:16.785025",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "c4f4e61e-3315-4123-a123-301fbde93028",
+      "run_id": "replay_local_agent_1764150131_1764157813",
+      "created_at": "2025-11-26T06:50:13.335229",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "eb67fccf-f801-41c4-a97e-cc9f1625d516",
+      "run_id": "replay_local_agent_1764150131_1764157852",
+      "created_at": "2025-11-26T06:50:52.608734",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "10232e8f-2658-431d-b868-5f050fbc303c",
+      "run_id": "replay_local_agent_1764150131_1764158342",
+      "created_at": "2025-11-26T06:59:02.174926",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d3b249f2-b606-4916-abcf-67c80ad2646d",
+      "run_id": "replay_local_agent_1764150131_1764158413",
+      "created_at": "2025-11-26T07:00:13.279897",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "e4c94b3a-e6a2-476d-b39a-ea4d35f77811",
+      "run_id": "replay_local_agent_1764150131_1764158499",
+      "created_at": "2025-11-26T07:01:39.587736",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "5a9d2627-4dec-4954-96af-b127ba038056",
+      "run_id": "replay_local_agent_1764150131_1764158557",
+      "created_at": "2025-11-26T07:02:37.216501",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "f957403a-60c9-4dea-89ed-a685d6fc917b",
+      "run_id": "replay_local_agent_1764150131_1764158889",
+      "created_at": "2025-11-26T07:08:09.568602",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    }
+  ],
+  "updated_at": "2025-11-26T07:08:09.570608"
+}

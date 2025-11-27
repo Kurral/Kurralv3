@@ -2,24 +2,18 @@
   <img width="350" height="350" alt="Kurral Logo" src="https://github.com/user-attachments/assets/248a09da-be82-4654-a5b1-0f09d45ebe4a" />
 </p>
 
-<h1 align="center">KURRAL</h1>
-<p align="center">
-    <h2 
-        <p align="center">
-        <strong>Deterministic Testing and Replay for AI agents</strong>
-        </h2>
-</p>
+<h1 align="center">KURRAL</h1> <h3 align="center">Deterministic Testing and Replay for AI agents</h3>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/License-Apache_2.0-blue" />
-<img src="https://img.shields.io/badge/Python-3.9+-blue" />
-  <img src="https://img.shields.io/badge/LangChain-Compatible-green" />
+  <img src="https://img.shields.io/badge/License-Apache_2.0-blue" alt="License" />
+  <img src="https://img.shields.io/badge/Python-3.9+-blue" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/LangChain-Compatible-green" alt="LangChain Compatible" />
 </p>
 
 
 
 <p align="center">
-  ⭐ If Kurral helps you, please star the repo to support the project!
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/yourusername/kurral">star the repo</a> — it helps a lot!
 </p>
 
 **Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. It captures complete execution traces of your agents, enabling intelligent replay for regression detection, debugging, and quantifiable A/B performance comparison.
@@ -177,6 +171,15 @@ Kurral will automatically:
 
 ## Deep Dive
 Want to understand how Kurral works under the hood? Read on.
+
+### What’s in a `.kurral` artifact?
+Human-readable JSON with everything:
+
+- All user/agent hashed messages
+- Tool calls + results
+- Exact prompt templates (resolved)
+- LLM config (model, temp, seed, provider)
+- Graph/tool schema hash
 
 ### Artifact Generation
 
@@ -355,6 +358,14 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 }
 ```
 
+### Current Limitations (we’re working on them!)
+
+- Only ReAct-style and LCEL agents fully supported (no native LangGraph streaming yet)
+- Vision / image inputs not captured
+- No built-in dashboard (yet – artifacts are JSON, just open one in VS Code/any editor)
+
+
+
 ## Best Practices
 
 1. **Always pass `llm` parameter**: `trace_agent_invoke(agent_executor, input_data, llm=llm)` ensures accurate LLM config extraction
@@ -384,10 +395,18 @@ Contributions are welcome! Please:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+## Community
+Join our Discord → [https://discord.gg/pan6GRRV]
+
 ## Support
 
 For issues, questions, or contributions, please [open an issue](https://github.com/yourusername/kurral/issues).
 
+
 ---
+
+Star this repo if Kurral just saved you $50 in OpenAI credits.
+
+Made with ❤️ for the agent-building community.
 
 **Note**: The `level1agentK`, `level2AgentK`, and `level3agent` directories are example agents used for testing Kurral. They demonstrate integration patterns but are not part of the core Kurral framework.

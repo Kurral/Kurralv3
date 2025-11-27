@@ -125,7 +125,14 @@
       "created_at": "2025-11-25T06:00:24.682581",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "fdfb9ba6-12ae-4074-ba65-01abd38d6094",
+      "run_id": "replay_local_agent_1764159019_1764159134",
+      "created_at": "2025-11-26T07:12:14.589295",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-11-25T06:00:24.696215"
+  "updated_at": "2025-11-26T07:12:14.601665"
 }

@@ -212,25 +212,38 @@ class ReplayDetector:
         
         # Determine replay type:
         # - If tools changed → B (always, tools are critical)
+        # - If LLM model/provider changed → B (always, different model = different behavior)
         # - If determinism score < threshold → B (low determinism, things changed)
         # - If determinism score >= threshold → A (high determinism, deterministic enough)
-        #   (Don't check for other changes if score is high enough - score already accounts for differences)
         tools_changed = (
             "graph_version" in changes 
             or "tool_schemas_hash" in changes 
             or any("tool" in str(k).lower() for k in changes.keys())
         )
         
+        # Check if LLM model/provider changed (these should always trigger B replay)
+        llm_config_changes = changes.get("llm_config", {})
+        llm_changed = (
+            "llm_config" in changes 
+            and (
+                "model_name" in llm_config_changes
+                or "provider" in llm_config_changes
+            )
+        )
+        
         if tools_changed:
             # Tools changed → B replay (always, even with high determinism score)
+            replay_type = ReplayType.B
+        elif llm_changed:
+            # LLM model/provider changed → B replay (always, different model = different behavior)
             replay_type = ReplayType.B
         elif determinism_score < self.determinism_threshold:
             # Score below threshold (low determinism) → B replay
             replay_type = ReplayType.B
         else:
             # High determinism score (>= threshold) → A replay
-            # The determinism score already accounts for model/temperature/seed/provider differences
-            # So if score is high enough, we can safely use A replay
+            # The determinism score already accounts for temperature/seed differences
+            # So if score is high enough and no critical changes, we can safely use A replay
             replay_type = ReplayType.A
         
         # Add determinism score to changes dict for visibility
@@ -389,13 +402,8 @@ class ReplayDetector:
                     "current_hash": current_prompt.template_hash
                 }
         
-        # Compare variables hash
-        if artifact_prompt.variables_hash and current_prompt.variables_hash:
-            if artifact_prompt.variables_hash != current_prompt.variables_hash:
-                changes["variables"] = {
-                    "artifact_hash": artifact_prompt.variables_hash,
-                    "current_hash": current_prompt.variables_hash
-                }
+        # Don't compare variables hash - variables contain user input which changes per run
+        # Only template hash matters for change detection
         
         matches = len(changes) == 0
         return matches, changes

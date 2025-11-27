@@ -210,31 +210,105 @@ def extract_resolved_prompt(agent_executor: AgentExecutor, user_input: str) -> R
     # Try to get prompt from agent
     prompt_template = ""
     variables = {"input": user_input}
+    prompt_obj = None
     
-    if hasattr(agent_executor, "agent") and hasattr(agent_executor.agent, "runnable"):
-        # Try to extract prompt from the agent's runnable
+    if hasattr(agent_executor, "agent"):
+        agent = agent_executor.agent
+        
+        # For ReAct agents created with create_react_agent, the prompt is in agent.middle[0]
+        # The agent itself is a RunnableSequence
         try:
-            if hasattr(agent_executor.agent.runnable, "prompt"):
-                prompt = agent_executor.agent.runnable.prompt
-                if isinstance(prompt, PromptTemplate):
-                    prompt_template = prompt.template
-                    # Try to get variables
-                    if hasattr(prompt, "input_variables"):
-                        for var in prompt.input_variables:
+            # Method 1: Check if agent.middle[0] is a PromptTemplate
+            if hasattr(agent, "middle") and len(agent.middle) > 0:
+                first_middle = agent.middle[0]
+                if isinstance(first_middle, PromptTemplate):
+                    prompt_obj = first_middle
+                    prompt_template = prompt_obj.template
+                    # Get input variables
+                    if hasattr(prompt_obj, "input_variables"):
+                        for var in prompt_obj.input_variables:
                             if var not in variables:
                                 variables[var] = ""
         except:
             pass
+        
+        # Method 2: Try to extract from the agent's runnable (for other agent types)
+        if not prompt_template and hasattr(agent, "runnable"):
+            try:
+                if hasattr(agent.runnable, "prompt"):
+                    prompt = agent.runnable.prompt
+                    if isinstance(prompt, PromptTemplate):
+                        prompt_obj = prompt
+                        prompt_template = prompt.template
+                        # Try to get variables
+                        if hasattr(prompt, "input_variables"):
+                            for var in prompt.input_variables:
+                                if var not in variables:
+                                    variables[var] = ""
+            except:
+                pass
+        
+        # Method 3: Try to find prompt recursively in the runnable structure
+        if not prompt_template and hasattr(agent, "runnable"):
+            def find_prompt_recursive(obj, depth=0, max_depth=5):
+                if depth > max_depth:
+                    return None
+                if obj is None:
+                    return None
+                
+                # Check if this object is a PromptTemplate
+                if isinstance(obj, PromptTemplate):
+                    return obj
+                
+                # Check common attributes
+                for attr in ['first', 'middle', 'last', 'runnables', 'steps', 'bound', 'prompt']:
+                    if hasattr(obj, attr):
+                        value = getattr(obj, attr)
+                        if value and not isinstance(value, (str, int, float, bool)):
+                            result = find_prompt_recursive(value, depth+1, max_depth)
+                            if result:
+                                return result
+                
+                # Check if it's iterable
+                if hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes)):
+                    try:
+                        for item in obj:
+                            result = find_prompt_recursive(item, depth+1, max_depth)
+                            if result:
+                                return result
+                    except:
+                        pass
+                
+                return None
+            
+            prompt_obj = find_prompt_recursive(agent.runnable)
+            if prompt_obj:
+                prompt_template = prompt_obj.template
+                if hasattr(prompt_obj, "input_variables"):
+                    for var in prompt_obj.input_variables:
+                        if var not in variables:
+                            variables[var] = ""
     
     # If we couldn't extract, use a default
     if not prompt_template:
         prompt_template = "ReAct agent prompt (template not extractable)"
     
+    # Build final text - only format if we have the template and can safely format it
+    final_text = prompt_template
+    if prompt_template and variables:
+        try:
+            # Try to format, but handle missing variables gracefully
+            final_text = prompt_template.format(**variables)
+        except (KeyError, ValueError):
+            # If formatting fails (missing variables), just use the template
+            # This can happen if the template has variables we don't have values for
+            final_text = prompt_template
+    
     # Create resolved prompt
     resolved = ResolvedPrompt(
         template=prompt_template,
         variables=variables,
-        final_text=prompt_template.format(**variables) if variables else prompt_template,
+        final_text=final_text,
     )
     
     # Compute hashes

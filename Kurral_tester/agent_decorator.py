@@ -24,6 +24,8 @@ from Kurral_tester.models.kurral import (
     ToolCall,
     TokenUsage,
     LLMParameters,
+    KurralArtifact,
+    TimeEnvironment,
 )
 from Kurral_tester.artifact_manager import ArtifactManager
 from Kurral_tester.artifact_generator import ArtifactGenerator
@@ -32,6 +34,11 @@ T = TypeVar("T")
 
 # Global context for current execution
 _current_context: Optional[Dict[str, Any]] = None
+
+# Session artifact context - accumulates all interactions in one artifact
+_session_artifact: Optional[Any] = None  # Will hold KurralArtifact
+_session_interactions: list[Dict[str, Any]] = []  # List of all interactions
+_session_start_time: Optional[datetime] = None
 
 
 def _sanitize_for_serialization(obj: Any, max_depth: int = 5, current_depth: int = 0) -> Any:
@@ -236,6 +243,9 @@ def trace_agent_invoke(
     # Extract user input
     user_input = str(input_data.get('input', ''))
     
+    # Declare globals at the start
+    global _session_artifact, _session_interactions
+    
     # Execute with callbacks
     try:
         result = agent_executor.invoke(input_data, config={"callbacks": [tool_handler]})
@@ -243,38 +253,59 @@ def trace_agent_invoke(
         error_msg = str(e)
         duration_ms = int(time.time() * 1000 - start_ms)
         
-        # Generate artifact even on error
+        # Append error interaction to session artifact
         if auto_export:
-            try:
-                llm_config = extract_llm_config_from_langchain(extracted_llm) if extracted_llm else ModelConfig(
-                    model_name="unknown",
-                    provider="unknown",
-                    parameters=LLMParameters(temperature=0.0),
-                )
-                
-                prompt = extract_resolved_prompt(agent_executor, user_input)
-                graph_version = compute_graph_version(tools, prompt) if tools else None
-                
+            # Extract LLM config and prompt for error case
+            llm_config = extract_llm_config_from_langchain(extracted_llm) if extracted_llm else ModelConfig(
+                model_name="unknown",
+                provider="unknown",
+                parameters=LLMParameters(temperature=0.0),
+            )
+            
+            prompt = extract_resolved_prompt(agent_executor, user_input)
+            graph_version = compute_graph_version(tools, prompt) if tools else None
+            
+            # Initialize session artifact if needed
+            if _session_artifact is None:
                 run_id = f"local_agent_{int(start_time.timestamp())}"
-                artifact = artifact_generator.generate(
+                _session_artifact = artifact_generator.generate(
                     run_id=run_id,
                     tenant_id=tenant_id,
-                    inputs=_sanitize_for_serialization(input_data),
-                    outputs={"error": error_msg},
+                    inputs={"interactions": []},
+                    outputs={"interactions": []},
                     llm_config=llm_config,
                     resolved_prompt=prompt,
-                    tool_calls=tool_handler.tool_calls,
-                    duration_ms=duration_ms,
-                    error=error_msg,
+                    tool_calls=[],
+                    duration_ms=0,
+                    error=None,  # Will be set per interaction
                 )
                 
-                # Set graph_version after artifact creation
                 if graph_version:
-                    artifact.graph_version = graph_version
-                
-                artifact_manager.save(artifact)
-            except:
-                pass  # Don't fail on artifact generation error
+                    _session_artifact.graph_version = graph_version
+            
+            # Append error interaction
+            interaction = {
+                "input": _sanitize_for_serialization(input_data),
+                "output": {"error": error_msg},
+                "tool_calls": tool_handler.tool_calls,
+                "duration_ms": duration_ms,
+                "timestamp": start_time.isoformat(),
+                "error": error_msg,
+            }
+            _session_interactions.append(interaction)
+            
+            # Update artifact
+            _session_artifact.inputs = {"interactions": [i["input"] for i in _session_interactions]}
+            _session_artifact.outputs = {"interactions": [i["output"] for i in _session_interactions]}
+            
+            all_tool_calls = []
+            for interaction in _session_interactions:
+                all_tool_calls.extend(interaction["tool_calls"])
+            _session_artifact.tool_calls = all_tool_calls
+            
+            # Set error if any interaction had an error
+            if any(i.get("error") for i in _session_interactions):
+                _session_artifact.error = "One or more interactions failed"
         
         raise
     
@@ -297,28 +328,50 @@ def trace_agent_invoke(
     # Prepare outputs
     outputs = _sanitize_for_serialization(result)
     
-    # Generate artifact
+    # Append to session artifact instead of creating a new one
     if auto_export:
-        run_id = f"local_agent_{int(start_time.timestamp())}"
-        artifact = artifact_generator.generate(
-            run_id=run_id,
-            tenant_id=tenant_id,
-            inputs=_sanitize_for_serialization(input_data),
-            outputs=outputs,
-            llm_config=llm_config,
-            resolved_prompt=prompt,
-            tool_calls=tool_handler.tool_calls,
-            duration_ms=duration_ms,
-        )
+        # Check if we have a session artifact (created by decorator)
+        if _session_artifact is None:
+            # First interaction - create the artifact
+            run_id = f"local_agent_{int(start_time.timestamp())}"
+            _session_artifact = artifact_generator.generate(
+                run_id=run_id,
+                tenant_id=tenant_id,
+                inputs={"interactions": []},  # Will accumulate interactions
+                outputs={"interactions": []},  # Will accumulate interactions
+                llm_config=llm_config,
+                resolved_prompt=prompt,
+                tool_calls=[],  # Will accumulate all tool calls
+                duration_ms=0,  # Will be updated at the end
+            )
+            
+            # Set graph_version after artifact creation
+            if graph_version:
+                _session_artifact.graph_version = graph_version
         
-        # Set graph_version after artifact creation
-        if graph_version:
-            artifact.graph_version = graph_version
+        # Append this interaction to the session
+        interaction = {
+            "input": _sanitize_for_serialization(input_data),
+            "output": outputs,
+            "tool_calls": tool_handler.tool_calls,
+            "duration_ms": duration_ms,
+            "timestamp": start_time.isoformat(),
+        }
+        _session_interactions.append(interaction)
         
-        artifact_path = artifact_manager.save(artifact)
-        print(f"\n[Kurral] Artifact saved: {artifact_path}")
-        print(f"[Kurral] Run ID: {run_id}")
-        print(f"[Kurral] Kurral ID: {artifact.kurral_id}")
+        # Update artifact with accumulated data
+        _session_artifact.inputs = {"interactions": [i["input"] for i in _session_interactions]}
+        _session_artifact.outputs = {"interactions": [i["output"] for i in _session_interactions]}
+        
+        # Accumulate all tool calls
+        all_tool_calls = []
+        for interaction in _session_interactions:
+            all_tool_calls.extend(interaction["tool_calls"])
+        _session_artifact.tool_calls = all_tool_calls
+        
+        # Update total duration
+        total_duration = sum(i["duration_ms"] for i in _session_interactions)
+        _session_artifact.duration_ms = total_duration
     
     return result
 
@@ -352,12 +405,17 @@ def trace_agent(
     def decorator(func: Callable[..., T]) -> Callable[..., T]:
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> T:
-            global _current_context
+            global _current_context, _session_artifact, _session_interactions, _session_start_time
             
             # Determine artifacts directory from function location
             agent_folder = _get_agent_folder_path(func)
             artifacts_dir = agent_folder / "artifacts"
             artifacts_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Initialize session
+            _session_start_time = datetime.utcnow()
+            _session_artifact = None
+            _session_interactions = []
             
             # Set current context
             _current_context = {
@@ -366,13 +424,41 @@ def trace_agent(
                 "environment": environment,
             }
             
+            artifact_manager = ArtifactManager(storage_path=artifacts_dir)
+            
             try:
                 # Execute function
                 result = func(*args, **kwargs)
                 return result
             finally:
+                # Save the accumulated artifact if we have interactions
+                if auto_export and _session_artifact is not None and len(_session_interactions) > 0:
+                    try:
+                        # Update final duration
+                        if _session_start_time:
+                            total_duration = int((datetime.utcnow() - _session_start_time).total_seconds() * 1000)
+                            _session_artifact.duration_ms = total_duration
+                        
+                        # Update time_env
+                        _session_artifact.time_env = TimeEnvironment(
+                            timestamp=_session_start_time,
+                            timezone="UTC",
+                            wall_clock_time=_session_start_time.isoformat(),
+                        )
+                        
+                        artifact_path = artifact_manager.save(_session_artifact)
+                        print(f"\n[Kurral] Session artifact saved: {artifact_path}")
+                        print(f"[Kurral] Run ID: {_session_artifact.run_id}")
+                        print(f"[Kurral] Kurral ID: {_session_artifact.kurral_id}")
+                        print(f"[Kurral] Total interactions: {len(_session_interactions)}")
+                    except Exception as e:
+                        print(f"\n[Kurral] Warning: Failed to save session artifact: {e}")
+                
                 # Clear context
                 _current_context = None
+                _session_artifact = None
+                _session_interactions = []
+                _session_start_time = None
         
         return wrapper
     

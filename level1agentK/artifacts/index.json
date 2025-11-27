@@ -90,7 +90,14 @@
       "created_at": "2025-11-25T05:51:47.527017",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "5df2032d-5288-4fa9-82f6-72a525620e53",
+      "run_id": "local_agent_1764159019",
+      "created_at": "2025-11-26T07:10:24.562042",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-11-25T05:51:53.395580"
+  "updated_at": "2025-11-26T07:10:27.777921"
 }

@@ -1,35 +1,111 @@
-# Kurralv3
+<p align="center">
+  <img width="350" height="350" alt="Kurral Logo" src="https://github.com/user-attachments/assets/248a09da-be82-4654-a5b1-0f09d45ebe4a" />
+</p>
 
-# Kurral
+<h1 align="center">KURRAL</h1> <h3 align="center">Deterministic Testing and Replay for AI agents</h3>
 
-**Kurral** is a powerful A/B testing and replay framework for LangChain agents that enables deterministic testing, regression detection, and performance comparison across different LLM configurations. With minimal code changes, Kurral automatically captures agent execution artifacts and provides intelligent replay capabilities.
+<p align="center">
+  <img src="https://img.shields.io/badge/License-Apache_2.0-blue" alt="License" />
+  <img src="https://img.shields.io/badge/Python-3.9+-blue" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/LangChain-Compatible-green" alt="LangChain Compatible" />
+</p>
 
-## Overview
 
-Kurral solves the critical challenge of testing and validating LLM agents by:
 
-- **Automatic Artifact Generation**: Captures complete execution traces including inputs, outputs, tool calls, LLM configurations, and prompts
-- **Intelligent Replay System**: Automatically determines whether to use deterministic (A) or non-deterministic (B) replay based on detected changes
-- **Semantic Tool Matching**: Uses semantic similarity (85% threshold) to match and cache tool calls during replay, reducing unnecessary API calls
-- **Agent Regression Scoring (ARS)**: Provides quantitative metrics to measure replay fidelity and detect regressions
-- **Minimal Integration**: Requires only two simple changes to your existing agent code
+<p align="center">
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/yourusername/kurral">star the repo</a> — it helps a lot!
+</p>
+
+**Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. It captures complete execution traces of your agents, enabling intelligent replay for regression detection, debugging, and quantifiable A/B performance comparison.
+
+## Table of Contents
+- [Why Kurral?](#why-kurral)
+- [Key Features](#key-features)
+- [When to Use Kurral](#when-to-use-kurral)
+- [How It Works](#how-it-works)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Deep Dive](#deep-dive)
+- [Architecture](#architecture)
+- [Best Practices](#best-practices)
+
+## Why Kurral?
+
+Testing AI agents is fundamentally different from testing traditional software:
+
+- **Non-deterministic outputs**: LLMs don't return the same response twice
+- **Expensive API calls**: Every test run costs money
+- **Complex orchestration**: Multi-step tool chains are hard to debug
+- **No ground truth**: How do you know if a change broke something?
+
+Standard testing approaches (unit tests, mocks, integration tests) fall short because they assume deterministic behavior.
+
+**Kurral's solution**: Treat agent executions as **replayable artifacts** - complete snapshots of behavior that can be validated, compared, and debugged deterministically.
 
 ## Key Features
+**Automatic Artifact Generation**
+- Captures complete execution traces: inputs, outputs, tool calls, LLM configs, and prompts
+- Zero configuration - just add two lines to your agent code
+- Session-based: accumulates all interactions within a single `main()` run
 
-- ✅ **Zero-Configuration Artifact Generation**: Automatically saves execution artifacts to `artifacts/` directory
-- ✅ **A/B Replay Detection**: Intelligently determines replay type based on LLM, tools, prompts, and graph changes
-- ✅ **Semantic Tool Caching**: Matches tool calls using semantic similarity to avoid redundant executions
-- ✅ **Session-Based Artifacts**: Accumulates all interactions within a single `main()` run into one artifact
-- ✅ **Comprehensive Change Detection**: Tracks changes in model, provider, parameters, tools, prompts, and graph structure
-- ✅ **ARS Scoring**: Calculates Agent Regression Score based on output similarity and tool call accuracy
-- ✅ **LangChain Integration**: Seamlessly works with LangChain's `AgentExecutor` and ReAct agents
+**Intelligent Replay System**
+
+- Automatically detects changes (LLM model, tools, prompts, graph structure)
+- Switches between Level 1 (deterministic) and Level 2 (exploratory) replay
+- Semantic tool matching (85% threshold) caches similar tool calls to reduce API costs
+
+**Quantifiable Regression Detection**
+
+- Agent Regression Score (ARS) measures replay fidelity (0.0-1.0)
+- Combines output similarity and tool call accuracy
+- Use in CI/CD to catch regressions before deployment
+
+**Developer-Friendly Integration**
+
+- Works seamlessly with LangChain's `AgentExecutor` and ReAct agents
+- Minimal code changes - just `@trace_agent()` decorator and `trace_agent_invoke()` wrapper
+- Artifacts saved as readable JSON in `artifacts/` directory
+
+## When to Use Kurral
+
+- ✅ **Regression testing**: Verify that code changes don't break existing behavior
+- ✅ **Model upgrades**: Test if GPT-4.5 behaves better than GPT-4 on your tasks
+- ✅ **Prompt engineering**: Compare different prompt variations quantitatively
+- ✅ **Debugging failures**: Reproduce and analyze production issues locally
+- ✅ **CI/CD integration**: Fail builds if ARS drops below threshold
+
+
+## How It Works
+
+Kurral records the complete execution session (**Artifact**), which can include multiple user interactions, tool calls, and LLM steps within a single run of your agent's `main()` function.
+
+> 💡 **What's an Artifact?** A `.kurral` file is a complete snapshot of your agent's execution - think of it as a "recording" that captures every LLM call, tool execution, and decision point. You can replay this recording later to verify behavior or test changes.
+
+You can then replay this comprehensive session artifact against new code, different LLM configurations, or modified prompts. This allows you to verify behavioral consistency across the entire user dialogue, not just a single prompt-response cycle.
+
+**Intelligent Replay Levels**
+Kurral detects what changed between runs and automatically switches strategies based on the replay level required:
+
+- **Level 1 Replay** (Deterministic): Logic changes? This mode achieves true deterministic testing of your agent's internal logic. It mocks the LLM entirely using the cached output from the artifact to verify that your agent code and tool orchestration remain identical (Zero API cost).
+
+    - ✅ Zero API costs
+    - ✅ Perfect for regression testing
+    - ✅ Verifies logic without re-running LLM
+
+- **Level 2 Replay** (Exploratory): Model or Prompt changes? This mode facilitates A/B testing. It re-runs the LLM live but intelligently caches tool calls using semantic matching to benchmark the quality of the new model or prompt against the original run.
+  
+    - ✅ Benchmark new models against original runs
+    - ✅ Test prompt variations
+    - ✅ Reduced API costs via semantic tool caching
+
+With minimal code changes (just two lines), Kurral's captured artifacts unlock intelligent, production-ready replay capabilities.
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd Kurralv3
+git clone https://github.com/yourusername/kurral.git
+cd kurral
 
 # Install dependencies
 pip install -r requirements.txt
@@ -77,23 +153,33 @@ After execution, you'll see:
 ```
 
 ### 3. Replay an Artifact
-
 ```bash
-# From your agent directory
-python ..\Kurral_tester\replay.py <artifact-id>
+# From your agent directory, replay the artifact (pass ID or unique prefix)
+python ../Kurral_tester/replay.py <artifact_id>
 
 # Example
-python ..\Kurral_tester\replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
+python ../Kurral_tester/replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
 ```
 
+
 Kurral will automatically:
-- Detect changes and determine replay type (A or B)
+- Detect changes and determine replay type (Level 1 or Level 2)
 - Print replay results to stdout
 - Save replay artifact to `replay_runs/` directory
 - Report any changes detected
 - Display ARS score
 
-## How It Works
+## Deep Dive
+Want to understand how Kurral works under the hood? Read on.
+
+### What’s in a `.kurral` artifact?
+Human-readable JSON with everything:
+
+- All user/agent hashed messages
+- Tool calls + results
+- Exact prompt templates (resolved)
+- LLM config (model, temp, seed, provider)
+- Graph/tool schema hash
 
 ### Artifact Generation
 
@@ -113,19 +199,19 @@ All interactions within a single `main()` execution are accumulated into one ses
 
 Kurral uses intelligent change detection to determine the appropriate replay strategy:
 
-#### A Replay (Deterministic)
+#### Level 1 Replay (Deterministic)
 - **When**: Everything matches (same LLM, tools, prompt template, graph structure)
 - **Behavior**: Returns cached outputs directly without re-executing LLM or tools
 - **Use Case**: Regression testing, verifying identical behavior
 
-#### B Replay (Non-Deterministic)
+#### Level 2 Replay (Non-Deterministic)
 - **When**: Something changed (different LLM, model parameters, tools, or prompt template)
 - **Behavior**: Re-executes LLM with semantic tool call matching (85% similarity threshold)
 - **Use Case**: Testing different models, comparing performance, A/B testing
 
 ### Semantic Tool Matching
 
-During B replay, Kurral uses semantic similarity to match tool calls:
+During Level 2 replay, Kurral uses semantic similarity to match tool calls:
 
 - **Exact Match**: If tool name and inputs match exactly → use cached output
 - **Semantic Match**: If similarity ≥ 85% → use cached output (no tool execution)
@@ -199,25 +285,26 @@ def main():
 ```
 
 ### Replay from Anywhere
-
 ```bash
 # From agent directory
 cd my_agent
-python ..\Kurral_tester\replay.py <artifact-id>
+python ../Kurral_tester/replay.py <artifact-id>
 
 # From project root
-python Kurral_tester\replay.py <artifact-id>
+python Kurral_tester/replay.py <artifact-id>
 
 # Using partial UUID
-python Kurral_tester\replay.py 4babbd1c
+python Kurral_tester/replay.py 4babbd1c
 ```
 
-## Replay Output
+...
+
+### Replay Output
 
 When you replay an artifact, Kurral provides detailed information:
 
 ```
-[Kurral] Replay Type: B (Non-Deterministic)
+[Kurral] Replay Type: Level 2 (Non-Deterministic)
 [Kurral] Changes Detected:
   - LLM Model: gpt-4 → llama-3.3-70b-versatile
   - Provider: openai → groq
@@ -239,7 +326,7 @@ When you replay an artifact, Kurral provides detailed information:
 ### Core Components
 
 - **`agent_decorator.py`**: `@trace_agent()` decorator and `trace_agent_invoke()` function
-- **`agent_replay.py`**: Main replay entry point with automatic A/B detection
+- **`agent_replay.py`**: Main replay entry point with automatic Level 1/Level 2 detection
 - **`replay_detector.py`**: Change detection logic and determinism scoring
 - **`tool_stubber.py`**: Semantic tool matching and caching during B replay
 - **`ars_scorer.py`**: Agent Regression Score calculation
@@ -271,6 +358,14 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 }
 ```
 
+### Current Limitations (we’re working on them!)
+
+- Only ReAct-style and LCEL agents fully supported (no native LangGraph streaming yet)
+- Vision / image inputs not captured
+- No built-in dashboard (yet – artifacts are JSON, just open one in VS Code/any editor)
+
+
+
 ## Best Practices
 
 1. **Always pass `llm` parameter**: `trace_agent_invoke(agent_executor, input_data, llm=llm)` ensures accurate LLM config extraction
@@ -288,12 +383,30 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 
 ## License
 
-[Your License Here]
+Apache 2.0 - see [LICENSE](LICENSE) for details.
+
+## Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Community
+Join our Discord → [https://discord.gg/pan6GRRV]
 
 ## Support
 
-For issues, questions, or contributions, please [open an issue](<repository-url>/issues).
+For issues, questions, or contributions, please [open an issue](https://github.com/yourusername/kurral/issues).
+
 
 ---
+
+Star this repo if Kurral just saved you $50 in OpenAI credits.
+
+Made with ❤️ for the agent-building community.
 
 **Note**: The `level1agentK`, `level2AgentK`, and `level3agent` directories are example agents used for testing Kurral. They demonstrate integration patterns but are not part of the core Kurral framework.

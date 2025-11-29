@@ -1,0 +1,101 @@
+{
+  "kurral_id": "b681ea9c-4ebe-40ac-9085-cb47ddc0f2a7",
+  "run_id": "local_agent_1764394053",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-29T00:27:46.730721",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "What is coldplay, email me."
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is coldplay, email me.",
+        "output": "I have emailed you the information about Coldplay."
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "What is coldplay, email me.",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "d48b160fe90ac2d4e28cc876918e4dc380d9eb7423fcc8eda355be948caaa8ea",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "7b4fc2a8-f185-4989-989a-b370539ed5d0",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-29T00:27:35.904346",
+      "end_time": "2025-11-29T00:27:37.837993",
+      "latency_ms": 1933,
+      "timestamp": "2025-11-29T00:27:37.837993",
+      "input": {
+        "input": "Coldplay"
+      },
+      "input_hash": "61a832245d672ba4de62050ae0272447b9b130adb7e149dd5b519c4c13ce137a",
+      "output": {
+        "output": "Title: Coldplay - Wikipedia\nURL: https://en.wikipedia.org/wiki/Coldplay\nContent: Following the independent release of the EP *Safety \"Safety (EP)\")* (1998), they signed a record deal with Parlophone in 1999 and issued their debut album, *Parachutes \"Parachutes (Coldplay album)\")* (2000), which included the breakthrough single \"Yellow \"Yellow (Coldplay song)\")\"; the album won a Brit Award for British Album of the Year and a Grammy Award for Best Alternative Music Album.\n\n---\nTitle: Coldplay Tickets, 2025-2026 Concert Tour Dates | Ticketmaster\nURL: https://www.ticketmaster.com/coldplay-tickets/artist/806431\nContent: Coldplay are a rock band from London, England that have sold over 100 million albums worldwide and won seven Grammy Awards, including Record of the Year for 2002’s “Clocks” and Song of the Year for 2008’s “Viva La Vida.” Led by frontman and pianist Chris Martin, the band features guitarist Jonny Buckland, bassist Guy Berryman, drummer Will Champion and creative director Phil Harvey. 3. 7.JUPiTER (on B-stage with full band; first time for an audience; with fans on stage; also with The Love Choir) The North American leg of Coldplay: Music Of The Spheres World Tour - delivered by DHL in support of *Moon Music* kicked off in May 2025. Add Coldplay to your favorites on Ticketmaster.com(Opens in new tab) or in the Ticketmaster App to get important alerts about their concerts.\n\n---\nTitle: Coldplay - Man In The Moon (Official Video) - YouTube\nURL: https://www.youtube.com/watch?v=f9Jpualtehw\nContent: Coldplay - Man In The Moon (Official Video)\nColdplay\n28100000 subscribers\n109165 likes\n8585379 views\n6 Feb 2025\nMan In The Moon is taken from the Full Moon Edition of Coldplay's tenth studio album Moon Music, available here: https://coldplay.lnk.to/FullMoon 🌙\n\nShot in partnership with Singapore Tourism Board: https://www.visitsingapore.com.\n\nFEATURED LOCATIONS (SINGAPORE): \n\nMacPherson Neighbourhood\nMountain Coffee at Geylang\nS.E.A. Aquarium at Resorts World\nSentosa Singapore\nPeople’s Park Complex, Chinatown\nFort Canning Park\nJewel Changi Airport\nMarina Bay Sands\nGardens by the Bay\nLevel Up – Arcade and Live Music Bar\nMarina Bay\n\nCREDITS\n\nProduction:\nPulse Films:\nBen Mor – Director\nMino Jarjoura – Global President\nCasey Engelhardt – Executive Producer\nJulia Roberson – Producer \nJonathan Sela – DOP\n\nBeth Fenton - Coldpay Clothing Designer and Stylist\n \nHummingbird – Production Service (Singapore):\nAlex Teh – Co-Executive Producer\nAron B. Castro – Co-Executive Producer\nNur Syafiqah Bte Mustakim – Co-Executive Producer\nJoanna Ying Ng – Producer\nSng Siok Hua Samantha – PD\nTiffany Rileigh Ng – 1st AD\nTan Jiekai Leslie – Cam A 1st AC\nChristopher Ang – Steadicam Operator\nLee Wei-Lin, Meredith – Cast Wardrobe Stylist \nKenneth Chia – Cast Hair & Make-Up Artist\n \nEditorial:\nRock Paper Scissors: @rockpaperscisssorseditorial\nDavid Brodie – Editor @davidbbrodie\nDerrick Monks & Louis Palacios – Additional Editors @derrickmonks @louispalacios\nShelly Rose, Jack Kanner, Jackson Meltzer – Assistant Editors @yuckybangs @jack_kanner @meltz \nAymi Sanchez – Producer @aymisanchez\nDre Krichevsky & Shada Shariatzadeh – Executive Producer @drekrichevsky @sufi_says\nJanae Abraham – HOP @boobspill\nEve Kornblum – Managing Director\n \nSound Design & Mix:\nLime Studios:\nBen Tomastik – Audio Producer\nSusie Boyajan – Executive Producer\n Bill Rahko – Final Mix\n \nColour:\nCompany3:\nDave Hussey – Senior Colorist\nJenny Roberts – Jenny Roberts\n \nVFX:\nYashinski Studio: @yashinskistudio\nYaron Yashinski – VFX Supervisor\nShay Wax – Design and Animation Lead\nAvishay Bokish – CG and Simulation Lead\n \nTitles:\nAdrian Gamboa – Title Design @agnotforsale\n\nFOLLOW AND LISTEN TO COLDPLAY\nhttps://coldplay.lnk.to/Follow\n\nABOUT COLDPLAY\n\nSince forming at university in London, Coldplay have gone on to become one of the planet’s most popular acts, selling more than 100 million copies of their nine Number One albums, which have spawned a string of hits including Yellow, Clocks, Fix You, Paradise, Viva La Vida, A Sky Full Of Stars, Hymn For The Weekend, Adventure Of A Lifetime, Orphans, Higher Power and My Universe. Their newest album, Moon Music, is out now, featuring the singles feelslikeimfallinginlove, WE PRAY and ALL MY LOVE.\n\n#ManInTheMoon #MoonMusic #Coldplay\n\n\n\n---\nTitle: Coldplay - YouTube\nURL: https://www.youtube.com/channel/UCDPM_n1atn2ijUwHd0NNRQw\nContent: Watch all of Coldplay's official music videos in one go, including hits such as Yellow, Clocks, Fix You, Paradise, Viva La Vida, A Sky Full Of Stars, Hymn For\n\n---\nTitle: Coldplay (@coldplay) / Posts / X - Twitter\nURL: https://x.com/coldplay\nContent: Coldplay (@coldplay) - Posts - The official profile of the band Coldplay. New album, Moon Music, out now. | X (formerly Twitter)\n"
+      },
+      "output_hash": "4dfad91b73ca3224967e9947c2a10f6d6363036d8c41eb1e44892d60caebea37",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:cba8ffa91cb50bc954312e4709cd739fe4606778c6d3a9366e3a0ed8489ecb3f",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "b36d44d5-69de-48e2-b22f-6910d75ee603",
+      "tool_name": "send_email",
+      "start_time": "2025-11-29T00:27:43.090742",
+      "end_time": "2025-11-29T00:27:44.902813",
+      "latency_ms": 1812,
+      "timestamp": "2025-11-29T00:27:44.902813",
+      "input": {
+        "input": "'Subject: Information about Coldplay\\nBody: Coldplay is a rock band from London, England that has sold over 100 million albums worldwide and won seven Grammy Awards. The band includes frontman and pianist Chris Martin, guitarist Jonny Buckland, bassist Guy Berryman, drummer Will Champion, and creative director Phil Harvey. They have released several popular songs including Yellow, Clocks, Fix You, Paradise, Viva La Vida, and many more. Their newest album, Moon Music, is out now. For more information, you can visit their Wikipedia page (https://en.wikipedia.org/wiki/Coldplay) or their official YouTube channel (https://www.youtube.com/channel/UCDPM_n1atn2ijUwHd0NNRQw).'"
+      },
+      "input_hash": "918a424bd4e0e32b28b106c411b99fbdc53174afb05e415cae786bb381622be3",
+      "output": {
+        "output": "Email sent successfully to jayjani482001@gmail.com"
+      },
+      "output_hash": "cac5a3d5d6c138fbfa26a0f430299bed538400a3df0a186c0f80259d97c10d0d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:a078fbe5ec19becad3d7ccd3fe09ffb7327790025121935b699df330f9296313",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-29T00:27:22.225835",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-29T00:27:22.225835"
+  },
+  "duration_ms": 26823
+}

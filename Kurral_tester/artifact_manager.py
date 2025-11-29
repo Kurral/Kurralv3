@@ -42,12 +42,22 @@ class ArtifactManager:
         filename = f"{artifact.kurral_id}.kurral"
         filepath = self.storage_path / filename
         
-        artifact.save(filepath)
-        
-        # Also save metadata index for quick lookup
-        self._update_index(artifact)
-        
-        return filepath
+        try:
+            artifact.save(filepath)
+            
+            # Verify file was written successfully
+            if not filepath.exists() or filepath.stat().st_size == 0:
+                raise RuntimeError(f"Artifact file was not written or is empty: {filepath}")
+            
+            # Also save metadata index for quick lookup
+            self._update_index(artifact)
+            
+            return filepath
+        except Exception as e:
+            # Clean up empty file if it exists
+            if filepath.exists() and filepath.stat().st_size == 0:
+                filepath.unlink()
+            raise RuntimeError(f"Failed to save artifact {artifact.kurral_id}: {e}") from e
     
     def load(self, kurral_id: UUID) -> Optional[KurralArtifact]:
         """
@@ -135,7 +145,10 @@ class ArtifactManager:
             try:
                 artifact = KurralArtifact.load(filepath)
                 artifacts.append(artifact)
-            except Exception:
+            except Exception as e:
+                # Log but continue - don't fail on corrupted artifacts
+                import warnings
+                warnings.warn(f"Failed to load artifact {filepath.name}: {e}")
                 continue
         
         # Sort by created_at, most recent first

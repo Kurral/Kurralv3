@@ -1,0 +1,54 @@
+{
+  "artifacts": [
+    {
+      "kurral_id": "40873893-d36c-4487-a35b-cf79e7fa8531",
+      "run_id": "replay_local_agent_1764393930_1764395908",
+      "created_at": "2025-11-29T00:58:28.322291",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "bcd7b6bf-264c-4ebd-928d-66910dd4f267",
+      "run_id": "replay_local_agent_1764393930_1764396192",
+      "created_at": "2025-11-29T01:03:12.526506",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "b55ce722-484a-43a9-9bc1-23ef71314d69",
+      "run_id": "replay_local_agent_1764393930_1764396257",
+      "created_at": "2025-11-29T01:04:17.878199",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "93798438-05c5-419f-8f94-6aea696aaa38",
+      "run_id": "replay_local_agent_1764394053_1764399857",
+      "created_at": "2025-11-29T02:04:17.622511",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "863bca58-6be2-4da5-90ef-d4ded031a450",
+      "run_id": "replay_local_agent_1764393930_1764400283",
+      "created_at": "2025-11-29T02:11:23.695092",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "98f7fbf9-fc4b-473c-8708-88b312af8653",
+      "run_id": "replay_local_agent_1764393930_1764400353",
+      "created_at": "2025-11-29T02:12:33.736206",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "3efc9784-7fb3-4b98-8d6f-8a96029c3f6b",
+      "run_id": "replay_local_agent_1764393930_1764400785",
+      "created_at": "2025-11-29T02:19:45.955290",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    }
+  ],
+  "updated_at": "2025-11-29T02:19:45.958295"
+}

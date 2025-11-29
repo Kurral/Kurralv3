@@ -1,8 +1,10 @@
 """
-Level 2 Agent - Internet Search Agent
-An agent that performs internet searches using Tavily API.
+Level 3 Agent - Internet Search Agent with Email
+An agent that performs internet searches using Tavily API and can send emails.
 """
-
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 import os
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_react_agent
@@ -11,7 +13,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from tavily import TavilyClient
-from level3agent.send_email import send_email
+from send_email import send_email
+from Kurral_tester.agent_decorator import trace_agent, trace_agent_invoke
 
 # Load environment variables
 load_dotenv()
@@ -129,12 +132,13 @@ def create_tools():
         ),
     ]
 
+@trace_agent()
 def main():
-    """Main function to run the Level 2 agent."""
+    """Main function to run the Level 3 agent."""
     print("=" * 60)
-    print("Level 2 Agent - Internet Search Agent")
+    print("Level 3 Agent - Internet Search Agent with Email")
     print("=" * 60)
-    print("\nThis agent performs internet searches to answer your questions.")
+    print("\nThis agent performs internet searches to answer your questions and can send emails.")
     print("Type 'exit' to quit.\n")
     
     # Check for Tavily API key
@@ -173,7 +177,17 @@ Thought: {agent_scratchpad}
         
         # Create ReAct agent
         agent = create_react_agent(llm, tools, prompt)
-        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+        
+        # Custom error handler for parsing errors
+        def handle_parsing_error(error):
+            return f"Could not parse LLM output: {error}. Please try rephrasing your response in the correct format."
+        
+        agent_executor = AgentExecutor(
+            agent=agent, 
+            tools=tools, 
+            verbose=True, 
+            handle_parsing_errors=handle_parsing_error
+        )
         
         while True:
             user_input = input("\nYou: ").strip()
@@ -186,7 +200,7 @@ Thought: {agent_scratchpad}
                 continue
             
             try:
-                result = agent_executor.invoke({"input": user_input})
+                result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
                 print(f"\nAgent: {result['output']}")
             except Exception as e:
                 print(f"\nError: {str(e)}")

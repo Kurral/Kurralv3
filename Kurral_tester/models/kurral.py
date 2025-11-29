@@ -387,16 +387,40 @@ class KurralArtifact(BaseModel):
 
     def save(self, filepath: Union[str, Path]) -> None:
         """Save artifact to .kurral file"""
+        import tempfile
+        import shutil
+        
         path = Path(filepath)
         path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(path, "w") as f:
-            f.write(self.to_json(pretty=True))
+        # Write to temp file first, then atomically move to final location
+        # This prevents leaving empty files if serialization fails
+        try:
+            json_content = self.to_json(pretty=True)
+            if not json_content or len(json_content.strip()) == 0:
+                raise ValueError("Artifact serialization produced empty JSON")
+            
+            # Write to temp file
+            temp_path = path.with_suffix(path.suffix + '.tmp')
+            with open(temp_path, "w", encoding='utf-8') as f:
+                f.write(json_content)
+            
+            # Atomically move temp file to final location
+            shutil.move(str(temp_path), str(path))
+        except Exception as e:
+            # Clean up temp file if it exists
+            temp_path = path.with_suffix(path.suffix + '.tmp')
+            if temp_path.exists():
+                temp_path.unlink()
+            # Remove empty file if it was created
+            if path.exists() and path.stat().st_size == 0:
+                path.unlink()
+            raise RuntimeError(f"Failed to save artifact to {filepath}: {e}") from e
 
     @classmethod
     def load(cls, filepath: Union[str, Path]) -> "KurralArtifact":
         """Load artifact from .kurral file"""
-        with open(filepath, "r") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             data = json.load(f)
         return cls.model_validate(data)
 

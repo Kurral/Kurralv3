@@ -1,0 +1,101 @@
+{
+  "kurral_id": "406d5084-98d5-4bc6-9867-ce410fd1d62b",
+  "run_id": "local_agent_1764393930",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-29T00:25:47.151506",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "Who was avicii, email me."
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Who was avicii, email me.",
+        "output": "I have sent an email with information about Avicii to your email address."
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Who was avicii, email me.",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "58753f68363de352101084672700dfedbb834fe72a3259fd161fea4d762f7783",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "6921d745-6ff4-4d9d-93bc-206103be8e81",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-29T00:25:33.226058",
+      "end_time": "2025-11-29T00:25:33.938916",
+      "latency_ms": 712,
+      "timestamp": "2025-11-29T00:25:33.938916",
+      "input": {
+        "input": "Avicii"
+      },
+      "input_hash": "60e525a69f2733efdb521d59da86252be9c947b05e96a9606e108e58082a8e78",
+      "output": {
+        "output": "Title: Avicii\nURL: https://en.wikipedia.org/wiki/Avicii\nContent: **Tim Bergling** (8 September 1989 – 20 April 2018), known professionally as **Avicii**, was a Swedish DJ, remixer, and record producer. In March 2013, Bergling announced and premiered new tracks from his forthcoming new album *True \"True (Avicii album)\")*—which was released in September that year—during his Main Stage set at Ultra Music Festival in Miami.\n\n---\nTitle: Avicii\nURL: https://www.facebook.com/avicii/\nContent: Avicii. 18022006 likes · 1100 talking about this. Swedish house producer Avicii was one of the defining artists of modern pop.\n\n---\nTitle: Avicii\nURL: https://www.youtube.com/channel/UCPHjpfnnGklkRBBTd0k6aHg\nContent: A heartfelt tribute to the timeless music Tim created – honoring melodies that will last forever and celebrating the enduring legacy of Avicii with a compilation of 19 essential tracks from his iconic catalog, along with “Let’s Ride Away,” a new song featuring vocals by Elle King. Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii ### \"Timeless music, that's what I'm trying to make\" - Tim 'Avicii' Bergling Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii Avicii\n\n---\nTitle: Avicii\nURL: https://open.spotify.com/artist/1vCWHaC5f2uS3yhpwWbIA6\nContent: # Avicii This Is Avicii This is Avicii. Party Hits 2010s This Is Avicii This is Avicii. Party Hits 2010s The Best Of Avicii Electrónica 2025 - Best Tracks of Tomorrowland - Tomorrowland Soundtrack - EDM 2025 - Techno Mix - Dance Anthems - Party Mix - Festival Music - Tomorrowland Winter - Tomorrowland Brasil - EDM Playlist - Eletrônicas As Melhores 🎪 Avicii Best Of This Is Avicii This is Avicii. **Note**: Spotify may share additional personal data with third parties for tailored advertising purposes if you have a Spotify account. * ##### First Party Targeting Cookies * ##### First Party Functional Cookies * ##### First Party Performance Cookies\n\n---\nTitle: Avicii - Wake Me Up (Official Video)\nURL: https://www.youtube.com/watch?v=IcrbM1l_BoI\nContent: Avicii - Wake Me Up (Official Video)\nAvicii\n21400000 subscribers\n12803890 likes\n2485909594 views\n29 Jul 2013\n”It’s so far away from anything I’ve ever done before musically, so it’s obviously a weight off my shoulders that everything went the way it did” — Tim ’Avicii’ Bergling.\n \nJune 17th 2023 marks one decade since the release of Wake Me Up – a song that came to change EDM music forever. As a key part of the album True, Wake Me Up was one of the songs where Avicii showed the world his ability to blend different genres — transcending the boundaries of ages, music preferences, and cultures worldwide.\n\nIn loving memory of Tim Bergling (1989-2018).\n\nListen to more music by Avicii here: https://Avicii.lnk.to/Channel\nIn Dolby Atmos: https://avicii.lnk.to/SpatialAudio\n\nFeeling my way through the darkness\nGuided by a beating heart\nI can't tell where the journey will end\nBut I know where to start\nThey tell me I'm too young to understand\nThey say I'm caught up in a dream\nWell life will pass me by if I don't open up my eyes\nWell that's fine by me\nSo wake me up when it's all over\nWhen I'm wiser and I'm older\nAll this time I was finding myself, and I\nDidn't know I was lost\nSo wake me up when it's all over\nWhen I'm wiser and I'm older\nAll this time I was finding myself, and I\nDidn't know I was lost\nI tried carrying the weight of the world\nBut I only have two hands\nHope I get the chance to travel the world\nBut I don't have any plans\nWish that I could stay forever this young\nNot afraid to close my eyes\nLife's a game made for everyone\nAnd love is a prize\nSo wake me up when it's all over\nWhen I'm wiser and I'm older\nAll this time I was finding myself, and I\nDidn't know I was lost\nSo wake me up when it's all over\nWhen I'm wiser and I'm older\nAll this time I was finding myself, and I\nI didn't know I was lost\nI didn't know I was lost\nI didn't know I was lost\nI didn't know I was lost\nI didn't know\n\n#Avicii #WakeMeUp\n639767 comments\n\n"
+      },
+      "output_hash": "f6b970b14e0f0c97f13cbc2fc0bd702344c596da60a96e64136bca81e2704221",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:8eaf90ca27c7184bdfc94c636017bb6be85ded713f6ad2a5a86c213df12a7379",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "60021a3f-8b1d-466b-98ad-5e959dbb2860",
+      "tool_name": "send_email",
+      "start_time": "2025-11-29T00:25:42.137976",
+      "end_time": "2025-11-29T00:25:44.789565",
+      "latency_ms": 2651,
+      "timestamp": "2025-11-29T00:25:44.789565",
+      "input": {
+        "input": "Subject: Information about Avicii\nBody: \n\nTim Bergling, known professionally as Avicii, was a Swedish DJ, remixer, and record producer. He was one of the defining artists of modern pop. He announced and premiered new tracks from his forthcoming new album True during his Main Stage set at Ultra Music Festival in Miami in March 2013. The album was released in September that year.\n\nAvicii's music is timeless and his melodies will last forever. His music has a significant impact on the EDM genre. One of his most popular songs is \"Wake Me Up\". The song was a part of the album True and it transcended the boundaries of ages, music preferences, and cultures worldwide.\n\nFor more information, you can visit his Wikipedia page (https://en.wikipedia.org/wiki/Avicii), Facebook page (https://www.facebook.com/avicii/), YouTube channel (https://www.youtube.com/channel/UCPHjpfnnGklkRBBTd0k6aHg), and Spotify profile (https://open.spotify.com/artist/1vCWHaC5f2uS3yhpwWbIA6).\n\nYou can also watch the official video of \"Wake Me Up\" on YouTube (https://www.youtube.com/watch?v=IcrbM1l_BoI)."
+      },
+      "input_hash": "bf42c09474a71c282da810f13bfca59cb680fe0a887442f8fca9df83d9cae51b",
+      "output": {
+        "output": "Email sent successfully to jayjani482001@gmail.com"
+      },
+      "output_hash": "cac5a3d5d6c138fbfa26a0f430299bed538400a3df0a186c0f80259d97c10d0d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:aaa7b9acad656fd8ae0b6a655757afb47220ac8c16dbe1aadb8dda88a1751369",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-29T00:25:20.532151",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-29T00:25:20.532151"
+  },
+  "duration_ms": 41798
+}

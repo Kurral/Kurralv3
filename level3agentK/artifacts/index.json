@@ -1,0 +1,19 @@
+{
+  "artifacts": [
+    {
+      "kurral_id": "406d5084-98d5-4bc6-9867-ce410fd1d62b",
+      "run_id": "local_agent_1764393930",
+      "created_at": "2025-11-29T00:25:47.151506",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "b681ea9c-4ebe-40ac-9085-cb47ddc0f2a7",
+      "run_id": "local_agent_1764394053",
+      "created_at": "2025-11-29T00:27:46.730721",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    }
+  ],
+  "updated_at": "2025-11-29T00:27:49.067740"
+}

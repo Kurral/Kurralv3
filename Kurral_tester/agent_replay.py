@@ -26,6 +26,7 @@ from Kurral_tester.replay_executor import ReplayExecutor
 from Kurral_tester.artifact_generator import ArtifactGenerator
 from Kurral_tester.tool_stubber import ToolStubber, create_stubbed_tool
 from Kurral_tester.ars_scorer import calculate_ars
+from Kurral_tester.write_side_effect_interceptor import write_interception
 
 
 def _import_agent_module_with_optional_deps(agent_folder, verbose=True):
@@ -139,20 +140,43 @@ def replay_agent_artifact(
     """
     # Determine artifacts directory
     if artifacts_dir is None:
-        # Try to find artifacts directory in current directory or parent
+        # Smart auto-detection: prioritize current directory (when running from agent folder)
         cwd = Path.cwd()
+        
+        # Priority 1: Current directory has artifacts/ folder (most common - running from agent directory)
         if (cwd / "artifacts").exists():
             artifacts_dir = cwd / "artifacts"
+        # Priority 2: Check if we're in an agent folder (has agent.py) - create artifacts if needed
+        elif (cwd / "agent.py").exists():
+            artifacts_dir = cwd / "artifacts"
+            artifacts_dir.mkdir(parents=True, exist_ok=True)
+        # Priority 3: Check parent directory (in case we're one level deeper)
         elif (cwd.parent / "artifacts").exists():
             artifacts_dir = cwd.parent / "artifacts"
+        # Priority 4: Search for agent folders with artifacts in current directory
         else:
-            artifacts_dir = cwd / "artifacts"
+            found = False
+            for path in cwd.iterdir():
+                if path.is_dir() and "agent" in path.name.lower() and (path / "artifacts").exists():
+                    artifacts_dir = path / "artifacts"
+                    found = True
+                    break
+            
+            if not found:
+                # Default to current directory
+                artifacts_dir = cwd / "artifacts"
     else:
         artifacts_dir = Path(artifacts_dir)
     
     if not artifacts_dir.exists():
         print(f"Error: Artifacts directory not found: {artifacts_dir}")
+        print(f"Current working directory: {Path.cwd()}")
+        print(f"Please run replay from the agent directory or specify --artifacts-dir")
         return {}
+    
+    # Print which artifacts directory we're using (for debugging)
+    if verbose:
+        print(f"[Kurral] Using artifacts directory: {artifacts_dir}")
     
     artifact_manager = ArtifactManager(storage_path=artifacts_dir)
     
@@ -165,18 +189,49 @@ def replay_agent_artifact(
     elif kurral_id:
         from uuid import UUID
         try:
-            artifact = artifact_manager.load(UUID(kurral_id))
+            # Try as full UUID first
+            uuid_obj = UUID(kurral_id)
+            artifact = artifact_manager.load(uuid_obj)
+            # Check if artifact was found
+            if artifact is None:
+                # UUID was valid but artifact not found - try partial match
+                all_artifacts = artifact_manager.list_artifacts()
+                if not all_artifacts:
+                    print(f"Error: No artifacts found in {artifacts_dir}")
+                    print(f"Looking for artifact: {kurral_id}")
+                    return {}
+                print(f"Error: Artifact '{kurral_id}' not found in {artifacts_dir}")
+                print(f"Available artifacts ({len(all_artifacts)}):")
+                for a in all_artifacts[:5]:  # Show first 5
+                    print(f"  - {a.kurral_id}")
+                if len(all_artifacts) > 5:
+                    print(f"  ... and {len(all_artifacts) - 5} more")
+                return {}
         except ValueError:
             # If not a valid UUID, try to find by partial match
             all_artifacts = artifact_manager.list_artifacts()
+            if not all_artifacts:
+                print(f"Error: No artifacts found in {artifacts_dir}")
+                print(f"Looking for artifact matching: {kurral_id}")
+                return {}
+            
             matching = [a for a in all_artifacts if str(a.kurral_id).startswith(kurral_id)]
             if len(matching) == 1:
                 artifact = matching[0]
             elif len(matching) > 1:
                 print(f"Error: Multiple artifacts match '{kurral_id}'. Please use full UUID.")
+                print(f"Found {len(matching)} matching artifacts:")
+                for a in matching:
+                    print(f"  - {a.kurral_id}")
                 return {}
             else:
                 print(f"Error: No artifact found matching '{kurral_id}'")
+                print(f"Searched in: {artifacts_dir}")
+                print(f"Available artifacts ({len(all_artifacts)}):")
+                for a in all_artifacts[:5]:  # Show first 5
+                    print(f"  - {a.kurral_id}")
+                if len(all_artifacts) > 5:
+                    print(f"  ... and {len(all_artifacts) - 5} more")
                 return {}
     else:
         print("Error: Must provide kurral_id, run_id, or set latest=True")
@@ -438,39 +493,42 @@ def replay_agent_artifact(
                 
                 print(f"Re-executing {len(interactions)} interactions with LLM...\n")
                 
-                for i, interaction_input in enumerate(interactions, 1):
-                    print(f"{'='*60}")
-                    print(f"Interaction {i}:")
-                    print(f"{'='*60}")
-                    
-                    user_input = interaction_input.get("input", "")
-                    print(f"\nYou: {user_input}")
-                    
-                    # Execute agent with this input
-                    start_time = datetime.utcnow()
-                    try:
-                        result = agent_executor.invoke({"input": user_input})
-                        duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
-                        total_duration_ms += duration_ms
+                # Activate write-side-effect interception for B replay
+                # Blocks email, file writes, but allows HTTP requests (Tavily, etc.)
+                with write_interception():
+                    for i, interaction_input in enumerate(interactions, 1):
+                        print(f"{'='*60}")
+                        print(f"Interaction {i}:")
+                        print(f"{'='*60}")
                         
-                        output = result.get("output", "")
-                        print(f"Agent: {output}")
+                        user_input = interaction_input.get("input", "")
+                        print(f"\nYou: {user_input}")
                         
-                        replayed_outputs.append({
-                            "input": user_input,
-                            "output": output
-                        })
-                    except Exception as e:
-                        duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
-                        total_duration_ms += duration_ms
-                        error_msg = str(e)
-                        print(f"Error: {error_msg}")
-                        replayed_outputs.append({
-                            "input": user_input,
-                            "error": error_msg
-                        })
-                    
-                    print()
+                        # Execute agent with this input (write operations blocked)
+                        start_time = datetime.utcnow()
+                        try:
+                            result = agent_executor.invoke({"input": user_input})
+                            duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
+                            total_duration_ms += duration_ms
+                            
+                            output = result.get("output", "")
+                            print(f"Agent: {output}")
+                            
+                            replayed_outputs.append({
+                                "input": user_input,
+                                "output": output
+                            })
+                        except Exception as e:
+                            duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
+                            total_duration_ms += duration_ms
+                            error_msg = str(e)
+                            print(f"Error: {error_msg}")
+                            replayed_outputs.append({
+                                "input": user_input,
+                                "error": error_msg
+                            })
+                        
+                        print()
                 
                 # Collect all tool calls (cached + new)
                 # Get cached tool calls that were used

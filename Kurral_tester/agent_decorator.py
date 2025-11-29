@@ -452,7 +452,20 @@ def trace_agent(
                         print(f"[Kurral] Kurral ID: {_session_artifact.kurral_id}")
                         print(f"[Kurral] Total interactions: {len(_session_interactions)}")
                     except Exception as e:
-                        print(f"\n[Kurral] Warning: Failed to save session artifact: {e}")
+                        import traceback
+                        error_details = traceback.format_exc()
+                        print(f"\n[Kurral] ERROR: Failed to save session artifact: {e}")
+                        print(f"[Kurral] Error details:\n{error_details}")
+                        # Try to save error details to a file for debugging
+                        try:
+                            error_log_path = artifacts_dir / "artifact_save_error.log"
+                            with open(error_log_path, "a") as f:
+                                f.write(f"\n=== {datetime.utcnow().isoformat()} ===\n")
+                                f.write(f"Failed to save artifact: {e}\n")
+                                f.write(f"{error_details}\n")
+                            print(f"[Kurral] Error details saved to: {error_log_path}")
+                        except:
+                            pass
                 
                 # Clear context
                 _current_context = None

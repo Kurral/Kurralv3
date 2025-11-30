@@ -107,17 +107,19 @@ class ToolStubber:
     Stubs tool calls during B replay by returning cached responses from artifact
     """
     
-    def __init__(self, artifact_tool_calls: list[ToolCall]):
+    def __init__(self, artifact_tool_calls: list[ToolCall], side_effect_config: Optional[Dict[str, Any]] = None):
         """
         Initialize tool stubber with artifact tool calls
         
         Args:
             artifact_tool_calls: List of tool calls from the original artifact
+            side_effect_config: Side effect configuration dictionary (optional)
         """
         # Build cache: cache_key -> ToolCall
         self.cache: Dict[str, ToolCall] = {}
         self.used_keys: set[str] = set()
         self.new_tool_calls: list[ToolCall] = []
+        self.side_effect_config = side_effect_config or {}
         
         for tc in artifact_tool_calls:
             if tc.cache_key:
@@ -128,6 +130,9 @@ class ToolStubber:
         Check if tool call matches cached result using semantic similarity.
         This is called BEFORE executing the tool - A/B testing logic.
         
+        For side effect tools (marked as False in config), always returns cached result
+        or safe default - never returns None to prevent execution.
+        
         Args:
             tool_name: Name of the tool being called
             tool_input: Input parameters to the tool
@@ -135,8 +140,12 @@ class ToolStubber:
             
         Returns:
             Tuple of (cached output, cache_key, similarity_score) if similarity >= threshold, None otherwise
-            Only returns cached result if similarity >= 85%, otherwise returns None (cache miss)
+            For side effect tools, always returns a result (cached or safe default)
         """
+        # Check if this is a side effect tool
+        from Kurral_tester.side_effect_config import SideEffectConfig
+        is_side_effect = SideEffectConfig.is_side_effect(self.side_effect_config, tool_name)
+        
         # First, try exact match
         cache_key = ToolCall.generate_cache_key(tool_name, tool_input)
         
@@ -175,8 +184,16 @@ class ToolStubber:
             return (cached_tc.output if cached_tc.output else {}, matched_key, similarity)
         else:
             # Not similar enough (similarity < threshold) - CACHE MISS
-            # Tool should be executed in real-time
-            return None
+            if is_side_effect:
+                # Side effect tool with no cache - return safe default
+                safe_default = {
+                    "status": "blocked",
+                    "message": f"Side effect tool '{tool_name}' blocked during replay (no cached result available)"
+                }
+                return (safe_default, "", 0.0)
+            else:
+                # Normal tool - can be executed in real-time
+                return None
     
     def get_unused_tool_calls(self) -> list[ToolCall]:
         """Get tool calls from artifact that weren't used during replay"""
@@ -224,7 +241,7 @@ class ToolStubber:
         return tool_call
 
 
-def create_stubbed_tool(original_func: Callable, stubber: ToolStubber, tool_name: str) -> Callable:
+def create_stubbed_tool(original_func: Callable, stubber: ToolStubber, tool_name: str, side_effect_config: Optional[Dict[str, Any]] = None) -> Callable:
     """
     Create a stubbed version of a tool function
     
@@ -232,9 +249,11 @@ def create_stubbed_tool(original_func: Callable, stubber: ToolStubber, tool_name
         original_func: Original tool function
         stubber: ToolStubber instance
         tool_name: Name of the tool
+        side_effect_config: Side effect configuration dictionary (optional)
         
     Returns:
         Stubbed function that checks cache first, then calls original if not cached
+        For side effect tools, always uses cache or safe default, never executes
     """
     def stubbed_func(*args, **kwargs):
         # Convert args/kwargs to input dict (matching artifact format)
@@ -275,15 +294,28 @@ def create_stubbed_tool(original_func: Callable, stubber: ToolStubber, tool_name
                 return cached_output
         else:
             # CACHE MISS: Similarity < 85% or no cached match found
-            # Execute the tool in real-time (this is a new tool call)
-            print(f"\n[CACHE MISS] {tool_name}({tool_input}) - No match found or similarity < 0.85, executing tool")
-            result = original_func(*args, **kwargs)
+            # Check if this is a side effect tool
+            from Kurral_tester.side_effect_config import SideEffectConfig
+            is_side_effect = SideEffectConfig.is_side_effect(side_effect_config or {}, tool_name)
             
-            # Record as new tool call (cache miss - executed in real-time)
-            output_dict = {"output": result} if not isinstance(result, dict) else result
-            stubber.record_new_tool_call(tool_name, tool_input, output_dict, outside_original=True)
-            
-            return result
+            if is_side_effect:
+                # Side effect tool - return safe default, DO NOT execute
+                safe_default = {
+                    "status": "blocked",
+                    "message": f"Side effect tool '{tool_name}' blocked during replay (no cached result available)"
+                }
+                print(f"\n[SIDE EFFECT BLOCKED] {tool_name}({tool_input}) - Side effect tool blocked, returning safe default")
+                return safe_default
+            else:
+                # Normal tool - execute in real-time (this is a new tool call)
+                print(f"\n[CACHE MISS] {tool_name}({tool_input}) - No match found or similarity < 0.85, executing tool")
+                result = original_func(*args, **kwargs)
+                
+                # Record as new tool call (cache miss - executed in real-time)
+                output_dict = {"output": result} if not isinstance(result, dict) else result
+                stubber.record_new_tool_call(tool_name, tool_input, output_dict, outside_original=True)
+                
+                return result
     
     return stubbed_func
 

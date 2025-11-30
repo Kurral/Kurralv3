@@ -26,7 +26,7 @@ from Kurral_tester.replay_executor import ReplayExecutor
 from Kurral_tester.artifact_generator import ArtifactGenerator
 from Kurral_tester.tool_stubber import ToolStubber, create_stubbed_tool
 from Kurral_tester.ars_scorer import calculate_ars
-from Kurral_tester.write_side_effect_interceptor import write_interception
+from Kurral_tester.side_effect_config import SideEffectConfig
 
 
 def _import_agent_module_with_optional_deps(agent_folder, verbose=True):
@@ -250,6 +250,7 @@ def replay_agent_artifact(
     current_llm_config = None
     current_prompt = None
     current_graph_version = None
+    agent_module = None  # Initialize agent_module for use in side effect config generation
     
     try:
         # Try to import agent module to get current config
@@ -310,6 +311,77 @@ def replay_agent_artifact(
         if verbose:
             print(f"Warning: Could not extract current config: {e}")
             print("Will assume no changes (A replay)")
+    
+    # Load or generate side effect configuration
+    side_effect_config = None
+    try:
+        agent_folder = artifacts_dir.parent
+        config_path = SideEffectConfig.get_config_path(agent_folder)
+        
+        if not config_path.exists():
+            # Auto-generate config if it doesn't exist
+            if agent_module is not None:
+                print(f"Auto-generating side effect config at: {config_path}")
+                side_effect_config = SideEffectConfig.generate_config(artifact, agent_module)
+                SideEffectConfig.save(agent_folder, side_effect_config)
+            else:
+                # Can't generate without agent module, use defaults
+                side_effect_config = SideEffectConfig.load(agent_folder)
+        else:
+            # Load existing config
+            side_effect_config = SideEffectConfig.load(agent_folder)
+        
+        # Check if replay is allowed (done field)
+        if not SideEffectConfig.is_done(side_effect_config):
+            print(f"\n{'='*60}")
+            print("REPLAY BLOCKED: Side Effect Configuration Required")
+            print(f"{'='*60}")
+            print("The side effect configuration file has been auto-generated or needs review.")
+            print("Please manually review and configure the side effects before replay:")
+            print()
+            print(f"Config file: {config_path}")
+            print()
+            
+            # Show suggestions if available
+            suggestions = side_effect_config.get("suggestions", {})
+            tools = side_effect_config.get("tools", {})
+            
+            if tools:
+                print("Tool Analysis & Suggestions:")
+                print("-" * 60)
+                for tool_name in sorted(tools.keys()):
+                    suggested_value = tools[tool_name]
+                    reason = suggestions.get(tool_name, "No analysis available")
+                    status = "SIDE EFFECT" if not suggested_value else "SAFE"
+                    value_str = "false" if not suggested_value else "true"
+                    print(f"  {tool_name}: {value_str}  [{status}]")
+                    print(f"    → {reason}")
+                print("-" * 60)
+                print()
+            
+            print("Instructions:")
+            print("1. Review each tool above - tools marked as SIDE EFFECT should be set to 'false'")
+            print("2. Tools marked as SAFE can remain 'true' (unless you know they have side effects)")
+            print("3. Manually edit the YAML file to adjust any values if needed")
+            print("4. Set 'done: true' when you have finished configuring")
+            print()
+            print("Example YAML structure:")
+            print("  tools:")
+            print("    send_email: false    # Side effect - blocks execution during replay")
+            print("    tavily_search: true  # No side effect - allows execution")
+            print("  done: true             # Set to true after review")
+            print()
+            print("Once you have set 'done: true', run the replay again.")
+            print(f"{'='*60}\n")
+            return {
+                "replay_type": "BLOCKED",
+                "error": "Replay blocked: done=false in side_effects.yaml - manual configuration required",
+            }
+    except Exception as e:
+        if verbose:
+            print(f"Warning: Could not load side effect config: {e}")
+        # Default to allowing replay if config can't be loaded
+        side_effect_config = {"tools": {}, "done": True}
     
     # Detect replay type and changes
     detector = ReplayDetector()
@@ -452,8 +524,8 @@ def replay_agent_artifact(
                 llm = agent_module.get_llm()
                 tools = agent_module.create_tools()
                 
-                # Create tool stubber with artifact tool calls
-                stubber = ToolStubber(artifact.tool_calls)
+                # Create tool stubber with artifact tool calls and side effect config
+                stubber = ToolStubber(artifact.tool_calls, side_effect_config=side_effect_config)
                 
                 # Stub the tools
                 stubbed_tools = []
@@ -462,8 +534,8 @@ def replay_agent_artifact(
                     original_func = tool.func
                     tool_name = tool.name
                     
-                    # Create stubbed version
-                    stubbed_func = create_stubbed_tool(original_func, stubber, tool_name)
+                    # Create stubbed version with side effect config
+                    stubbed_func = create_stubbed_tool(original_func, stubber, tool_name, side_effect_config=side_effect_config)
                     
                     # Create new tool with stubbed function
                     from langchain.tools import Tool
@@ -493,42 +565,39 @@ def replay_agent_artifact(
                 
                 print(f"Re-executing {len(interactions)} interactions with LLM...\n")
                 
-                # Activate write-side-effect interception for B replay
-                # Blocks email, file writes, but allows HTTP requests (Tavily, etc.)
-                with write_interception():
-                    for i, interaction_input in enumerate(interactions, 1):
-                        print(f"{'='*60}")
-                        print(f"Interaction {i}:")
-                        print(f"{'='*60}")
+                for i, interaction_input in enumerate(interactions, 1):
+                    print(f"{'='*60}")
+                    print(f"Interaction {i}:")
+                    print(f"{'='*60}")
+                    
+                    user_input = interaction_input.get("input", "")
+                    print(f"\nYou: {user_input}")
+                    
+                    # Execute agent with this input
+                    start_time = datetime.utcnow()
+                    try:
+                        result = agent_executor.invoke({"input": user_input})
+                        duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
+                        total_duration_ms += duration_ms
                         
-                        user_input = interaction_input.get("input", "")
-                        print(f"\nYou: {user_input}")
+                        output = result.get("output", "")
+                        print(f"Agent: {output}")
                         
-                        # Execute agent with this input (write operations blocked)
-                        start_time = datetime.utcnow()
-                        try:
-                            result = agent_executor.invoke({"input": user_input})
-                            duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
-                            total_duration_ms += duration_ms
-                            
-                            output = result.get("output", "")
-                            print(f"Agent: {output}")
-                            
-                            replayed_outputs.append({
-                                "input": user_input,
-                                "output": output
-                            })
-                        except Exception as e:
-                            duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
-                            total_duration_ms += duration_ms
-                            error_msg = str(e)
-                            print(f"Error: {error_msg}")
-                            replayed_outputs.append({
-                                "input": user_input,
-                                "error": error_msg
-                            })
-                        
-                        print()
+                        replayed_outputs.append({
+                            "input": user_input,
+                            "output": output
+                        })
+                    except Exception as e:
+                        duration_ms = int((datetime.utcnow() - start_time).total_seconds() * 1000)
+                        total_duration_ms += duration_ms
+                        error_msg = str(e)
+                        print(f"Error: {error_msg}")
+                        replayed_outputs.append({
+                            "input": user_input,
+                            "error": error_msg
+                        })
+                    
+                    print()
                 
                 # Collect all tool calls (cached + new)
                 # Get cached tool calls that were used

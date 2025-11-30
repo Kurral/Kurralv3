@@ -1,0 +1,4 @@
+tools:
+  send_email: false
+  tavily_search: true
+done: true

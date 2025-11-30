@@ -1,0 +1,129 @@
+{
+  "kurral_id": "77b7b7f3-a01f-407f-bb08-681e41a1629f",
+  "run_id": "replay_local_agent_1764561125_1764561276",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-30T22:54:36.455955",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "b82328a8-8185-490f-b418-7b29e7acd781",
+    "original_run_id": "local_agent_1764561125",
+    "replay_type": "B",
+    "determinism_score": 0.375,
+    "changes_detected": {
+      "llm_config": {
+        "model_name": {
+          "artifact": "gpt-4",
+          "current": "models/gemini-2.0-flash-lite"
+        },
+        "provider": {
+          "artifact": "openai",
+          "current": "google"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Who is the president of India, email me.",
+        "output": "The current president of India is Droupadi Murmu. I have sent an email to myself with this information."
+      }
+    ],
+    "ars": {
+      "ars_score": 0.4995,
+      "output_similarity": 0.585,
+      "tool_accuracy": 0.3,
+      "breakdown": {
+        "output_scores": [
+          0.585
+        ],
+        "total_original_tools": 2,
+        "total_replayed_tools": 2,
+        "used_original_tools": 1,
+        "new_tools": 1,
+        "unused_tools": 1
+      }
+    }
+  },
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Who is the president of India, email me.",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "8f7f334a9b86cc4b4d72eb2b43d02857fcbe56ae5d0418dc52a996458a1518f7",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "fbe51ad8-67e5-434a-8bf7-47ce6fe9114b",
+      "tool_name": "send_email",
+      "start_time": "2025-11-30T22:52:11.015533",
+      "end_time": "2025-11-30T22:52:13.061295",
+      "latency_ms": 2045,
+      "timestamp": "2025-11-30T22:52:13.061295",
+      "input": {
+        "input": "Subject: Current President of India\\nBody: The current president of India is Droupadi Murmu."
+      },
+      "input_hash": "83937ea4ec90875362c880681ba28d0d515c59e5a798668d1b605a7d496d2ae3",
+      "output": {
+        "output": "Email sent successfully to jayjani482001@gmail.com"
+      },
+      "output_hash": "cac5a3d5d6c138fbfa26a0f430299bed538400a3df0a186c0f80259d97c10d0d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:e32060e11168163267dca1736b781efdaa6a000f1dff045b4cff85753b2a9a2f",
+      "stubbed_in_replay": true,
+      "metadata": {}
+    },
+    {
+      "id": "f5f4f218-c3b3-43ed-a746-b6c3960f698e",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-30T22:54:35.281723",
+      "end_time": "2025-11-30T22:54:35.281723",
+      "latency_ms": 0,
+      "timestamp": "2025-11-30T22:54:35.281723",
+      "input": {
+        "input": "president of India"
+      },
+      "input_hash": "24463f323a03baad89485c612a3b5645693e77a82e34dac09cb565b5bb17db07",
+      "output": {
+        "output": "Title: President of India: Home\nURL: http://www.presidentofindia.gov.in/\nContent: ###### The President of India, Smt Droupadi Murmu, graced the closing ceremony of the Diamond Jubilee Celebrations of Bharat Scouts and Guides and addressed its 19th National Jamboree at Lucknow, Uttar Pradesh, on November 28, 2025. ###### The President of India, Smt Droupadi Murmu, graced the inaugural session of the third edition of the Indian Army’s Seminar, ‘Chanakya Defence Dialogue-2025’, in New Delhi on November 27, 2025. ###### The President of India, Smt. Droupadi Murmu graced the Constitution Day Celebration at the Central Hall of Samvidhan Sadan in New Delhi on November 26, 2025. ###### Officer Trainees of Indian Revenue Service (Customs and Indirect Taxes) (76th batch) called on the President of India, Smt. Droupadi Murmu at Rashtrapati Bhavan on November 25, 2025.\n\n---\nTitle: President of India (@presidentofindia)\nURL: https://www.instagram.com/presidentofindia/?hl=en\nContent: Official Instagram account of Smt Droupadi Murmu, President of India . Indian Blind Women's Cricket Team, winner of the first-ever Blind Women's T20 World\n\n---\nTitle: President of India (@rashtrapatibhvn) / Posts / X\nURL: https://x.com/rashtrapatibhvn\nContent: President of India (@rashtrapatibhvn) / X President of India’s posts President Droupadi Murmu graced the special event to commemorate centenary celebration of Sri Sathya Sai Baba at Prasanthi Nilayam, Puttaparthi, Andhra Pradesh. The President said that Sri Sathya Sai Baba linked spirituality with selfless service and personal transformation, LIVE: President Droupadi Murmu addresses the Special session to Commemorate the Centenary Celebration of Bhagwan Sri Sathya Sai Baba at Prasanthi Nilayam, Puttaparthi Image 16 President of India @rashtrapatibhvn LIVE: President Droupadi Murmu addresses the Special session to Commemorate the Centenary Celebration of Bhagwan Sri Sathya Sai Baba at Prasanthi Nilayam, Puttaparthi By signing up, you agree to the Terms of Service and Privacy Policy, including Cookie Use.\n\n---\nTitle: Droupadi Murmu\nURL: https://en.wikipedia.org/wiki/Droupadi_Murmu\nContent: **Droupadi Murmu** (born **Durgi Tudu**; 20 June 1958) is an Indian politician who has served as the president of India since 2022. On 21 July 2022, Murmu secured a clear majority in the 2022 Presidential election defeating common opposition candidate Yashwant Sinha with 676,803 electoral votes (64.03% of total) in 21 of the 28 states (including in the union territory of Puducherry \"Puducherry (union territory)\")) to become the 15th President of India. 7. ^ ***a*** ***b*** \"India: BJP backs tribal politician Draupadi Murmu for president against former ally | DW | 18 July 2022\". **^** \"Droupadi Murmu is India's Youngest, First Tribal President\". **^** \"Presidential Election 2022 Result Live Updates: Droupadi Murmu makes history, becomes India's first tribal woman President\".\n\n---\nTitle: President of India\nURL: https://www.facebook.com/PresidentofIndia/\nContent: President of India. 6344091 likes · 228077 talking about this. Official Facebook page of Smt Droupadi Murmu, President of India.\n"
+      },
+      "output_hash": "94744553cd8d80e0c87db7830c6e926ffd0753c6b5e34f231d194769cf55d2a0",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:44f295f5c7857c18067b2237c325a699b9009332fa3a832faa40513cfabdadf1",
+      "stubbed_in_replay": false,
+      "metadata": {
+        "outside_original_artifact": true
+      }
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-30T22:54:36.455955",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-30T22:54:36.455955"
+  },
+  "duration_ms": 4135
+}

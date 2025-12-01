@@ -94,7 +94,7 @@ Kurral detects what changed between runs and automatically switches strategies b
     - ✅ Perfect for regression testing
     - ✅ Verifies logic without re-running LLM
 
-- **Level 2 Replay** (Exploratory): Model or Prompt changes? This mode facilitates A/B testing. It re-runs the LLM live but intelligently caches tool calls using semantic matching to benchmark the quality of the new model or prompt against the original run.
+- **Level 2 Replay** (Non-Deterministic / Exploratory): Model or Prompt changes? This mode facilitates A/B testing. It re-runs the LLM live but intelligently caches tool calls using semantic matching to benchmark the quality of the new model or prompt against the original run.
   
     - ✅ Benchmark new models against original runs
     - ✅ Test prompt variations
@@ -249,7 +249,7 @@ Kurral uses intelligent change detection to determine the appropriate replay str
 - **Behavior**: Returns cached outputs directly without re-executing LLM or tools
 - **Use Case**: Regression testing, verifying identical behavior
 
-#### Level 2 Replay (Non-Deterministic)
+#### Level 2 Replay (Non-Deterministic / Exploratory)
 - **When**: Something changed (different LLM, model parameters, tools, or prompt template)
 - **Behavior**: Re-executes LLM with semantic tool call matching (85% similarity threshold)
 - **Use Case**: Testing different models, comparing performance, A/B testing

@@ -1,0 +1,129 @@
+{
+  "kurral_id": "f3d203c9-4c70-4414-9b1f-740d40048570",
+  "run_id": "replay_local_agent_1764562462_1764562810",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-30T23:20:10.797265",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "a274aec7-8c84-4ead-acc3-0d8b09f8a1a1",
+    "original_run_id": "local_agent_1764562462",
+    "replay_type": "B",
+    "determinism_score": 0.375,
+    "changes_detected": {
+      "llm_config": {
+        "model_name": {
+          "artifact": "models/gemini-2.0-flash-lite",
+          "current": "gpt-4"
+        },
+        "provider": {
+          "artifact": "google",
+          "current": "openai"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Who is the president Of India? send email",
+        "output": "I have sent an email with the information that the current president of India is Droupadi Murmu."
+      }
+    ],
+    "ars": {
+      "ars_score": 0.5764,
+      "output_similarity": 0.6948,
+      "tool_accuracy": 0.3,
+      "breakdown": {
+        "output_scores": [
+          0.6948
+        ],
+        "total_original_tools": 2,
+        "total_replayed_tools": 2,
+        "used_original_tools": 1,
+        "new_tools": 1,
+        "unused_tools": 1
+      }
+    }
+  },
+  "llm_config": {
+    "model_name": "models/gemini-2.0-flash-lite",
+    "provider": "google",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Who is the president Of India? send email",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "d0c9e83e9ee5cccf0bc18cc3f2e170c6a92b3d4bb5c7799a56242ffacb9446c2",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "5118ada4-9f9a-4775-9a6a-dd725916e380",
+      "tool_name": "send_email",
+      "start_time": "2025-11-30T23:14:24.796863",
+      "end_time": "2025-11-30T23:14:27.114603",
+      "latency_ms": 2317,
+      "timestamp": "2025-11-30T23:14:27.114603",
+      "input": {
+        "input": "Subject: Current President of India\\nBody: The current president of India is Droupadi Murmu."
+      },
+      "input_hash": "83937ea4ec90875362c880681ba28d0d515c59e5a798668d1b605a7d496d2ae3",
+      "output": {
+        "output": "Email sent successfully to arvind@tailorflow.ai"
+      },
+      "output_hash": "c6d60e8042bde98ed6d2710a960cf05319993c139113eec54b3481a07264c90a",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:e32060e11168163267dca1736b781efdaa6a000f1dff045b4cff85753b2a9a2f",
+      "stubbed_in_replay": true,
+      "metadata": {}
+    },
+    {
+      "id": "20b88361-f085-459f-9e76-3eaaf65c8990",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-30T23:20:06.138747",
+      "end_time": "2025-11-30T23:20:06.138747",
+      "latency_ms": 0,
+      "timestamp": "2025-11-30T23:20:06.138747",
+      "input": {
+        "input": "Current president of India"
+      },
+      "input_hash": "50c0e32b816467752b399aff20e2b8a3a55e3c8d8fe4dc8c6da1bfe21c3ad536",
+      "output": {
+        "output": "Title: President of India\nURL: https://en.wikipedia.org/wiki/President_of_India\nContent: Droupadi Murmu is the 15th and current president, having taken office on 25 July 2022. President of India. Bhārata kē Rāṣṭrapati. State emblem · f · Flag of\n\n---\nTitle: President of India: Home\nURL: http://www.presidentofindia.gov.in/\nContent: Smt. Droupadi Murmu was sworn in as the 15th President of India on 25 July, 2022. Previously, she was the Governor of Jharkhand from 2015 to 2021.\n\n---\nTitle: Profile\nURL: http://www.presidentofindia.gov.in/Profile\nContent: Profile of the President. Smt. Droupadi Murmu was sworn in as the 15th President of India on July 25, 2022. Prior to this, she served as the 9th Governor of\n\n---\nTitle: About the President's Secretariat\nURL: http://www.rashtrapatibhavan.gov.in/about-us\nContent: Smt. Droupadi Murmu is the 15th and current President, having taken office from 25 July 2022. Rashtrapati Bhavan. The President of\n\n---\nTitle: About Us\nURL: http://presidentofindia.nic.in/about-us\nContent: Smt. Droupadi Murmu was sworn in as the 15th President of India on 25 July, 2022. Previously, she was the Governor of Jharkhand from 2015 to 2021.\n"
+      },
+      "output_hash": "663fd3a4fda13916e6a5a8a04391d8e8a174463056c6fb1b85aa1615b646dd9d",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:5cc4286ed40566aa863bdd5449d1ef03b1a4037678ace8b73129bfda9df68970",
+      "stubbed_in_replay": false,
+      "metadata": {
+        "outside_original_artifact": true
+      }
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-30T23:20:10.797265",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-30T23:20:10.797265"
+  },
+  "duration_ms": 8765
+}

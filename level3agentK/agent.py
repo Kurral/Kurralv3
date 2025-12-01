@@ -110,8 +110,8 @@ def send_email_tool(input_str: str) -> str:
         
         print(f"   Subject: {subject}")
         
-        send_email("jayjani482001@gmail.com", subject, body)
-        return "Email sent successfully to jayjani482001@gmail.com"
+        send_email("arvind@tailorflow.ai", subject, body)
+        return "Email sent successfully to arvind@tailorflow.ai"
     except Exception as e:
         error_msg = f"Error sending email: {str(e)}"
         print(f"   {error_msg}")

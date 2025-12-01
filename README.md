@@ -53,6 +53,7 @@ Standard testing approaches (unit tests, mocks, integration tests) fall short be
 - Automatically detects changes (LLM model, tools, prompts, graph structure)
 - Switches between Level 1 (deterministic) and Level 2 (exploratory) replay
 - Semantic tool matching (85% threshold) caches similar tool calls to reduce API costs
+- **Side Effect Protection**: Prevents dangerous operations (emails, payments, writes) during replay
 
 **Quantifiable Regression Detection**
 
@@ -65,6 +66,7 @@ Standard testing approaches (unit tests, mocks, integration tests) fall short be
 - Works seamlessly with LangChain's `AgentExecutor` and ReAct agents
 - Minimal code changes - just `@trace_agent()` decorator and `trace_agent_invoke()` wrapper
 - Artifacts saved as readable JSON in `artifacts/` directory
+- **Intelligent Side Effect Detection**: Auto-generates configuration with smart suggestions based on tool names and descriptions
 
 ## When to Use Kurral
 
@@ -152,7 +154,50 @@ After execution, you'll see:
 [Kurral] Total interactions: 1
 ```
 
-### 3. Replay an Artifact
+### 3. Configure Side Effects (First Time Only)
+
+On your first replay, Kurral will auto-generate a `side_effect/side_effects.yaml` file with intelligent suggestions:
+
+```yaml
+tools:
+  send_email: false    # Side effect - blocked during replay
+  tavily_search: true  # Safe - allowed during replay
+done: false            # Set to true after reviewing
+```
+
+Kurral automatically analyzes tool names, descriptions, and docstrings for keywords like "update", "send", "write" (case-insensitive) and suggests which tools should be blocked.
+
+**First Replay Output**:
+```
+============================================================
+REPLAY BLOCKED: Side Effect Configuration Required
+============================================================
+The side effect configuration file has been auto-generated or needs review.
+Please manually review and configure the side effects before replay:
+
+Config file: level3agentK/side_effect/side_effects.yaml
+
+Tool Analysis & Suggestions:
+------------------------------------------------------------
+  send_email: false  [SIDE EFFECT]
+    → Contains side effect keywords in name/description/docstring
+  tavily_search: true  [SAFE]
+    → No side effect keywords found
+------------------------------------------------------------
+
+Instructions:
+1. Review each tool above - tools marked as SIDE EFFECT should be set to 'false'
+2. Tools marked as SAFE can remain 'true' (unless you know they have side effects)
+3. Manually edit the YAML file to adjust any values if needed
+4. Set 'done: true' when you have finished configuring
+
+Once you have set 'done: true', run the replay again.
+============================================================
+```
+
+**Important**: You must manually set `done: true` after reviewing the configuration to allow replay.
+
+### 4. Replay an Artifact
 ```bash
 # From your agent directory, replay the artifact (pass ID or unique prefix)
 python ../Kurral_tester/replay.py <artifact_id>
@@ -161,9 +206,9 @@ python ../Kurral_tester/replay.py <artifact_id>
 python ../Kurral_tester/replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
 ```
 
-
 Kurral will automatically:
 - Detect changes and determine replay type (Level 1 or Level 2)
+- Check side effect configuration (blocks dangerous operations)
 - Print replay results to stdout
 - Save replay artifact to `replay_runs/` directory
 - Report any changes detected
@@ -221,6 +266,32 @@ This ensures:
 - Reduced API costs (fewer tool executions)
 - Faster replay execution
 - Accurate cache hit/miss tracking
+
+### Side Effect Management
+
+Kurral protects against dangerous operations during replay through a YAML-based configuration system:
+
+**Auto-Generation**: On first replay, Kurral automatically:
+- Discovers all tools used in your agent
+- Analyzes tool names, descriptions, and docstrings
+- Suggests side effect status based on keywords ("update", "send", "write")
+- Creates `side_effect/side_effects.yaml` in your agent directory
+
+**Configuration Format**:
+```yaml
+tools:
+  send_email: false    # false = side effect (blocked), true = safe (allowed)
+  tavily_search: true
+  write_file: false
+done: false            # Must be set to true manually after review
+```
+
+**How It Works**:
+- **Cached Results Available**: Side effect tools use cached outputs from the original artifact (no execution)
+- **No Cache Available**: Side effect tools return a safe default message (blocked, never executed)
+- **Safe Tools**: Normal tools execute if no cache match is found
+
+**Safety First**: The `done` flag defaults to `false`, requiring manual review before any replay can proceed. This ensures you explicitly approve which tools can execute during replay.
 
 ### Agent Regression Score (ARS)
 
@@ -329,6 +400,7 @@ When you replay an artifact, Kurral provides detailed information:
 - **`agent_replay.py`**: Main replay entry point with automatic Level 1/Level 2 detection
 - **`replay_detector.py`**: Change detection logic and determinism scoring
 - **`tool_stubber.py`**: Semantic tool matching and caching during B replay
+- **`side_effect_config.py`**: Side effect configuration management and auto-generation
 - **`ars_scorer.py`**: Agent Regression Score calculation
 - **`artifact_manager.py`**: Artifact storage and retrieval
 - **`artifact_generator.py`**: Artifact generation from execution traces
@@ -373,6 +445,8 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 3. **Check ARS scores**: Monitor ARS to detect regressions when testing different models
 4. **Review replay artifacts**: Check `replay_runs/` directory for detailed replay analysis
 5. **Handle optional dependencies**: Kurral gracefully handles missing optional LLM packages
+6. **Review side effect configuration**: Always review `side_effect/side_effects.yaml` before enabling replay (`done: true`)
+7. **Mark dangerous tools as side effects**: Any tool that sends emails, makes payments, writes files, or modifies external state should be set to `false`
 
 ## Requirements
 

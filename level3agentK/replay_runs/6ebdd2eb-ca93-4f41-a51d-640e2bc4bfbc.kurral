@@ -1,0 +1,106 @@
+{
+  "kurral_id": "6ebdd2eb-ca93-4f41-a51d-640e2bc4bfbc",
+  "run_id": "replay_local_agent_1764562462_1764563065",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-30T23:24:25.611946",
+  "deterministic": false,
+  "inputs": {
+    "original_kurral_id": "a274aec7-8c84-4ead-acc3-0d8b09f8a1a1",
+    "original_run_id": "local_agent_1764562462",
+    "replay_type": "B",
+    "determinism_score": 0.375,
+    "changes_detected": {
+      "llm_config": {
+        "model_name": {
+          "artifact": "models/gemini-2.0-flash-lite",
+          "current": "llama-3.3-70b-versatile"
+        },
+        "provider": {
+          "artifact": "google",
+          "current": "openai"
+        }
+      }
+    }
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Who is the president Of India? send email",
+        "output": "The current President of India is Smt. Droupadi Murmu."
+      }
+    ],
+    "ars": {
+      "ars_score": 0.3525,
+      "output_similarity": 0.5036,
+      "tool_accuracy": 0.0,
+      "breakdown": {
+        "output_scores": [
+          0.5036
+        ],
+        "total_original_tools": 2,
+        "total_replayed_tools": 1,
+        "used_original_tools": 0,
+        "new_tools": 1,
+        "unused_tools": 2
+      }
+    }
+  },
+  "llm_config": {
+    "model_name": "models/gemini-2.0-flash-lite",
+    "provider": "google",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Who is the president Of India? send email",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "d0c9e83e9ee5cccf0bc18cc3f2e170c6a92b3d4bb5c7799a56242ffacb9446c2",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "445f63c9-0682-4e42-9a9e-ecf6c5b6603b",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-30T23:24:24.823167",
+      "end_time": "2025-11-30T23:24:24.823167",
+      "latency_ms": 0,
+      "timestamp": "2025-11-30T23:24:24.823167",
+      "input": {
+        "input": "Current President of India"
+      },
+      "input_hash": "1ef9ce5aa5e010df26920a967362b4bae720b0c057a58bdba21f262bd01a490a",
+      "output": {
+        "output": "Title: President of India: Home\nURL: http://www.presidentofindia.gov.in/\nContent: Smt. Droupadi Murmu was sworn in as the 15th President of India on 25 July, 2022. Previously, she was the Governor of Jharkhand from 2015 to 2021.\n\n---\nTitle: President of India - Wikipedia\nURL: https://en.wikipedia.org/wiki/President_of_India\nContent: Droupadi Murmu is the 15th and current president, having taken office on 25 July 2022. President of India. Bhārata kē Rāṣṭrapati. State emblem · f · Flag of\n\n---\nTitle: About Us - The Office and Residence of the President of India\nURL: http://www.rashtrapatibhavan.gov.in/about-us\nContent: Smt. Droupadi Murmu is the 15th and current President, having taken office from 25 July 2022. Rashtrapati Bhavan. The President of\n\n---\nTitle: About Us - President of India\nURL: http://presidentofindia.nic.in/about-us\nContent: Smt. Droupadi Murmu was sworn in as the 15th President of India on 25 July, 2022. Previously, she was the Governor of Jharkhand from 2015 to 2021.\n\n---\nTitle: Profile | President of India\nURL: http://www.presidentofindia.gov.in/Profile\nContent: Profile of the President. Smt. Droupadi Murmu was sworn in as the 15th President of India on July 25, 2022. Prior to this, she served as the 9th Governor of\n"
+      },
+      "output_hash": "f3a5297b635ae7568e7a46e007e245996d55f1ff008685cbc89a94a8d4f72dea",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:29ab9f098c4ff4751766d5df791fcaf14f0ad0b79f1e2b79b6e59153249a5c03",
+      "stubbed_in_replay": false,
+      "metadata": {
+        "outside_original_artifact": true
+      }
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-30T23:24:25.611946",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-30T23:24:25.611946"
+  },
+  "duration_ms": 2604
+}

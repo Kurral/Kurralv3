@@ -1,0 +1,101 @@
+{
+  "kurral_id": "746db709-f020-4e44-a6a4-13411118ff0c",
+  "run_id": "local_agent_1764563146",
+  "tenant_id": "default",
+  "semantic_buckets": [],
+  "environment": "production",
+  "schema_version": "1.0.0",
+  "created_at": "2025-11-30T23:25:51.874274",
+  "deterministic": false,
+  "inputs": {
+    "interactions": [
+      {
+        "input": "Which coutry is the best to live in? Send me an email."
+      }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Which coutry is the best to live in? Send me an email.",
+        "output": "According to recent rankings, some of the best countries to live in include Costa Rica, Switzerland, Canada, New Zealand, and Portugal. These countries offer a high quality of life, good healthcare, and a low cost of living. However, the best country for an individual will depend on their specific needs and priorities."
+      }
+    ]
+  },
+  "llm_config": {
+    "model_name": "llama-3.3-70b-versatile",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "resolved_prompt": {
+    "template": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "template_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74",
+    "variables": {
+      "input": "Which coutry is the best to live in? Send me an email.",
+      "agent_scratchpad": ""
+    },
+    "variables_hash": "d4d2187c10c9a1fcf755b5b594e875ee34346aec8a021ccab9062bf2d7f253fd",
+    "final_text": "\nYou are a helpful assistant that answers questions by searching the internet.\n\nYou have access to the following tools:\n{tools}\n\nUse the following format:\n\nQuestion: the input question you must answer\nThought: you should always think about what to do\nAction: the action to take, should be one of [{tool_names}]\nAction Input: the input to the action\nObservation: the result of the action\n... (this Thought/Action/Action Input/Observation can repeat N times)\nThought: I now know the final answer\nFinal Answer: the final answer to the original input question\n\nBegin!\n\nQuestion: {input}\nThought: {agent_scratchpad}\n",
+    "final_text_hash": "28d17eadf064d147a6cfa33d2898ffa24b7dd74c2d164d4214bc7ece6cd64d74"
+  },
+  "graph_version": {
+    "graph_hash": "12b147e519ee366b8fc30c12d4f77ade8a170de449523e8d3adee0290ee920eb",
+    "tool_schemas_hash": "1bd9163c636448d424ca3652417f564bba3983fd515e6793b2ec95ff7ef206e3"
+  },
+  "tool_calls": [
+    {
+      "id": "909eb7d2-4796-4b13-948d-03ed1b796b78",
+      "tool_name": "tavily_search",
+      "start_time": "2025-11-30T23:25:47.352813",
+      "end_time": "2025-11-30T23:25:49.050255",
+      "latency_ms": 1697,
+      "timestamp": "2025-11-30T23:25:49.050255",
+      "input": {
+        "input": "best country to live in"
+      },
+      "input_hash": "a2aa693a9c7559923d6e59bc41d59c7922f065ec4d2ee6c40f4458eaa2200651",
+      "output": {
+        "output": "Title: What's the best country to live in?\nURL: https://www.youtube.com/watch?v=EqJcNnijmdQ\nContent: Costa Rica currently comes the closest over the past few decades. It's managed to grow its economy and improve living standards substantially.\n\n---\nTitle: The Best Places To Live In The World, Rated By Expats\nURL: https://www.forbes.com/sites/laurabegleybloom/2025/09/07/the-best-places-to-live-in-the-world-rated-by-expats/\nContent: This year’s report ranks 46 countries by looking at factors like quality of life, ease of settling in, working abroad, personal finance and the Expat Essentials Index (which covers housing, administration, language and digital life). “All three Latin American countries at the top of our ranking this year shine in the Ease of Settling In Index, where they also occupy the top three spots,” says Chudoba. “Following a good 15th place in 2024, South Korea finds itself in the bottom 10 a year later, ranking 40th,” says Chudoba. “Financial considerations have gained relevance, playing a more important role in how expats rate other aspects of life in their host country,” says Chudoba.\n\n---\nTitle: Best Countries for Expats to Live and Work | IAS\nURL: https://iasservices.org.uk/best-countries-for-expats-to-live/\nContent: If you are looking for a country which offers a warm climate, a rich culture, a low cost of living, and a strong sense of family, this may be the choice for you. Numerous factors go into healthcare quality and, even if the country you are considering ranks highly in healthcare indexes, you should still make sure that they offer the local services which meet your healthcare needs. According to International Living, the following 5 countries offer the best healthcare systems for expats:  The country which is best for your expat retirement will depend on a number of factors, such as your budget, way of life, healthcare needs, and preferred geographic region.\n\n---\nTitle: 13 Best Countries To Move From USA in 2025: Easiest and ...\nURL: https://getgoldenvisa.com/best-countries-to-move-to-from-usa\nContent: Countries such as Spain, Portugal, and Italy appeal to people looking for lower healthcare, housing, and daily expenses, as well as a standard of living equivalent to that of the United States at a fraction of the cost. The country offers a warm climate, beautiful natural surroundings, and a relaxed lifestyle with a lower cost of living Depending on the personal preferences and priorities of Americans, there are some popular countries like Canada, New Zealand, and Portugal that offer a high quality of life, safety, and opportunities for working and studying abroad. Good quality of life, including living conditions, health, happiness, and leisure, is among the factors of the best countries to move to from the USA.\n\n---\nTitle: Best Countries for Quality of Life\nURL: https://www.usnews.com/news/best-countries/rankings/quality-of-life\nContent: Part of the overall Best Countries rankings from U.S. News, the Quality of Life subranking is based on an equally weighted average of scores from nine country attributes that relate to quality of life in a country: affordable, a good job market, economically stable, family friendly, income equality, politically stable, safe, well-developed public education system and well-developed public health system. For more information on how we rank, read the Best Countries methodology. 89 Countries Best Countries Best Countries Best Countries Best Countries Best Countries Best Countries See all Best Countries news ## Switzerland Is the Best Country for 2024 ## The 25 Best Countries in the World See all Best Countries news\n"
+      },
+      "output_hash": "2893bb78b4a6597cdcdd4e4ee2ad9ee0742e4696eef9464bd984f0162d1d7e32",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:a04a8703206a4cf5e3552c36fcb770694f2ec794ba8a401813da95cef3a8d015",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "027566f5-7007-4b4a-ac52-dcbbb93596b6",
+      "tool_name": "send_email",
+      "start_time": "2025-11-30T23:25:50.048573",
+      "end_time": "2025-11-30T23:25:51.437362",
+      "latency_ms": 1388,
+      "timestamp": "2025-11-30T23:25:51.438072",
+      "input": {
+        "input": "Best Country to Live In|According to recent rankings, some of the best countries to live in include Costa Rica, Switzerland, Canada, New Zealand, and Portugal. These countries offer a high quality of life, good healthcare, and a low cost of living. However, the best country for an individual will depend on their specific needs and priorities."
+      },
+      "input_hash": "1c30d63a3aebe8315b7e3d33eafe19a15fc838f67fb137b9727fb484d2526a9c",
+      "output": {
+        "output": "Email sent successfully to arvind@tailorflow.ai"
+      },
+      "output_hash": "c6d60e8042bde98ed6d2710a960cf05319993c139113eec54b3481a07264c90a",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:07d55c3df8d2a80e45c7920548dc3a947993ff24160fbbffaf870271337d0879",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "time_env": {
+    "timestamp": "2025-11-30T23:25:10.270244",
+    "timezone": "UTC",
+    "wall_clock_time": "2025-11-30T23:25:10.270244"
+  },
+  "duration_ms": 52094
+}

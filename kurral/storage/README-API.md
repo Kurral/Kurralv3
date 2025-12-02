@@ -23,7 +23,7 @@ FastAPI backend for centralized Kurral artifact management with authentication, 
 1. **Clone and navigate to the API directory:**
    ```bash
    git clone https://github.com/kurral/kurralv3.git
-   cd kurral/kurral-api
+   cd kurralv3/kurral/storage
    ```
 
 2. **Create `.env` file:**

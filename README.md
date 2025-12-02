@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/kurral-dev/kurral">star the repo</a> — it helps a lot!
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/kurral/kurralv3">star the repo</a> — it helps a lot!
 </p>
 
 ---
@@ -121,8 +121,8 @@ pip install kurral
 
 ```bash
 # Clone the repository
-git clone https://github.com/kurral-dev/kurral.git
-cd kurral
+git clone https://github.com/kurral/kurralv3.git
+cd kurralv3
 
 # Install dependencies
 pip install -r requirements.txt

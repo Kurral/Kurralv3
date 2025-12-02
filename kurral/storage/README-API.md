@@ -22,7 +22,7 @@ FastAPI backend for centralized Kurral artifact management with authentication, 
 
 1. **Clone and navigate to the API directory:**
    ```bash
-   git clone https://github.com/arvindtf/kurral.git
+   git clone https://github.com/kurral/kurralv3.git
    cd kurral/kurral-api
    ```
 
@@ -283,6 +283,6 @@ Apache 2.0
 
 ## Support
 
-- **GitHub Issues**: [github.com/arvindtf/kurral/issues](https://github.com/arvindtf/kurral/issues)
+- **GitHub Issues**: [github.com/kurral/kurralv3/issues](https://github.com/kurral/kurralv3/issues)
 - **Discord**: [discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
 - **Email**: team@kurral.com

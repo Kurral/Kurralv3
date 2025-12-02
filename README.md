@@ -16,7 +16,7 @@
   ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/yourusername/kurral">star the repo</a> — it helps a lot!
 </p>
 
-**Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. It captures complete execution traces of your agents, enabling intelligent replay for regression detection, debugging, and quantifiable A/B performance comparison.
+**Kurral** (package name: `ABTester`) is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. It captures complete execution traces of your agents, enabling intelligent replay for regression detection, debugging, and quantifiable A/B performance comparison.
 
 ## Table of Contents
 - [Why Kurral?](#why-kurral)
@@ -104,13 +104,24 @@ With minimal code changes (just two lines), Kurral's captured artifacts unlock i
 
 ## Installation
 
+### Install from PyPI (Recommended)
+
+```bash
+pip install ABTester
+```
+
+### Install from Source
+
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/kurral.git
 cd kurral
 
-# Install dependencies
-pip install -r requirements.txt
+# Install the package
+pip install -e ABTester/
+
+# Or install dependencies manually
+pip install -r ABTester/requirements.txt
 ```
 
 ## Quick Start
@@ -200,10 +211,13 @@ Once you have set 'done: true', run the replay again.
 ### 4. Replay an Artifact
 ```bash
 # From your agent directory, replay the artifact (pass ID or unique prefix)
+python -m ABTester.replay <artifact_id>
+
+# Or with path
 python ../ABTester/replay.py <artifact_id>
 
 # Example
-python ../ABTester/replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
+python -m ABTester.replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
 ```
 
 Kurral will automatically:
@@ -480,13 +494,16 @@ def main():
 ```bash
 # From agent directory
 cd my_agent
+python -m ABTester.replay <artifact-id>
+
+# Or with absolute path
 python ../ABTester/replay.py <artifact-id>
 
 # From project root
 python ABTester/replay.py <artifact-id>
 
 # Using partial UUID
-python ABTester/replay.py 4babbd1c
+python -m ABTester.replay 4babbd1c
 ```
 
 ...
@@ -511,6 +528,32 @@ When you replay an artifact, Kurral provides detailed information:
   - Tool Accuracy: 0.8
 
 [Kurral] Replay artifact saved: replay_runs/5a9d2627-4dec-4954-96af-b127ba038056.kurral
+```
+
+## Package Structure
+
+The ABTester package is organized as follows:
+
+```
+Kurralv3/
+├── ABTester/              # Main package (installable via PyPI)
+│   ├── __init__.py
+│   ├── agent_decorator.py
+│   ├── agent_replay.py
+│   ├── artifact_manager.py
+│   ├── replay.py          # Main replay script
+│   ├── storage/           # Storage backends (local, R2)
+│   ├── database/          # PostgreSQL metadata storage
+│   ├── cli/               # CLI commands
+│   └── ...                # Other core components
+├── examples/              # Example agents
+│   ├── original/          # Original agents without Kurral
+│   └── Kurral/            # Agents integrated with Kurral
+│       ├── level1agentK/
+│       ├── level2agentK/
+│       └── level3agentK/
+├── README.md              # This file
+└── LICENSE                # Apache 2.0 License
 ```
 
 ## Architecture
@@ -573,12 +616,17 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 
 ## Requirements
 
+**Core dependencies** (automatically installed):
 - Python 3.9+
-- LangChain
-- Pydantic
-- Optional: OpenAI, Google Generative AI, Groq, or other LLM providers
-- Optional: `boto3` for R2 storage support
-- Optional: `sqlalchemy` and `psycopg2-binary` for PostgreSQL/Supabase metadata storage
+- Pydantic >= 2.5.0
+- Click >= 8.1.7
+- Rich >= 13.7.0
+
+**Optional dependencies** (install as needed):
+- **LangChain**: For LangChain agent support (`pip install langchain langchain-openai`)
+- **LLM providers**: OpenAI, Google Generative AI, Groq, Anthropic, etc.
+- **R2 storage**: `pip install boto3` (required only if using Cloudflare R2)
+- **PostgreSQL metadata**: `pip install sqlalchemy psycopg2-binary` (required only if using PostgreSQL/Supabase)
 
 ## License
 
@@ -608,4 +656,8 @@ Star this repo if Kurral just saved you $50 in OpenAI credits.
 
 Made with ❤️ for the agent-building community.
 
-**Note**: The `level1agentK`, `level2AgentK`, and `level3agent` directories are example agents used for testing Kurral. They demonstrate integration patterns but are not part of the core Kurral framework.
+**Note**: Example agents are located in the `examples/` directory:
+- `examples/original/` - Original agent implementations without Kurral
+- `examples/Kurral/` - Same agents integrated with Kurral (`level1agentK`, `level2agentK`, `level3agentK`)
+
+These examples demonstrate integration patterns but are not part of the core ABTester package.

@@ -120,7 +120,7 @@ pip install -r requirements.txt
 Add Kurral to your existing LangChain agent with just two changes:
 
 ```python
-from Kurral_tester.agent_decorator import trace_agent, trace_agent_invoke
+from ABTester.agent_decorator import trace_agent, trace_agent_invoke
 
 @trace_agent()
 def main():
@@ -200,10 +200,10 @@ Once you have set 'done: true', run the replay again.
 ### 4. Replay an Artifact
 ```bash
 # From your agent directory, replay the artifact (pass ID or unique prefix)
-python ../Kurral_tester/replay.py <artifact_id>
+python ../ABTester/replay.py <artifact_id>
 
 # Example
-python ../Kurral_tester/replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
+python ../ABTester/replay.py 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
 ```
 
 Kurral will automatically:
@@ -439,7 +439,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_openai import ChatOpenAI
-from Kurral_tester.agent_decorator import trace_agent, trace_agent_invoke
+from ABTester.agent_decorator import trace_agent, trace_agent_invoke
 
 @trace_agent()
 def main():
@@ -480,13 +480,13 @@ def main():
 ```bash
 # From agent directory
 cd my_agent
-python ../Kurral_tester/replay.py <artifact-id>
+python ../ABTester/replay.py <artifact-id>
 
 # From project root
-python Kurral_tester/replay.py <artifact-id>
+python ABTester/replay.py <artifact-id>
 
 # Using partial UUID
-python Kurral_tester/replay.py 4babbd1c
+python ABTester/replay.py 4babbd1c
 ```
 
 ...

@@ -60,7 +60,8 @@ Standard testing approaches (unit tests, mocks, integration tests) fall short be
 - Automatically detects changes (LLM model, tools, prompts, graph structure)
 - Switches between A replay (deterministic) and B replay (exploratory) based on determinism score
 - Semantic tool matching (85% threshold) caches similar tool calls to reduce API costs
-- **Side Effect Protection**: Prevents dangerous operations (emails, payments, writes) during replay
+
+**Side Effect Protection**: Prevents dangerous operations (emails, payments, writes) during replay
 
 **Quantifiable Regression Detection**
 
@@ -552,7 +553,7 @@ Join our Discord → [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
 
 ## Support
 
-- **Issues**: [github.com/kurral/kurral/issues](https://github.com/kurral/kurral/issues)
+- **Issues**: [github.com/kurral/kurralv3/issues](https://github.com/kurral/kurralv3/issues)
 - **Email**: team@kurral.com
 
 ---

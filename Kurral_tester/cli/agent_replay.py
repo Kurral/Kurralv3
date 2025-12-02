@@ -66,7 +66,10 @@ def replay(run_id: Optional[str], latest: bool, artifacts_dir: Optional[str], ve
         console.print(f"[red]Error: Artifacts directory not found: {artifacts_path}[/red]")
         raise click.Abort()
     
-    artifact_manager = ArtifactManager(storage_path=artifacts_path)
+    # Determine agent directory for config loading
+    agent_dir = artifacts_path.parent if artifacts_path.name == "artifacts" else None
+    
+    artifact_manager = ArtifactManager(storage_path=artifacts_path, agent_dir=agent_dir)
     
     # Load artifact
     artifact_obj = None
@@ -121,9 +124,25 @@ def replay(run_id: Optional[str], latest: bool, artifacts_dir: Optional[str], ve
         )
         
         if replay_artifact_obj:
-            replay_path = ArtifactManager(storage_path=replay_runs_dir).save(replay_artifact_obj)
-            console.print(f"\n[green]Replay artifact saved: {replay_path}[/green]")
-            console.print(f"[dim]Replay ID: {replay_artifact_obj.run_id}[/dim]")
+            # Create replay storage backend with replay_runs path prefix
+            from Kurral_tester.config import get_storage_config
+            from Kurral_tester.storage import create_storage_backend
+            
+            replay_config = get_storage_config(agent_dir)
+            replay_backend = create_storage_backend(
+                replay_config,
+                replay_runs_dir,
+                agent_dir=agent_dir,
+                path_prefix="replay_runs"
+            )
+            
+            replay_result = replay_backend.save(replay_artifact_obj)
+            if not replay_result.success:
+                console.print(f"[yellow]Warning: Failed to save replay artifact: {replay_result.error}[/yellow]")
+            else:
+                replay_path = replay_result.local_path or replay_runs_dir / f"{replay_artifact_obj.kurral_id}.kurral"
+                console.print(f"\n[green]Replay artifact saved: {replay_path}[/green]")
+                console.print(f"[dim]Replay ID: {replay_artifact_obj.run_id}[/dim]")
         
         # Report new and unused tool calls if any
         new_tool_calls = result.get('new_tool_calls', [])

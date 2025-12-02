@@ -350,8 +350,12 @@ def _generate_and_export_artifact(
             artifacts_dir = "./artifacts"
             Path(artifacts_dir).mkdir(parents=True, exist_ok=True)
         
-        # Use ArtifactManager
-        manager = ArtifactManager(storage_path=Path(artifacts_dir))
+        # Use ArtifactManager with config loading from agent directory
+        agent_dir = Path(caller_file_path).parent.resolve() if caller_file_path else None
+        manager = ArtifactManager(
+            storage_path=Path(artifacts_dir),
+            agent_dir=agent_dir
+        )
         saved_path = str(manager.save(artifact))
 
     return artifact, saved_path

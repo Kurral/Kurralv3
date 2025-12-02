@@ -109,7 +109,21 @@ def replay(
     else:
         storage = Path("./artifacts")
     
-    artifact_manager = ArtifactManager(storage_path=storage)
+    # Determine agent directory for config loading
+    agent_dir = storage.parent if storage.name == "artifacts" else None
+    
+    artifact_manager = ArtifactManager(storage_path=storage, agent_dir=agent_dir)
+    
+    # Ensure R2 migration before loading artifacts
+    if artifact_manager.using_r2:
+        console.print("[dim]Loading R2...[/dim]")
+        migration_stats = artifact_manager.ensure_r2_migration(show_message=False)
+        if migration_stats["migrated"] > 0:
+            console.print(f"[green]Migrated {migration_stats['migrated']} artifact(s) to R2[/green]")
+            if migration_stats["skipped"] > 0:
+                console.print(f"[dim]Skipped {migration_stats['skipped']} (already in R2)[/dim]")
+        elif migration_stats.get("message"):
+            console.print(f"[dim]{migration_stats['message']}[/dim]")
     
     # Load artifact
     artifact_obj = None

@@ -181,7 +181,21 @@
       "created_at": "2025-12-01T04:51:19.187602",
       "tenant_id": "default",
       "semantic_buckets": []
+    },
+    {
+      "kurral_id": "4c8cf02a-0b78-4bf2-bb1d-3526ffbcb57d",
+      "run_id": "replay_local_agent_1764563146_1764652300",
+      "created_at": "2025-12-02T00:11:40.916674",
+      "tenant_id": "default",
+      "semantic_buckets": []
+    },
+    {
+      "kurral_id": "d6903992-2fb4-4d3e-aecd-c812d9a3100e",
+      "run_id": "replay_local_agent_1764563146_1764653346",
+      "created_at": "2025-12-02T00:29:06.635409",
+      "tenant_id": "default",
+      "semantic_buckets": []
     }
   ],
-  "updated_at": "2025-12-01T04:51:19.195249"
+  "updated_at": "2025-12-02T00:29:06.638527"
 }

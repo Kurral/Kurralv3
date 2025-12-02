@@ -127,8 +127,11 @@ def trace_agent_invoke(
     artifacts_dir = Path(artifacts_dir)
     artifacts_dir.mkdir(parents=True, exist_ok=True)
     
+    # Determine agent directory for config loading (parent of artifacts_dir)
+    agent_dir = artifacts_dir.parent if artifacts_dir.name == "artifacts" else None
+    
     # Create managers
-    artifact_manager = ArtifactManager(storage_path=artifacts_dir)
+    artifact_manager = ArtifactManager(storage_path=artifacts_dir, agent_dir=agent_dir)
     artifact_generator = ArtifactGenerator()
     
     # Start timing
@@ -424,7 +427,8 @@ def trace_agent(
                 "environment": environment,
             }
             
-            artifact_manager = ArtifactManager(storage_path=artifacts_dir)
+            # Pass agent folder for config loading
+            artifact_manager = ArtifactManager(storage_path=artifacts_dir, agent_dir=agent_folder)
             
             try:
                 # Execute function

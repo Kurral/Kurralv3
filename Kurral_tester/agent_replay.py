@@ -178,7 +178,25 @@ def replay_agent_artifact(
     if verbose:
         print(f"[Kurral] Using artifacts directory: {artifacts_dir}")
     
-    artifact_manager = ArtifactManager(storage_path=artifacts_dir)
+    # Try to determine agent directory (parent of artifacts_dir)
+    agent_dir = artifacts_dir.parent if artifacts_dir.name == "artifacts" else None
+    
+    # Create ArtifactManager with config support
+    artifact_manager = ArtifactManager(
+        storage_path=artifacts_dir,
+        agent_dir=agent_dir
+    )
+    
+    # Ensure R2 migration before loading artifacts
+    if artifact_manager.using_r2:
+        print("Loading R2...")
+        migration_stats = artifact_manager.ensure_r2_migration(show_message=False)
+        if migration_stats["migrated"] > 0:
+            print(f"Migrated {migration_stats['migrated']} artifact(s) to R2")
+            if migration_stats["skipped"] > 0:
+                print(f"Skipped {migration_stats['skipped']} (already in R2)")
+        elif migration_stats.get("message"):
+            print(migration_stats["message"])
     
     # Load artifact
     artifact = None
@@ -692,6 +710,9 @@ def replay_agent_artifact(
     replay_runs_dir = artifacts_dir.parent / "replay_runs"
     replay_runs_dir.mkdir(parents=True, exist_ok=True)
     
+    # Determine agent directory for config loading
+    agent_dir = artifacts_dir.parent if artifacts_dir.name == "artifacts" else None
+    
     try:
         generator = ArtifactGenerator()
         replay_run_id = f"replay_{artifact.run_id}_{int(datetime.utcnow().timestamp())}"
@@ -722,7 +743,25 @@ def replay_agent_artifact(
         # Set graph_version after creation
         replay_artifact.graph_version = artifact.graph_version
         
-        replay_path = ArtifactManager(storage_path=replay_runs_dir).save(replay_artifact)
+        # Create replay storage backend with replay_runs path prefix
+        from Kurral_tester.config import get_storage_config
+        from Kurral_tester.storage import create_storage_backend
+        
+        replay_config = get_storage_config(agent_dir)
+        replay_backend = create_storage_backend(
+            replay_config,
+            replay_runs_dir,
+            agent_dir=agent_dir,
+            path_prefix="replay_runs"
+        )
+        
+        # Save replay artifact using backend directly
+        replay_result = replay_backend.save(replay_artifact)
+        
+        if not replay_result.success:
+            raise RuntimeError(f"Failed to save replay artifact: {replay_result.error}")
+        
+        replay_path = replay_result.local_path or replay_runs_dir / f"{replay_artifact.kurral_id}.kurral"
         print(f"\n{'='*60}")
         print(f"Replay artifact saved: {replay_path}")
         print(f"Replay Run ID: {replay_run_id}")

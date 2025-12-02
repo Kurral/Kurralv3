@@ -214,6 +214,127 @@ Kurral will automatically:
 - Report any changes detected
 - Display ARS score
 
+## Storage Options
+
+Kurral supports flexible storage configurations for artifacts and metadata:
+
+### Local Storage (Default)
+
+By default, artifacts are stored locally in the `artifacts/` directory:
+- ✅ No configuration required
+- ✅ Works offline
+- ✅ Simple file-based storage
+
+### Cloudflare R2 Storage (Optional)
+
+Store artifacts in Cloudflare R2 for centralized, scalable storage:
+
+**Configuration:**
+```bash
+# Add to your agent's .env file
+STORAGE_BACKEND=r2
+R2_ACCOUNT_ID=your_account_id
+R2_ACCESS_KEY_ID=your_access_key
+R2_SECRET_ACCESS_KEY=your_secret_key
+R2_BUCKET_NAME=your_bucket_name
+TENANT_ID=your_tenant_id
+AGENT_NAME=level3agentK  # Optional: auto-detected from folder name
+```
+
+**Benefits:**
+- Centralized storage across multiple agents
+- Automatic organization by agent, date, and tenant
+- No local backup (R2-only mode)
+- Automatic migration of existing local artifacts
+
+**How it works:**
+- Full artifacts are stored in R2 with path structure: `{tenant_id}/{agent_name}/artifacts/{year}/{month}/{kurral_id}.kurral`
+- Replay artifacts stored separately: `{tenant_id}/{agent_name}/replay_runs/{year}/{month}/{kurral_id}.kurral`
+- When replay starts, local artifacts are automatically migrated to R2
+- Artifacts are loaded from R2 during replay
+
+### PostgreSQL/Supabase Metadata Storage (Optional)
+
+Store artifact metadata in PostgreSQL/Supabase for fast queries and analytics:
+
+**Configuration:**
+```bash
+# Add to your agent's .env file
+DATABASE_URL=postgresql://user:password@host:port/database
+
+# For Supabase:
+DATABASE_URL=postgresql://postgres.xxxxx:password@aws-0-us-east-1.pooler.supabase.com:6543/postgres
+```
+
+**Install dependencies:**
+```bash
+pip install sqlalchemy psycopg2-binary
+```
+
+**Benefits:**
+- ⚡ **Fast queries**: Search artifacts by model, date, semantic bucket without downloading files
+- 📊 **Analytics**: Aggregate costs, token usage, error rates across all artifacts
+- 🔍 **Indexed search**: PostgreSQL indexes enable fast filtering and searching
+- 🏢 **Multi-tenant**: Filter by tenant, environment, or semantic buckets
+
+**What's stored:**
+- Metadata in PostgreSQL: kurral_id, run_id, tenant_id, model_name, created_at, determinism_score, cost, token usage, etc.
+- Full artifacts remain in R2 or local storage
+- Tables are created automatically on first use
+
+**How it works:**
+- When you save an artifact, metadata is automatically saved to PostgreSQL
+- Full artifact JSON files remain in R2 or local storage
+- You can query metadata without downloading large artifact files
+
+### Storage Configuration Examples
+
+**Local only (default):**
+```env
+# No configuration needed - artifacts stored in ./artifacts/
+```
+
+**R2 only:**
+```env
+STORAGE_BACKEND=r2
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=...
+TENANT_ID=default
+```
+
+**R2 + PostgreSQL metadata:**
+```env
+STORAGE_BACKEND=r2
+R2_ACCOUNT_ID=...
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_BUCKET_NAME=...
+DATABASE_URL=postgresql://...
+TENANT_ID=default
+```
+
+**Local + PostgreSQL metadata:**
+```env
+DATABASE_URL=postgresql://...
+# Artifacts stored locally, metadata in PostgreSQL
+```
+
+### Migration and Setup
+
+**R2 Migration:**
+- When you first configure R2, local artifacts are automatically migrated on replay start
+- You'll see: "Loading R2... Migrated X artifact(s) to R2"
+- Already migrated artifacts are skipped (idempotent)
+- Original local files remain until manually deleted
+
+**PostgreSQL Setup:**
+- Tables are created automatically on first use
+- No manual schema migration needed
+- Connection is tested when metadata service is initialized
+- Failures are logged as warnings (artifact saving still works)
+
 ## Deep Dive
 Want to understand how Kurral works under the hood? Read on.
 
@@ -402,8 +523,10 @@ When you replay an artifact, Kurral provides detailed information:
 - **`tool_stubber.py`**: Semantic tool matching and caching during B replay
 - **`side_effect_config.py`**: Side effect configuration management and auto-generation
 - **`ars_scorer.py`**: Agent Regression Score calculation
-- **`artifact_manager.py`**: Artifact storage and retrieval
+- **`artifact_manager.py`**: Artifact storage and retrieval with R2 and PostgreSQL support
 - **`artifact_generator.py`**: Artifact generation from execution traces
+- **`storage/`**: Storage backends (local, R2)
+- **`database/`**: PostgreSQL metadata storage (connection, models, metadata service)
 
 ### Artifact Structure
 
@@ -454,6 +577,8 @@ Kurral artifacts (`.kurral` files) are JSON files containing:
 - LangChain
 - Pydantic
 - Optional: OpenAI, Google Generative AI, Groq, or other LLM providers
+- Optional: `boto3` for R2 storage support
+- Optional: `sqlalchemy` and `psycopg2-binary` for PostgreSQL/Supabase metadata storage
 
 ## License
 

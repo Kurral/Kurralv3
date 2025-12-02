@@ -1,10 +1,12 @@
 """
-Level 3 Agent - Internet Search Agent with Email
-An agent that performs internet searches using Tavily API and can send emails.
+Level 2 Agent - Internet Search Agent
+An agent that performs internet searches using Tavily API.
 """
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Find project root (where Kurral_tester is located)
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
 import os
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_react_agent
@@ -13,7 +15,6 @@ from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from tavily import TavilyClient
-from send_email import send_email
 from Kurral_tester.agent_decorator import trace_agent, trace_agent_invoke
 
 # Load environment variables
@@ -80,43 +81,6 @@ def tavily_search(query: str) -> str:
         print(f"   {error_msg}")
         return error_msg
 
-def send_email_tool(input_str: str) -> str:
-    """
-    Sends an email to jayjani482001@gmail.com.
-    
-    Args:
-        input_str: A string containing subject and body, separated by newline or pipe (|)
-                   Format: "Subject: <subject>\nBody: <body>" or "<subject>|<body>"
-        
-    Returns:
-        Confirmation message
-    """
-    print("\n[TOOL INVOKED] send_email()")
-    
-    try:
-        # Parse input to extract subject and body
-        if "|" in input_str:
-            parts = input_str.split("|", 1)
-            subject = parts[0].strip()
-            body = parts[1].strip() if len(parts) > 1 else ""
-        elif "\n" in input_str:
-            lines = input_str.split("\n", 1)
-            subject = lines[0].strip()
-            body = lines[1].strip() if len(lines) > 1 else ""
-        else:
-            # If no separator, treat entire string as body with default subject
-            subject = "Email from Level 3 Agent"
-            body = input_str.strip()
-        
-        print(f"   Subject: {subject}")
-        
-        send_email("arvind@tailorflow.ai", subject, body)
-        return "Email sent successfully to arvind@tailorflow.ai"
-    except Exception as e:
-        error_msg = f"Error sending email: {str(e)}"
-        print(f"   {error_msg}")
-        return error_msg
-
 def create_tools():
     """Create tools for the agent."""
     return [
@@ -125,20 +89,15 @@ def create_tools():
             func=tavily_search,
             description="Performs an internet search using Tavily API. Use this tool to search for current information, news, facts, or any topic. Input should be a search query string."
         ),
-        Tool(
-            name="send_email",
-            func=send_email_tool,
-            description="Sends an email to jayjani482001@gmail.com. Use this tool when you need to send an email. Input should be a string with subject and body separated by a newline or pipe (|) character. Format: 'Subject: <subject>\\nBody: <body>' or '<subject>|<body>'."
-        ),
     ]
 
 @trace_agent()
 def main():
-    """Main function to run the Level 3 agent."""
+    """Main function to run the Level 2 agent."""
     print("=" * 60)
-    print("Level 3 Agent - Internet Search Agent with Email")
+    print("Level 2 Agent - Internet Search Agent")
     print("=" * 60)
-    print("\nThis agent performs internet searches to answer your questions and can send emails.")
+    print("\nThis agent performs internet searches to answer your questions.")
     print("Type 'exit' to quit.\n")
     
     # Check for Tavily API key
@@ -177,17 +136,7 @@ Thought: {agent_scratchpad}
         
         # Create ReAct agent
         agent = create_react_agent(llm, tools, prompt)
-        
-        # Custom error handler for parsing errors
-        def handle_parsing_error(error):
-            return f"Could not parse LLM output: {error}. Please try rephrasing your response in the correct format."
-        
-        agent_executor = AgentExecutor(
-            agent=agent, 
-            tools=tools, 
-            verbose=True, 
-            handle_parsing_errors=handle_parsing_error
-        )
+        agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
         
         while True:
             user_input = input("\nYou: ").strip()

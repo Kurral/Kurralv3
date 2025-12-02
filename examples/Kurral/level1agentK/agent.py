@@ -4,7 +4,9 @@ A ReAct agent that uses tools to convert short forms to full forms.
 """
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Find project root (where Kurral_tester is located)
+project_root = Path(__file__).parent.parent.parent.parent
+sys.path.insert(0, str(project_root))
 import os
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_react_agent

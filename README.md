@@ -273,7 +273,7 @@ configure(
 )
 ```
 
-For full API documentation, see [kurral-api/README.md](./kurral-api/README.md).
+For full API documentation, see [kurral/storage/README-API.md](kurral/storage/README-API.md).
 
 ## Deep Dive
 

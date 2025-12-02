@@ -28,7 +28,7 @@
 - [How It Works](#how-it-works)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
-- [Centralized Storage (Kurral API)](#centralized-storage-kurral-api)
+- [Storage Options](#storage-options)
 - [Deep Dive](#deep-dive)
 - [Architecture](#architecture)
 - [Best Practices](#best-practices)
@@ -258,45 +258,75 @@ Kurral will automatically:
 
 ## Storage Options
 
-Kurral supports multiple storage backends:
+Kurral supports two storage backends for artifact storage:
 
 ### Local Storage (Default)
 
-Artifacts are stored locally in the `artifacts/` directory. This is the default and requires no configuration.
+By default, artifacts are stored in your local filesystem:
 
-### Cloudflare R2 Storage
+```python
+from kurral import configure
 
-For centralized storage, you can configure Kurral to use Cloudflare R2:
-
-```bash
-# Set environment variables
-export R2_ACCOUNT_ID=your-account-id
-export R2_ACCESS_KEY_ID=your-access-key
-export R2_SECRET_ACCESS_KEY=your-secret-key
-export R2_BUCKET_NAME=your-bucket-name
-export TENANT_ID=your-tenant-id  # Optional, defaults to "default"
+# Explicit configuration (optional - this is the default)
+configure(storage_backend="local")
 ```
 
-When R2 credentials are provided, Kurral automatically:
-- Uploads artifacts to R2
-- Migrates existing local artifacts to R2 on first use
-- Loads artifacts from R2 during replay
+Artifacts will be saved to:
+- `artifacts/` - Original execution artifacts
+- `replay_runs/` - Replay artifacts
 
-### Optional: PostgreSQL Metadata
+### Cloudflare R2 / AWS S3 Storage
 
-For faster querying and analytics, you can optionally configure PostgreSQL to store artifact metadata:
+For production environments or team collaboration, use cloud storage:
 
-```bash
-export DATABASE_URL=postgresql://user:password@localhost:5432/kurral_db
+```python
+from kurral import configure
+
+configure(
+    storage_backend="r2",
+    r2_account_id="your-account-id",
+    r2_access_key_id="your-access-key",
+    r2_secret_access_key="your-secret-key",
+    r2_bucket_name="kurral-artifacts"
+)
 ```
 
-This stores lightweight metadata (not full artifacts) for fast filtering and statistics. Full artifacts remain in R2 or local storage.
+Or via environment variables:
 
-### Kurral API (Separate Service)
+```bash
+# .env file
+KURRAL_STORAGE_BACKEND=r2
+R2_ACCOUNT_ID=your-account-id
+R2_ACCESS_KEY_ID=your-access-key
+R2_SECRET_ACCESS_KEY=your-secret-key
+R2_BUCKET_NAME=kurral-artifacts
+```
 
-For teams that need centralized management, authentication, and web-based analytics, **Kurral API** is available as a separate FastAPI service. See [kurral/storage/README-API.md](kurral/storage/README-API.md) for details.
+**Benefits of R2/S3 Storage:**
+- ☁️ **Scalable**: No local disk space limits
+- 🔄 **Team Access**: Share artifacts across team members
+- 💰 **Cost-Effective**: Cloudflare R2 has zero egress fees
+- 🔒 **Secure**: Encrypted at rest
 
-**Note**: The Kurral Python library works standalone with R2 or local storage. The API is an optional centralized service for teams.
+**Setup Cloudflare R2:**
+
+1. Create an R2 bucket in Cloudflare Dashboard
+2. Generate API credentials (R2 → Manage R2 API Tokens)
+3. Copy Account ID, Access Key, and Secret Key
+4. Configure Kurral with your credentials
+
+**Compatible with AWS S3:**
+
+Kurral works with any S3-compatible storage (AWS S3, MinIO, DigitalOcean Spaces, etc.):
+
+```python
+configure(
+    storage_backend="r2",  # Use "r2" for any S3-compatible storage
+    r2_endpoint_url="https://s3.amazonaws.com",  # For AWS S3
+    r2_bucket_name="your-bucket",
+    # ... other credentials
+)
+```
 
 ## Deep Dive
 

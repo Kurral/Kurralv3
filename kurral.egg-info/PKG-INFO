@@ -1,3 +1,57 @@
+Metadata-Version: 2.4
+Name: kurral
+Version: 0.2.0
+Summary: Deterministic testing and replay framework for AI agents
+Author-email: Kurral Team <team@kurral.com>
+License: Apache-2.0
+Project-URL: Homepage, https://github.com/Kurral/kurral
+Project-URL: Documentation, https://github.com/Kurral/kurral#readme
+Project-URL: Repository, https://github.com/Kurral/kurral
+Project-URL: Issues, https://github.com/Kurral/kurral/issues
+Project-URL: Discord, https://discord.gg/pan6GRRV
+Keywords: llm,testing,replay,determinism,agents,langchain,ai-agents,regression-testing,a]b-testing
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Scientific/Engineering :: Artificial Intelligence
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: click>=8.1.7
+Requires-Dist: rich>=13.7.0
+Requires-Dist: pyyaml>=6.0
+Provides-Extra: langchain
+Requires-Dist: langchain>=0.1.0; extra == "langchain"
+Requires-Dist: langchain-openai>=0.0.5; extra == "langchain"
+Provides-Extra: openai
+Requires-Dist: openai>=1.0.0; extra == "openai"
+Provides-Extra: anthropic
+Requires-Dist: anthropic>=0.18.0; extra == "anthropic"
+Provides-Extra: groq
+Requires-Dist: groq>=0.4.0; extra == "groq"
+Provides-Extra: google
+Requires-Dist: google-generativeai>=0.3.0; extra == "google"
+Provides-Extra: all
+Requires-Dist: kurral[anthropic,google,groq,langchain,openai]; extra == "all"
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.3; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.23.0; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: black>=23.12.0; extra == "dev"
+Requires-Dist: ruff>=0.1.9; extra == "dev"
+Requires-Dist: mypy>=1.8.0; extra == "dev"
+Requires-Dist: build>=1.0.0; extra == "dev"
+Requires-Dist: twine>=4.0.0; extra == "dev"
+Dynamic: license-file
+
 <p align="center">
   <img width="350" height="350" alt="Kurral Logo" src="https://github.com/user-attachments/assets/248a09da-be82-4654-a5b1-0f09d45ebe4a" />
 </p>
@@ -13,7 +67,7 @@
 </p>
 
 <p align="center">
-  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/kurral/kurralv3">star the repo</a> — it helps a lot!
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/kurral-dev/kurral">star the repo</a> — it helps a lot!
 </p>
 
 ---
@@ -121,8 +175,8 @@ pip install kurral
 
 ```bash
 # Clone the repository
-git clone https://github.com/kurral/kurralv3.git
-cd kurralv3
+git clone https://github.com/kurral-dev/kurral.git
+cd kurral
 
 # Install dependencies
 pip install -r requirements.txt
@@ -273,7 +327,7 @@ configure(
 )
 ```
 
-For full API documentation, see [kurral/storage/README-API.md](kurral/storage/README-API.md).
+For full API documentation, see [kurral-api/README.md](./kurral-api/README.md).
 
 ## Deep Dive
 

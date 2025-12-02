@@ -58,7 +58,7 @@ Standard testing approaches (unit tests, mocks, integration tests) fall short be
 **Intelligent Replay System**
 
 - Automatically detects changes (LLM model, tools, prompts, graph structure)
-- Switches between Level 1 (deterministic) and Level 2 (exploratory) replay
+- Switches between A replay (deterministic) and B replay (exploratory) based on determinism score
 - Semantic tool matching (85% threshold) caches similar tool calls to reduce API costs
 - **Side Effect Protection**: Prevents dangerous operations (emails, payments, writes) during replay
 
@@ -91,17 +91,17 @@ Kurral records the complete execution session (**Artifact**), which can include 
 
 You can then replay this comprehensive session artifact against new code, different LLM configurations, or modified prompts. This allows you to verify behavioral consistency across the entire user dialogue, not just a single prompt-response cycle.
 
-**Intelligent Replay Levels**
+**Intelligent Replay Types**
 
-Kurral detects what changed between runs and automatically switches strategies based on the replay level required:
+Kurral detects what changed between runs and automatically switches strategies based on determinism score:
 
-- **Level 1 Replay** (Deterministic): Logic changes? This mode achieves true deterministic testing of your agent's internal logic. It mocks the LLM entirely using the cached output from the artifact to verify that your agent code and tool orchestration remain identical (Zero API cost).
+- **A Replay** (Deterministic): When determinism score < 0.8 and no changes detected. Returns artifact outputs directly without re-executing LLM or tools.
 
     - ✅ Zero API costs
     - ✅ Perfect for regression testing
     - ✅ Verifies logic without re-running LLM
 
-- **Level 2 Replay** (Non-Deterministic / Exploratory): Model or Prompt changes? This mode facilitates A/B testing. It re-runs the LLM live but intelligently caches tool calls using semantic matching to benchmark the quality of the new model or prompt against the original run.
+- **B Replay** (Non-Deterministic / Exploratory): When determinism score >= 0.8 or changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
   
     - ✅ Benchmark new models against original runs
     - ✅ Test prompt variations
@@ -221,59 +221,81 @@ Once you have set 'done: true', run the replay again.
 ### 4. Replay an Artifact
 
 ```bash
-# Replay using the kurral CLI
-kurral replay <artifact_id>
+# Option 1: Using kurral CLI (from agent directory)
+kurral replay <kurral_id>
 
 # Example
 kurral replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
 
+# Or using file path
+kurral replay artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral
+
+# Or replay latest artifact
+kurral replay --latest
+
+# Option 2: Using Python module (from agent directory)
+python -m kurral.replay <kurral_id>
+
+# Example
+python -m kurral.replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
+
 # Or using partial UUID
-kurral replay 4babbd1c
+python -m kurral.replay 4babbd1c
+
+# Option 3: Using replay_cmd module with file path
+python -m kurral.cli.replay_cmd artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral --verbose
 ```
 
 Kurral will automatically:
 
-- Detect changes and determine replay type (Level 1 or Level 2)
+- Detect changes and determine replay type (A or B)
 - Check side effect configuration (blocks dangerous operations)
 - Print replay results to stdout
 - Save replay artifact to `replay_runs/` directory
 - Report any changes detected
 - Display ARS score
 
-## Centralized Storage (Kurral API)
+## Storage Options
 
-By default, Kurral stores artifacts locally in the `artifacts/` directory. For teams that need centralized storage, analytics, and collaboration, you can set up **Kurral API**.
+Kurral supports multiple storage backends:
 
-### What Kurral API Provides
+### Local Storage (Default)
 
-- ☁️ **Cloudflare R2 / S3 Storage**: Store artifacts in your own bucket
-- 🔐 **Authentication**: API keys with scopes and rate limiting
-- 📊 **Analytics**: Time series data, aggregations, and statistics
-- 🔍 **Advanced Filtering**: Query by tenant, environment, semantic bucket, model, and more
-- 🏢 **Multi-Tenant**: Organize artifacts by team or project
+Artifacts are stored locally in the `artifacts/` directory. This is the default and requires no configuration.
 
-### Quick Setup
+### Cloudflare R2 Storage
+
+For centralized storage, you can configure Kurral to use Cloudflare R2:
 
 ```bash
-cd kurral-api
-cp .env.example .env
-# Configure your R2/S3 credentials in .env
-docker-compose up -d
+# Set environment variables
+export R2_ACCOUNT_ID=your-account-id
+export R2_ACCESS_KEY_ID=your-access-key
+export R2_SECRET_ACCESS_KEY=your-secret-key
+export R2_BUCKET_NAME=your-bucket-name
+export TENANT_ID=your-tenant-id  # Optional, defaults to "default"
 ```
 
-### Connect Kurral to the API
+When R2 credentials are provided, Kurral automatically:
+- Uploads artifacts to R2
+- Migrates existing local artifacts to R2 on first use
+- Loads artifacts from R2 during replay
 
-```python
-from kurral import configure
+### Optional: PostgreSQL Metadata
 
-configure(
-    storage_backend="api",
-    api_url="http://localhost:8000/api/v1",
-    api_key="kurral_YOUR_API_KEY"
-)
+For faster querying and analytics, you can optionally configure PostgreSQL to store artifact metadata:
+
+```bash
+export DATABASE_URL=postgresql://user:password@localhost:5432/kurral_db
 ```
 
-For full API documentation, see [kurral/storage/README-API.md](kurral/storage/README-API.md).
+This stores lightweight metadata (not full artifacts) for fast filtering and statistics. Full artifacts remain in R2 or local storage.
+
+### Kurral API (Separate Service)
+
+For teams that need centralized management, authentication, and web-based analytics, **Kurral API** is available as a separate FastAPI service. See [kurral/storage/README-API.md](kurral/storage/README-API.md) for details.
+
+**Note**: The Kurral Python library works standalone with R2 or local storage. The API is an optional centralized service for teams.
 
 ## Deep Dive
 
@@ -305,23 +327,25 @@ All interactions within a single `main()` execution are accumulated into one ses
 
 ### Replay Types
 
-Kurral uses intelligent change detection to determine the appropriate replay strategy:
+Kurral uses intelligent change detection and determinism scoring to determine the appropriate replay strategy:
 
-#### Level 1 Replay (Deterministic)
+#### A Replay (Deterministic)
 
-- **When**: Everything matches (same LLM, tools, prompt template, graph structure)
-- **Behavior**: Returns cached outputs directly without re-executing LLM or tools
+- **When**: Determinism score < 0.8 AND no changes detected (same LLM, tools, prompt template, graph structure)
+- **Behavior**: Returns cached outputs directly from artifact without re-executing LLM or tools
 - **Use Case**: Regression testing, verifying identical behavior
+- **Cost**: Zero API costs
 
-#### Level 2 Replay (Non-Deterministic / Exploratory)
+#### B Replay (Non-Deterministic / Exploratory)
 
-- **When**: Something changed (different LLM, model parameters, tools, or prompt template)
+- **When**: Determinism score >= 0.8 OR changes detected (different LLM, model parameters, tools, or prompt template)
 - **Behavior**: Re-executes LLM with semantic tool call matching (85% similarity threshold)
 - **Use Case**: Testing different models, comparing performance, A/B testing
+- **Cost**: Reduced API costs via semantic tool caching
 
 ### Semantic Tool Matching
 
-During Level 2 replay, Kurral uses semantic similarity to match tool calls:
+During B replay, Kurral uses semantic similarity to match tool calls:
 
 - **Exact Match**: If tool name and inputs match exactly → use cached output
 - **Semantic Match**: If similarity ≥ 85% → use cached output (no tool execution)
@@ -426,17 +450,21 @@ def main():
 When you replay an artifact, Kurral provides detailed information:
 
 ```
-[Kurral] Replay Type: Level 2 (Non-Deterministic)
-[Kurral] Changes Detected:
-  - LLM Model: gpt-4 → llama-3.3-70b-versatile
-  - Provider: openai → groq
+Replay Type: B
+Determinism Score: 0.62 (threshold: 0.80)
+
+Changes Detected:
+  - llm_config:
+      model_name: {'artifact': 'llama-3.3-70b-versatile', 'current': 'gpt-4'}
+
+Executing B Replay (Re-executing agent with cached tool calls)...
 
 [Kurral] Replay Execution:
   - Cache Hits: 1
   - New Tool Calls: 2
   - Unused Tool Calls: 0
 
-[Kurral] ARS Score: 0.626
+ARS (Agent Regression Score): 0.626
   - Output Similarity: 0.5515
   - Tool Accuracy: 0.8
 
@@ -449,7 +477,7 @@ When you replay an artifact, Kurral provides detailed information:
 
 - **`trace_agent`**: Decorator that wraps your agent's main function
 - **`trace_agent_invoke`**: Wrapper for `agent_executor.invoke()` that captures traces
-- **`replay`**: Replay engine with automatic Level 1/Level 2 detection
+- **`replay`**: Replay engine with automatic A/B detection
 - **`replay_detector`**: Change detection logic and determinism scoring
 - **`tool_stubber`**: Semantic tool matching and caching during replay
 - **`side_effect_config`**: Side effect configuration management and auto-generation

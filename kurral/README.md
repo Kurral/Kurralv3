@@ -66,9 +66,9 @@ from kurral.replay_executor import ReplayExecutor
 manager = ArtifactManager(storage_path="./artifacts")
 artifact = manager.load_by_run_id("my_run_123")
 
-# Detect changes
+# Detect changes and determine replay type
 detector = ReplayDetector()
-detection_result = detector.detect_changes(
+detection_result = detector.determine_replay_type(
     artifact=artifact,
     current_llm_config=current_llm_config,  # Optional
     current_prompt=current_prompt,  # Optional
@@ -108,6 +108,29 @@ Artifacts are stored locally by default in `./artifacts/`. You can specify a cus
 manager = ArtifactManager(storage_path="/path/to/artifacts")
 ```
 
+### Cloudflare R2 Storage
+
+For centralized storage, configure R2 credentials via environment variables:
+
+```bash
+export R2_ACCOUNT_ID=your-account-id
+export R2_ACCESS_KEY_ID=your-access-key
+export R2_SECRET_ACCESS_KEY=your-secret-key
+export R2_BUCKET_NAME=your-bucket-name
+```
+
+When R2 is configured, artifacts are automatically uploaded to R2 and loaded from R2 during replay.
+
+### Optional: PostgreSQL Metadata
+
+For faster querying, you can optionally configure PostgreSQL:
+
+```bash
+export DATABASE_URL=postgresql://user:password@localhost:5432/kurral_db
+```
+
+This stores lightweight metadata (not full artifacts) for fast filtering. Full artifacts remain in R2 or local storage.
+
 ## Integration with LangGraph
 
 To integrate with LangGraph agents, you'll need to:
@@ -119,8 +142,9 @@ To integrate with LangGraph agents, you'll need to:
 
 ## Notes
 
-- This implementation is independent of kurral-cli (no imports from kurral-cli)
-- Code was copied from kurral-cli where needed, not imported
-- The A/B replay types are independent of the existing A/B/C determinism levels in kurral-cli
-- B replay requires an LLM client (OpenAI or Anthropic supported)
+- A replay returns artifact outputs directly (zero API cost)
+- B replay requires an LLM client (OpenAI, Anthropic, or compatible client)
+- Replay type is determined by determinism score (threshold: 0.8) and change detection
+- Storage supports local files and Cloudflare R2 (direct connection, no API required)
+- PostgreSQL is optional for metadata indexing only
 

@@ -1,5 +1,7 @@
 # Kurral API
 
+**Note**: This is a separate FastAPI service for centralized artifact management. The Kurral Python library works standalone with R2 or local storage and does not require this API.
+
 FastAPI backend for centralized Kurral artifact management with authentication, R2 storage, and analytics.
 
 ## Features
@@ -23,7 +25,7 @@ FastAPI backend for centralized Kurral artifact management with authentication, 
 1. **Clone and navigate to the API directory:**
    ```bash
    git clone https://github.com/kurral/kurralv3.git
-   cd kurralv3/kurral/storage
+   cd kurralv3/kurral-api-main/kurral-api-main
    ```
 
 2. **Create `.env` file:**
@@ -222,27 +224,24 @@ curl "http://localhost:8000/api/v1/stats/timeseries?days=7" \
 - `GET /` - Get aggregated statistics
 - `GET /timeseries` - Get time series data
 
-## Integration with Kurral CLI
+## Integration with Kurral Library
 
-Configure Kurral to use the API:
+**Note**: The Kurral Python library currently does not have built-in API backend support. The library works directly with R2 or local storage.
 
-```python
-from kurral import configure
+The Kurral API is a separate service that provides:
+- Centralized artifact management via REST API
+- Multi-user authentication and authorization
+- Web-based analytics and dashboards
+- Advanced querying and filtering
 
-configure(
-    storage_backend="api",
-    api_url="http://localhost:8000/api/v1",
-    api_key="kurral_YOUR_API_KEY"
-)
-```
+To use the API, you would need to:
+1. Deploy the Kurral API service (see setup instructions above)
+2. Upload artifacts via the API endpoints
+3. Query artifacts via the API endpoints
 
-Or via environment variables:
-
-```bash
-export KURRAL_STORAGE_BACKEND=api
-export KURRAL_API_URL=http://localhost:8000/api/v1
-export KURRAL_API_KEY=kurral_YOUR_API_KEY
-```
+The Kurral Python library can work alongside the API by:
+- Using R2 storage (both library and API can access the same R2 bucket)
+- Optionally using PostgreSQL for metadata (both can use the same database)
 
 ## Architecture
 

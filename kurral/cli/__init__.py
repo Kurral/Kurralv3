@@ -21,18 +21,38 @@ def main():
 
 
 @main.command()
-@click.argument("artifact_id")
-@click.option("--verbose", "-v", is_flag=True, help="Enable verbose output")
-@click.option("--debug", is_flag=True, help="Enable debug mode")
-def replay(artifact_id: str, verbose: bool, debug: bool):
-    """Replay an artifact by ID or partial ID.
+@click.argument("artifact", required=False)
+@click.option("--run-id", help="Replay artifact by run_id")
+@click.option("--latest", is_flag=True, help="Replay the latest artifact")
+@click.option("--storage-path", type=click.Path(exists=False), help="Path to artifact storage (defaults to ./artifacts)")
+@click.option("--llm-client", help="LLM client type (openai, anthropic, etc.) - required for B replay")
+@click.option("--diff", is_flag=True, help="Show diff between original and replay outputs")
+@click.option("--debug", is_flag=True, help="Enable debug mode with verbose output")
+@click.option("--verbose", "-v", is_flag=True, help="Verbose output")
+@click.option("--current-model", help="Current model name (for change detection)")
+@click.option("--current-temperature", type=float, help="Current temperature (for change detection)")
+def replay(artifact, run_id, latest, storage_path, llm_client, diff, debug, verbose, current_model, current_temperature):
+    """Replay a .kurral artifact with automatic A/B replay detection.
     
     Examples:
         kurral replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
-        kurral replay 4babbd1c
+        kurral replay artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral
+        kurral replay --latest
+        kurral replay --run-id my_run_123
     """
-    from kurral.cli.replay_cmd import run_replay
-    run_replay(artifact_id, verbose=verbose, debug=debug)
+    from kurral.cli.replay_cmd import replay as replay_func
+    replay_func(
+        artifact=artifact,
+        run_id=run_id,
+        latest=latest,
+        storage_path=storage_path,
+        llm_client=llm_client,
+        diff=diff,
+        debug=debug,
+        verbose=verbose,
+        current_model=current_model,
+        current_temperature=current_temperature
+    )
 
 
 @main.command("list")

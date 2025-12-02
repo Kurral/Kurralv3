@@ -2,7 +2,7 @@
 Kurral - Deterministic Testing and Replay for AI Agents
 """
 
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __author__ = "Kurral Team"
 __email__ = "team@kurral.com"
 

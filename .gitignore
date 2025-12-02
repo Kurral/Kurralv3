@@ -41,3 +41,6 @@ Thumbs.db
 level3agent/index/
 level3agent/file_hashes.json
 
+# Kurral API
+kurral-api-main/
+

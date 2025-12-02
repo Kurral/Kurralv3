@@ -4,7 +4,7 @@ An agent that performs internet searches using Tavily API and can send emails.
 """
 import sys
 from pathlib import Path
-# Find project root (where ABTester is located)
+# Find project root (where kurral is located)
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 import os
@@ -16,7 +16,7 @@ from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from tavily import TavilyClient
 from send_email import send_email
-from ABTester.agent_decorator import trace_agent, trace_agent_invoke
+from kurral.agent_decorator import trace_agent, trace_agent_invoke
 
 # Load environment variables
 load_dotenv()

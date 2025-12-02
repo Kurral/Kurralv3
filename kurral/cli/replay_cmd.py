@@ -351,7 +351,7 @@ def _display_debug_info(artifact, result, detection_result):
     table.add_column("Stubbed", style="magenta")
     
     for tool_call in result.tool_calls or artifact.tool_calls:
-        status = "✅ Cached" if tool_call.cache_key else "❌ Not cached"
+        status = "[CACHED]" if tool_call.cache_key else "[NOT CACHED]"
         stubbed = "yes" if tool_call.stubbed_in_replay else "no"
         table.add_row(
             tool_call.tool_name,
@@ -372,3 +372,6 @@ def _display_debug_info(artifact, result, detection_result):
         console.print(f"  Top K: {result.llm_state.top_k}")
         console.print(f"  Max Tokens: {result.llm_state.max_tokens}")
 
+
+if __name__ == "__main__":
+    replay()

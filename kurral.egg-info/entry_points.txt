@@ -1,0 +1,2 @@
+[console_scripts]
+kurral = kurral.cli:main

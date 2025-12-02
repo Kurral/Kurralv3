@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: kurral
-Version: 0.2.0
+Version: 0.2.1
 Summary: Deterministic testing and replay framework for AI agents
 Author-email: Kurral Team <team@kurral.com>
 License: Apache-2.0

@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="350" height="350" alt="Kurral Logo" src="https://github.com/user-attachments/assets/248a09da-be82-4654-a5b1-0f09d45ebe4a" />
+  <img width="350" height="350" alt="Kurral Logo" src="assets/4c469b1e-6cc4-479e-b18a-16a9cb214d8e.png" />
 </p>
 
 <h1 align="center">KURRAL</h1>

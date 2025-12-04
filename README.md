@@ -96,13 +96,13 @@ You can then replay this comprehensive session artifact against new code, differ
 
 Kurral detects what changed between runs and automatically switches strategies based on determinism score:
 
-- **A Replay** (Deterministic): When determinism score < 0.8 and no changes detected. Returns artifact outputs directly without re-executing LLM or tools.
+- **Level 1  Replay** (Deterministic): When determinism score < 0.8 and no changes detected. Returns artifact outputs directly without re-executing LLM or tools.
 
     - ✅ Zero API costs
     - ✅ Perfect for regression testing
     - ✅ Verifies logic without re-running LLM
 
-- **B Replay** (Non-Deterministic / Exploratory): When determinism score >= 0.8 or changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
+- **Level 2 Replay** (Non-Deterministic / Exploratory): When determinism score >= 0.8 or changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
   
     - ✅ Benchmark new models against original runs
     - ✅ Test prompt variations

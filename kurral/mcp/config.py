@@ -24,6 +24,11 @@ class CaptureConfig(BaseModel):
     include_methods: List[str] = Field(default=["tools/call", "resources/read"])
     exclude_tools: List[str] = Field(default_factory=list)
 
+    # Resource limits (v0.3.1)
+    max_events_per_call: int = Field(default=10000, description="Maximum SSE events per tool call")
+    max_event_size_kb: int = Field(default=512, description="Maximum size per event in KB")
+    warn_threshold: int = Field(default=1000, description="Log warning after this many events")
+
 
 class ReplayConfig(BaseModel):
     """Configuration for replay behavior."""
@@ -36,6 +41,11 @@ class ProxyConfig(BaseModel):
     """Configuration for the proxy server itself."""
     host: str = "127.0.0.1"
     port: int = 3100
+
+    # Concurrency and timeout controls (v0.3.1)
+    max_concurrent_requests: int = Field(default=50, description="Maximum concurrent requests")
+    request_timeout_seconds: int = Field(default=120, description="Timeout for individual requests")
+    server_timeout_seconds: int = Field(default=60, description="Timeout for upstream server calls")
 
 
 class MCPConfig(BaseModel):

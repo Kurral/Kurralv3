@@ -51,6 +51,9 @@ class KurralMCPProxy:
         self.config = config
         self.app = FastAPI(title="Kurral MCP Proxy")
 
+        # Initialize concurrency control (v0.3.1)
+        self._semaphore = asyncio.Semaphore(config.proxy.max_concurrent_requests)
+
         # Initialize components
         self.router = MCPRouter(config)
         self.capture_engine = MCPCaptureEngine(config)
@@ -83,6 +86,27 @@ class KurralMCPProxy:
         @self.app.post("/")
         async def handle_mcp_request(request: Request):
             """Main MCP endpoint - handles all MCP traffic."""
+            # Apply concurrency limit (v0.3.1)
+            async with self._semaphore:
+                try:
+                    # Apply request timeout (v0.3.1)
+                    async with asyncio.timeout(self.config.proxy.request_timeout_seconds):
+                        return await self._process_request(request)
+                except asyncio.TimeoutError:
+                    return Response(
+                        content=json.dumps({
+                            "jsonrpc": "2.0",
+                            "id": None,
+                            "error": {
+                                "code": -32000,
+                                "message": f"Request timeout after {self.config.proxy.request_timeout_seconds}s"
+                            }
+                        }),
+                        media_type="application/json"
+                    )
+
+        async def _process_request(self, request: Request):
+            """Process a single MCP request (extracted for timeout handling)."""
             try:
                 body = await request.json()
             except json.JSONDecodeError as e:
@@ -352,6 +376,14 @@ class KurralMCPProxy:
 
         host = host or self.config.proxy.host
         port = port or self.config.proxy.port
+
+        # Security warning for 0.0.0.0 binding (v0.3.1)
+        if host == "0.0.0.0":
+            logger.warning(
+                "⚠️  SECURITY WARNING: Proxy listening on all interfaces (0.0.0.0)! "
+                "This exposes your MCP server URLs and API keys to your network. "
+                "Use 127.0.0.1 for local development."
+            )
 
         logger.info(f"Starting Kurral MCP Proxy on {host}:{port} (mode: {self.config.mode})")
         uvicorn.run(self.app, host=host, port=port)

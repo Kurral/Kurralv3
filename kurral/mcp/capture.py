@@ -187,6 +187,36 @@ class MCPCaptureEngine:
             # Capture time to first event
             pending["first_event_time"] = time.time()
 
+        # Check event count limit (v0.3.1)
+        current_count = len(pending["events"])
+        if current_count >= self.config.capture.max_events_per_call:
+            logger.error(
+                f"Event limit exceeded for {pending.get('tool_name', pending['method'])} "
+                f"({current_count}/{self.config.capture.max_events_per_call}), dropping event"
+            )
+            return
+
+        # Check event size limit (v0.3.1)
+        import json
+        event_size_kb = len(json.dumps(event_data).encode()) / 1024
+        if event_size_kb > self.config.capture.max_event_size_kb:
+            logger.warning(
+                f"Event too large for {pending.get('tool_name', pending['method'])} "
+                f"({event_size_kb:.1f}KB > {self.config.capture.max_event_size_kb}KB), truncating"
+            )
+            event_data = {
+                "truncated": True,
+                "original_size_kb": round(event_size_kb, 1),
+                "reason": "Event exceeded max_event_size_kb limit"
+            }
+
+        # Warn if approaching limit
+        if current_count == self.config.capture.warn_threshold:
+            logger.warning(
+                f"Event count warning for {pending.get('tool_name', pending['method'])}: "
+                f"{current_count} events captured (limit: {self.config.capture.max_events_per_call})"
+            )
+
         # Append this event
         event = MCPEvent(
             event_type=event_type,

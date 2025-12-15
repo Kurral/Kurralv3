@@ -25,11 +25,19 @@ kurral.egg-info/requires.txt
 kurral.egg-info/top_level.txt
 kurral/cli/__init__.py
 kurral/cli/agent_replay.py
+kurral/cli/mcp_cmd.py
 kurral/cli/replay_cmd.py
 kurral/database/__init__.py
 kurral/database/connection.py
 kurral/database/metadata_service.py
 kurral/database/models.py
+kurral/mcp/__init__.py
+kurral/mcp/capture.py
+kurral/mcp/config.py
+kurral/mcp/models.py
+kurral/mcp/proxy.py
+kurral/mcp/replay.py
+kurral/mcp/router.py
 kurral/models/__init__.py
 kurral/models/kurral.py
 kurral/storage/__init__.py
@@ -40,3 +48,7 @@ kurral/tests/__init__.py
 kurral/tests/conftest.py
 kurral/tests/test_artifact_manager.py
 kurral/tests/test_replay_detector.py
+kurral/tests/mcp/__init__.py
+kurral/tests/mcp/test_config.py
+kurral/tests/mcp/test_models.py
+kurral/tests/mcp/test_sse.py

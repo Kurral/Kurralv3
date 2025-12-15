@@ -103,16 +103,25 @@ def show(artifact_id: str):
 def init():
     """Initialize Kurral in the current directory."""
     import os
-    
+
     # Create artifacts directory
     os.makedirs("artifacts", exist_ok=True)
     os.makedirs("replay_runs", exist_ok=True)
     os.makedirs("side_effect", exist_ok=True)
-    
+
     console.print("[green]✓[/green] Created artifacts/ directory")
     console.print("[green]✓[/green] Created replay_runs/ directory")
     console.print("[green]✓[/green] Created side_effect/ directory")
     console.print("\n[bold]Kurral initialized![/bold] Add @trace_agent() to your agent.")
+
+
+# Register MCP commands
+try:
+    from kurral.cli.mcp_cmd import mcp_group
+    main.add_command(mcp_group)
+except ImportError:
+    # MCP dependencies not installed, skip
+    pass
 
 
 if __name__ == "__main__":

@@ -1,0 +1,25 @@
+# Kurral MCP Proxy Test Configuration
+
+proxy:
+  host: "127.0.0.1"
+  port: 3100
+
+mode: "record"  # "record" or "replay"
+
+# Configure upstream MCP servers
+servers:
+  mock_server:
+    url: "http://localhost:3000/mcp"
+    timeout: 10
+
+# Capture settings
+capture:
+  include_methods:
+    - "tools/call"
+    - "tools/list"
+  exclude_tools: []
+
+# Replay settings
+replay:
+  semantic_threshold: 0.85
+  on_cache_miss: "error"

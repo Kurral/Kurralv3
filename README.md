@@ -10,6 +10,7 @@
   <img src="https://img.shields.io/badge/License-Apache_2.0-blue" alt="License" />
   <img src="https://img.shields.io/badge/Python-3.9+-blue" alt="Python 3.9+" />
   <img src="https://img.shields.io/badge/LangChain-Compatible-green" alt="LangChain Compatible" />
+  <img src="https://img.shields.io/badge/MCP-Proxy_Support-orange" alt="MCP Proxy Support" />
 </p>
 
 <p align="center">

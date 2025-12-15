@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kurral"
-version = "0.2.2"
+version = "0.3.0"
 description = "Deterministic testing and replay framework for AI agents"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -13,15 +13,20 @@ authors = [
     {name = "Kurral Team", email = "team@kurral.com"}
 ]
 keywords = [
-    "llm", 
-    "testing", 
-    "replay", 
-    "determinism", 
+    "llm",
+    "testing",
+    "replay",
+    "determinism",
     "agents",
     "langchain",
     "ai-agents",
     "regression-testing",
-    "a]b-testing"
+    "ab-testing",
+    "mcp",
+    "model-context-protocol",
+    "observability",
+    "sse",
+    "streaming"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",

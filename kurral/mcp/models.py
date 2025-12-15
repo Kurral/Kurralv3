@@ -49,6 +49,14 @@ class MCPEvent(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
+class PerformanceMetrics(BaseModel):
+    """Performance metrics for tool execution."""
+    total_duration_ms: int  # Total time from request to response
+    time_to_first_event_ms: Optional[int] = None  # Time until first SSE event (SSE only)
+    event_count: int = 0  # Number of SSE events (0 for non-SSE)
+    events_per_second: Optional[float] = None  # Event rate for SSE streams
+
+
 class CapturedMCPCall(BaseModel):
     """
     A single captured MCP tool call.
@@ -77,6 +85,7 @@ class CapturedMCPCall(BaseModel):
     # Metadata
     duration_ms: Optional[int] = None
     request_id: Optional[str] = None  # Original JSON-RPC request ID
+    metrics: Optional[PerformanceMetrics] = None  # Performance metrics
 
     def to_cache_key(self) -> str:
         """Generate a cache key for replay matching."""

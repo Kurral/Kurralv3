@@ -68,6 +68,12 @@ def test_capture_events():
     assert captured.was_sse is True
     assert len(captured.events) == 3
     assert captured.events[0].event_type == "start"
+
+    # Verify metrics
+    assert captured.metrics is not None
+    assert captured.metrics.event_count == 3
+    assert captured.metrics.total_duration_ms >= 0
+
     print("✓ test_capture_events")
 
 

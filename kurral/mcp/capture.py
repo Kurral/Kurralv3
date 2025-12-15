@@ -15,7 +15,8 @@ from kurral.mcp.models import (
     CapturedMCPCall,
     MCPSession,
     ToolCallParams,
-    MCPEvent
+    MCPEvent,
+    PerformanceMetrics
 )
 from kurral.mcp.config import MCPConfig
 
@@ -43,6 +44,33 @@ class MCPCaptureEngine:
             return False
 
         return True
+
+    def _calculate_metrics(
+        self,
+        start_time: float,
+        events: list,
+        duration_ms: int,
+        first_event_time: Optional[float] = None
+    ) -> PerformanceMetrics:
+        """Calculate performance metrics for a captured call."""
+        event_count = len(events)
+
+        # Calculate time to first event (for SSE streams)
+        time_to_first_event_ms = None
+        if first_event_time is not None:
+            time_to_first_event_ms = int((first_event_time - start_time) * 1000)
+
+        # Calculate events per second (for SSE streams)
+        events_per_second = None
+        if event_count > 1 and duration_ms > 0:
+            events_per_second = round((event_count / duration_ms) * 1000, 2)
+
+        return PerformanceMetrics(
+            total_duration_ms=duration_ms,
+            time_to_first_event_ms=time_to_first_event_ms,
+            event_count=event_count,
+            events_per_second=events_per_second
+        )
 
     def capture_request(
         self,
@@ -99,6 +127,13 @@ class MCPCaptureEngine:
         pending = self._pending_calls.pop(tracking_id)
         duration_ms = int((time.time() - pending["start_time"]) * 1000)
 
+        # Calculate metrics (non-SSE call, no events)
+        metrics = self._calculate_metrics(
+            start_time=pending["start_time"],
+            events=[],
+            duration_ms=duration_ms
+        )
+
         # Build captured call
         captured = CapturedMCPCall(
             timestamp=datetime.utcnow(),
@@ -110,7 +145,8 @@ class MCPCaptureEngine:
             result=response.result if not response.error else None,
             error=response.error.model_dump() if response.error else None,
             duration_ms=duration_ms,
-            request_id=pending["request_id"]
+            request_id=pending["request_id"],
+            metrics=metrics
         )
 
         # Add to session
@@ -148,6 +184,8 @@ class MCPCaptureEngine:
         if "events" not in pending:
             pending["events"] = []
             pending["was_sse"] = True
+            # Capture time to first event
+            pending["first_event_time"] = time.time()
 
         # Append this event
         event = MCPEvent(
@@ -196,6 +234,14 @@ class MCPCaptureEngine:
             else:
                 result = last_event.data
 
+        # Calculate metrics (SSE call with events)
+        metrics = self._calculate_metrics(
+            start_time=pending["start_time"],
+            events=events,
+            duration_ms=duration_ms,
+            first_event_time=pending.get("first_event_time")
+        )
+
         # Build captured call
         captured = CapturedMCPCall(
             timestamp=datetime.utcnow(),
@@ -209,7 +255,8 @@ class MCPCaptureEngine:
             was_sse=pending.get("was_sse", False),
             events=events,
             duration_ms=duration_ms,
-            request_id=pending["request_id"]
+            request_id=pending["request_id"],
+            metrics=metrics
         )
 
         # Add to session

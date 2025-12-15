@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=61.0.0,<68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,7 +7,6 @@ name = "kurral"
 version = "0.3.0"
 description = "Deterministic testing and replay framework for AI agents"
 readme = "README.md"
-license = {text = "Apache-2.0"}
 requires-python = ">=3.9"
 authors = [
     {name = "Kurral Team", email = "team@kurral.com"}
@@ -31,7 +30,6 @@ keywords = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",

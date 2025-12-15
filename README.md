@@ -25,6 +25,7 @@
 - [Why Kurral?](#why-kurral)
 - [Key Features](#key-features)
 - [When to Use Kurral](#when-to-use-kurral)
+- [MCP Proxy (NEW!)](#mcp-proxy-new-)
 - [How It Works](#how-it-works)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
@@ -83,6 +84,41 @@ Standard testing approaches (unit tests, mocks, integration tests) fall short be
 - ✅ **Prompt engineering**: Compare different prompt variations quantitatively
 - ✅ **Debugging failures**: Reproduce and analyze production issues locally
 - ✅ **CI/CD integration**: Fail builds if ARS drops below threshold
+
+
+## MCP Proxy (NEW!) 🌊
+
+Capture and replay MCP tool calls with full SSE streaming support.
+
+Kurral now includes an HTTP/SSE proxy for the [Model Context Protocol](https://modelcontextprotocol.io), providing complete observability into MCP tool usage.
+
+### Quick Start
+
+```bash
+# Install with MCP support
+pip install kurral[mcp]
+
+# Start recording
+kurral mcp start --mode record
+
+# Export captured calls
+kurral mcp export -o session.json
+
+# Replay from cache
+kurral mcp start --mode replay --artifact session.json
+```
+
+### Key Features
+- ✅ Record all MCP tool calls to `.kurral` artifacts
+- ✅ Replay cached responses for deterministic testing
+- ✅ Full SSE event-by-event capture
+- ✅ Performance metrics (duration, event rates)
+- ✅ Multi-server routing
+
+**[📖 Full MCP Proxy Documentation →](MCP_PROXY_README.md)**
+
+---
+
 
 ## How It Works
 

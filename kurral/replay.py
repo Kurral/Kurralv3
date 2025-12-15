@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Simple replay script - can be run from anywhere
 Usage: python kurral/replay.py <kurral_id> [--artifacts-dir <dir>]

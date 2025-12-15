@@ -4,7 +4,7 @@ rich>=13.7.0
 pyyaml>=6.0
 
 [all]
-kurral[anthropic,google,groq,langchain,openai]
+kurral[anthropic,google,groq,langchain,mcp,openai]
 
 [anthropic]
 anthropic>=0.18.0
@@ -28,6 +28,12 @@ groq>=0.4.0
 [langchain]
 langchain>=0.1.0
 langchain-openai>=0.0.5
+
+[mcp]
+fastapi>=0.100.0
+uvicorn>=0.23.0
+httpx>=0.24.0
+sse-starlette>=1.6.0
 
 [openai]
 openai>=1.0.0

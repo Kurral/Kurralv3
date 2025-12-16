@@ -4,6 +4,7 @@
 
 <h1 align="center">KURRAL</h1>
 <h3 align="center">Deterministic Testing and Replay for AI Agents</h3>
+<p align="center">🔌 First-class MCP protocol support with SSE capture</p>
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/kurral" alt="PyPI" />

@@ -820,11 +820,11 @@ kurral replay <artifact>  # Now works
 
 ## Additional Resources
 
-- **[MCP Proxy Documentation](MCP_PROXY_README.md)** - Full HTTP/SSE proxy guide
+- **[MCP Proxy Documentation](MCP_PROXY.md)** - Full HTTP/SSE proxy guide
 - **[SSE Implementation](kurral/mcp/SSE_IMPLEMENTATION.md)** - Deep dive into SSE streaming
 - **[Getting Started](GETTING_STARTED.md)** - 5-minute tutorial with examples
 - **[Use Cases](USE_CASES.md)** - Real-world scenarios with ROI calculations
-- **[Security Roadmap](MCP_SECURITY_ROADMAP.md)** - MCP security testing vision
+- **[Security Roadmap](MCP_SECURITY_VISION.md)** - MCP security testing vision
 
 ---
 

@@ -54,7 +54,7 @@ kurral mcp start --mode replay --artifact session.kurral # Replay offline
 
 **Use Cases:** Production issue reproduction, cost-free development, team collaboration.
 
-**📖 [Full MCP Proxy Documentation →](MCP_PROXY_README.md)**
+**📖 [Full MCP Proxy Documentation →](docs/MCP_PROXY.md)**
 
 ---
 
@@ -92,7 +92,7 @@ Penalties for new/unused tools. Perfect for CI/CD thresholds.
 - ✅ Prompt engineering comparisons
 - ✅ 99% API cost reduction in testing
 
-**📖 [Deep Dive: How Replay Works →](REPLAY_DEEP_DIVE.md)**
+**📖 [Deep Dive: How Replay Works →](docs/REPLAY_DEEP_DIVE.md)**
 
 ---
 
@@ -120,7 +120,7 @@ kurral security test baseline.kurral --techniques T1001,T1102
 - Detailed PDF/JSON reports with severity, findings & remediation
 - Baseline vs. attack comparison
 
-**📖 [Security Roadmap & Details →](MCP_SECURITY_ROADMAP.md)**
+**📖 [Security Roadmap & Details →](docs/MCP_SECURITY_VISION.md)**
 
 ---
 
@@ -150,7 +150,7 @@ kurral mcp export -o session.kurral
 kurral mcp start --mode replay --artifact session.kurral
 ```
 
-**📖 [Full MCP Proxy Guide →](MCP_PROXY_README.md)**
+**📖 [Full MCP Proxy Guide →](docs/MCP_PROXY.md)**
 
 ---
 
@@ -179,7 +179,7 @@ kurral replay <kurral_id>
 
 Detailed output includes replay type, ARS score, cache hits, and changes detected.
 
-**📖 [Deep Dive: Replay System →](REPLAY_DEEP_DIVE.md)**
+**📖 [Deep Dive: Replay System →](docs/REPLAY_DEEP_DIVE.md)**
 
 ---
 
@@ -225,7 +225,7 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 - 🚧 **Q1 2026**: Phase 1 MCP security testing (7 critical threats)
 - 🔮 **Q2 2026+**: Full SAFE-MCP coverage, policy engine, continuous monitoring
 
-**📖 [Security Roadmap →](MCP_SECURITY_ROADMAP.md)**
+**📖 [Security Roadmap →](docs/MCP_SECURITY_VISION.md)**
 
 ---
 
@@ -252,7 +252,7 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 - `MCPReplayEngine` - Cached response replay
 - `MCPRouter` - Multi-server routing
 
-**📖 [Detailed Architecture →](REPLAY_DEEP_DIVE.md)**
+**📖 [Detailed Architecture →](docs/REPLAY_DEEP_DIVE.md)**
 
 ---
 

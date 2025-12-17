@@ -319,8 +319,8 @@ We're looking for:
 
 - **SAFE-MCP Project**: [https://github.com/SAFE-MCP/safe-mcp](https://github.com/SAFE-MCP/safe-mcp)
 - **MCP Specification**: [https://modelcontextprotocol.io](https://modelcontextprotocol.io)
-- **Kurral Documentation**: [README.md](README.md)
-- **MCP Proxy Guide**: [MCP_PROXY_README.md](MCP_PROXY_README.md)
+- **Kurral Documentation**: [README.md](../README.md)
+- **MCP Proxy Guide**: [MCP_PROXY.md](MCP_PROXY.md)
 - **Replay Deep Dive**: [REPLAY_DEEP_DIVE.md](REPLAY_DEEP_DIVE.md)
 
 ---

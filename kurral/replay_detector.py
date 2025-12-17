@@ -50,10 +50,11 @@ class ReplayDetector:
     def __init__(self, determinism_threshold: float = 0.8):
         """
         Initialize replay detector
-        
+
         Args:
             determinism_threshold: Score threshold for A vs B (default 0.8)
-                                  Below threshold = A, above = B
+                                  Score >= threshold AND no critical changes → A replay
+                                  Score < threshold OR critical changes → B replay
         """
         self.determinism_threshold = determinism_threshold
     

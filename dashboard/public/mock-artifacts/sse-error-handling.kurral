@@ -1,0 +1,112 @@
+{
+  "kurral_id": "error-sse-11223344-5566-7788-99aa-bbccddeeff00",
+  "run_id": "failed_model_training_stream",
+  "tenant_id": "ml-team",
+  "environment": "staging",
+  "schema_version": "1.0",
+  "created_at": "2025-12-16T10:30:00.000Z",
+  "deterministic": false,
+  "duration_ms": 5800,
+  "mcp_session_id": "mcp-session-error-001",
+  "mcp_servers_used": ["ml-training-server"],
+  "llm_config": {
+    "model_name": "claude-opus-4",
+    "provider": "anthropic",
+    "parameters": {
+      "temperature": 0.2
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "Train sentiment analysis model on customer reviews dataset" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Train sentiment analysis model on customer reviews dataset",
+        "output": "ERROR: Model training failed - insufficient memory during epoch 3"
+      }
+    ]
+  },
+  "tool_calls": [],
+  "mcp_tool_calls": [
+    {
+      "id": "mcp-train-001",
+      "timestamp": "2025-12-16T10:30:01.000Z",
+      "source": "mcp",
+      "server": "ml-training-server",
+      "method": "tools/call",
+      "tool_name": "train_model",
+      "arguments": {
+        "model_type": "sentiment_analysis",
+        "dataset": "customer_reviews_2024",
+        "epochs": 10,
+        "batch_size": 32
+      },
+      "error": {
+        "code": "OOM_ERROR",
+        "message": "Insufficient memory during training - epoch 3/10",
+        "details": {
+          "memory_required_gb": 16,
+          "memory_available_gb": 12,
+          "epoch_failed": 3
+        }
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {"message": "Loading dataset and initializing model..."},
+          "timestamp": "2025-12-16T10:30:01.200Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"epoch": 1, "loss": 0.68, "accuracy": 0.62, "progress": 0.1},
+          "timestamp": "2025-12-16T10:30:02.500Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"epoch": 2, "loss": 0.45, "accuracy": 0.75, "progress": 0.2},
+          "timestamp": "2025-12-16T10:30:04.000Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"epoch": 3, "loss": 0.38, "accuracy": 0.81, "progress": 0.3, "warning": "Memory usage high"},
+          "timestamp": "2025-12-16T10:30:05.500Z"
+        },
+        {
+          "event_type": "error",
+          "data": {
+            "error": "OOM_ERROR",
+            "message": "Out of memory during epoch 3 - batch 156/200",
+            "memory_gb": 12,
+            "required_gb": 16,
+            "suggestion": "Reduce batch size or increase memory allocation"
+          },
+          "timestamp": "2025-12-16T10:30:06.800Z"
+        }
+      ],
+      "duration_ms": 5800,
+      "request_id": "req-train-001",
+      "metrics": {
+        "total_duration_ms": 5800,
+        "time_to_first_event_ms": 200,
+        "event_count": 5,
+        "events_per_second": 0.86
+      }
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:ml_training_graph_001",
+    "tool_schemas_hash": "sha256:ml_training_schemas_001"
+  },
+  "resolved_prompt": {
+    "template": "Train ML model: {task}",
+    "template_hash": "sha256:ml_prompt_001",
+    "variables": {
+      "task": "sentiment analysis on customer reviews"
+    },
+    "variables_hash": "sha256:ml_vars_001"
+  }
+}

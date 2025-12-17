@@ -1,0 +1,140 @@
+{
+  "kurral_id": "mock-mcp-a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
+  "run_id": "mcp_proxy_capture_test",
+  "tenant_id": "default",
+  "environment": "development",
+  "schema_version": "1.0",
+  "created_at": "2025-12-15T14:20:00.000Z",
+  "deterministic": false,
+  "duration_ms": 5230,
+  "mcp_session_id": "mcp-session-001",
+  "mcp_servers_used": ["filesystem-server", "github-server"],
+  "llm_config": {
+    "model_name": "claude-sonnet-3-5",
+    "provider": "anthropic",
+    "parameters": {
+      "temperature": 0.3
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "Search for files containing 'kurral'" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Search for files containing 'kurral'",
+        "output": "Found 5 files matching 'kurral'"
+      }
+    ]
+  },
+  "tool_calls": [],
+  "mcp_tool_calls": [
+    {
+      "id": "mcp-001",
+      "timestamp": "2025-12-15T14:20:01.000Z",
+      "source": "mcp",
+      "server": "filesystem-server",
+      "method": "tools/call",
+      "tool_name": "search_files",
+      "arguments": {
+        "query": "kurral",
+        "path": "/workspace"
+      },
+      "result": {
+        "files": [
+          "/workspace/kurral/core.py",
+          "/workspace/kurral/mcp/proxy.py",
+          "/workspace/tests/test_kurral.py"
+        ]
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {
+            "message": "Starting file search..."
+          },
+          "timestamp": "2025-12-15T14:20:01.100Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {
+            "scanned": 50,
+            "total": 200,
+            "found": 1
+          },
+          "timestamp": "2025-12-15T14:20:02.000Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {
+            "scanned": 100,
+            "total": 200,
+            "found": 2
+          },
+          "timestamp": "2025-12-15T14:20:03.000Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {
+            "scanned": 150,
+            "total": 200,
+            "found": 3
+          },
+          "timestamp": "2025-12-15T14:20:04.000Z"
+        },
+        {
+          "event_type": "complete",
+          "data": {
+            "scanned": 200,
+            "total": 200,
+            "found": 5
+          },
+          "timestamp": "2025-12-15T14:20:05.000Z"
+        }
+      ],
+      "duration_ms": 4000,
+      "request_id": "req-001",
+      "metrics": {
+        "total_duration_ms": 4000,
+        "time_to_first_event_ms": 100,
+        "event_count": 5,
+        "events_per_second": 1.25
+      }
+    },
+    {
+      "id": "mcp-002",
+      "timestamp": "2025-12-15T14:20:05.500Z",
+      "source": "mcp",
+      "server": "filesystem-server",
+      "method": "resources/read",
+      "arguments": {
+        "uri": "file:///workspace/kurral/core.py"
+      },
+      "result": {
+        "contents": "# Kurral Core Module\n..."
+      },
+      "was_sse": false,
+      "duration_ms": 230,
+      "request_id": "req-002",
+      "metrics": {
+        "total_duration_ms": 230,
+        "event_count": 0
+      }
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:mcp-graph-001",
+    "tool_schemas_hash": "sha256:mcp-schemas-001"
+  },
+  "resolved_prompt": {
+    "template": "Use MCP tools to search: {query}",
+    "template_hash": "sha256:mcp-prompt-001",
+    "variables": {
+      "query": "kurral"
+    },
+    "variables_hash": "sha256:mcp-vars-001"
+  }
+}

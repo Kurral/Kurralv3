@@ -1,0 +1,93 @@
+{
+  "kurral_id": "mock-810c48c1-fc9c-4ec4-a4f5-7fb7ed86506d",
+  "run_id": "local_agent_basic_test",
+  "tenant_id": "default",
+  "environment": "development",
+  "schema_version": "1.0",
+  "created_at": "2025-12-15T10:30:00.000Z",
+  "deterministic": true,
+  "duration_ms": 2450,
+  "llm_config": {
+    "model_name": "gpt-4",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0,
+      "max_tokens": 1000
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "What is the capital of France?" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What is the capital of France?",
+        "output": "The capital of France is Paris."
+      }
+    ]
+  },
+  "tool_calls": [
+    {
+      "id": "tool-001",
+      "tool_name": "search_knowledge_base",
+      "start_time": "2025-12-15T10:30:00.500Z",
+      "end_time": "2025-12-15T10:30:01.200Z",
+      "latency_ms": 700,
+      "timestamp": "2025-12-15T10:30:00.500Z",
+      "input": {
+        "query": "capital of France"
+      },
+      "input_hash": "sha256:abc123",
+      "output": {
+        "result": "Paris is the capital and most populous city of France."
+      },
+      "output_hash": "sha256:def456",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:e12dfc330af",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    },
+    {
+      "id": "tool-002",
+      "tool_name": "validate_answer",
+      "start_time": "2025-12-15T10:30:01.300Z",
+      "end_time": "2025-12-15T10:30:02.100Z",
+      "latency_ms": 800,
+      "timestamp": "2025-12-15T10:30:01.300Z",
+      "input": {
+        "answer": "Paris",
+        "confidence_threshold": 0.9
+      },
+      "input_hash": "sha256:ghi789",
+      "output": {
+        "valid": true,
+        "confidence": 0.95
+      },
+      "output_hash": "sha256:jkl012",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:a2b3c4d5e6f",
+      "stubbed_in_replay": false,
+      "metadata": {}
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:graph123",
+    "tool_schemas_hash": "sha256:schemas456"
+  },
+  "resolved_prompt": {
+    "template": "Answer the following question: {question}",
+    "template_hash": "sha256:prompt789",
+    "variables": {
+      "question": "What is the capital of France?"
+    },
+    "variables_hash": "sha256:vars012"
+  }
+}

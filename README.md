@@ -135,18 +135,21 @@ You can then replay this comprehensive session artifact against new code, differ
 
 Kurral detects what changed between runs and automatically switches strategies based on determinism score:
 
-- **Level 1  Replay** (Deterministic): When determinism score < 0.8 and no changes detected. Returns artifact outputs directly without re-executing LLM or tools.
+- **Level 1 Replay (A Replay - Deterministic)**: When determinism score ≥ 0.8 AND no critical changes detected. Returns artifact outputs directly without re-executing LLM or tools.
 
-    - ✅ Zero API costs
+    - ✅ Zero API costs (uses cached outputs)
     - ✅ Perfect for regression testing
     - ✅ Verifies logic without re-running LLM
 
-- **Level 2 Replay** (Non-Deterministic / Exploratory): When determinism score >= 0.8 or changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
+    **Triggers:** High config similarity + no model/tool/provider changes
+
+- **Level 2 Replay (B Replay - Non-Deterministic / Exploratory)**: When determinism score < 0.8 OR critical changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
   
     - ✅ Benchmark new models against original runs
     - ✅ Test prompt variations
     - ✅ Reduced API costs via semantic tool caching
 
+    **Triggers:** Low config similarity OR model/tool/provider changes
 With minimal code changes (just two lines), Kurral's captured artifacts unlock intelligent, production-ready replay capabilities.
 
 ## Installation
@@ -397,6 +400,77 @@ All interactions within a single `main()` execution are accumulated into one ses
 
 ### Replay Types
 
+
+#### Determinism Score
+
+The determinism score measures **configuration similarity** between the artifact and current run.
+
+**Calculation:**
+```
+determinism_score = (temp_score + seed_score + model_score + provider_score) / 4
+```
+
+**Scoring factors (each 0.0-1.0):**
+
+| Factor | Weight | Scoring Logic |
+|--------|--------|---------------|
+| Temperature | 25% | 1.0 if identical, 0.5 if one missing, else (1.0 - abs(difference)) |
+| Seed | 25% | 1.0 if identical, 0.5 if both/one missing, 0.0 if different |
+| Model Name | 25% | 1.0 if identical, 0.0 if different |
+| Provider | 25% | 1.0 if identical, 0.0 if different |
+
+**Example:**
+- Same model (gpt-4) → +0.25
+- Same provider (openai) → +0.25
+- Temperature 0.0 vs 0.5 (diff 0.5) → +0.50
+- Same seed → +0.25
+- **Total:** 1.00 (perfect match → A replay)
+
+**Threshold:** Default 0.8
+- Score ≥ 0.8 → Config similar enough → A replay (if no critical changes)
+- Score < 0.8 → Config too different → B replay (must re-execute)
+
+**Note:** Even with high determinism score, critical changes (model name, provider, tools) always trigger B replay.
+
+**Decision Flow:**
+
+```
+┌─────────────────────────────────┐
+│ Calculate Determinism Score     │
+│ (0.0 - 1.0)                     │
+└────────────┬────────────────────┘
+             │
+             ▼
+   ┌──────────────────────┐
+   │ Check for Critical   │
+   │ Changes:             │
+   │ • Model changed?     │
+   │ • Provider changed?  │
+   │ • Tools changed?     │
+   └──────┬───────────────┘
+          │
+     ┌────┴────┐
+     │         │
+     ▼         ▼
+   YES        NO
+     │         │
+     │         ▼
+     │   ┌─────────────┐
+     │   │ Score < 0.8?│
+     │   └──┬──────┬───┘
+     │      │ YES  │ NO
+     │      │      │
+     ▼      ▼      ▼
+  ┌───────────┐ ┌───────────┐
+  │ B REPLAY  │ │ A REPLAY  │
+  │ (Re-exec) │ │ (Cached)  │
+  └───────────┘ └───────────┘
+```
+
+**Key:** High score (≥ 0.8) + no critical changes → A Replay | Low score (< 0.8) OR critical changes → B Replay
+
+---
+
 Kurral uses intelligent change detection and determinism scoring to determine the appropriate replay strategy:
 
 #### A Replay (Deterministic)
@@ -461,13 +535,60 @@ done: false            # Must be set to true manually after review
 ARS provides a quantitative measure of replay fidelity:
 
 ```
-ARS = (Output Similarity + Tool Accuracy) / 2
+ARS = (Output Similarity × 0.7) + (Tool Accuracy × 0.3)
 ```
 
 Where:
 
 - **Output Similarity**: Semantic similarity between original and replayed outputs
-- **Tool Accuracy**: Ratio of correctly matched tool calls
+- **Tool Accuracy**: Base match ratio with penalties for deviations
+
+  **Formula:**
+  ```
+  base_score = (used_original_tools / total_original_tools)
+  new_penalty = min(0.5, new_tools_count × 0.1)      # -10% per new tool, max -50%
+  unused_penalty = min(0.5, unused_tools_count × 0.1) # -10% per unused tool, max -50%
+  tool_accuracy = max(0.0, base_score - new_penalty - unused_penalty)
+  ```
+
+  - **New tool calls** penalize score by 10% each (capped at -50%)
+  - **Unused original tools** penalize score by 10% each (capped at -50%)
+  - Score ranges from 0.0 (many changes) to 1.0 (perfect match)
+
+**ARS Calculation Flow:**
+
+```
+┌──────────────────────────────────────┐
+│ Output Similarity (0.0 - 1.0)        │
+│ • Semantic text comparison           │
+│ • 1.0 = exact match                  │
+└────────────┬─────────────────────────┘
+             │ × 0.7 (70% weight)
+             ▼
+     ┌───────────────┐
+     │  Weighted     │
+     │  Output       │───┐
+     │  Score        │   │
+     └───────────────┘   │
+                         ▼
+┌──────────────────────────────────────┐     ┌─────────┐
+│ Tool Accuracy (0.0 - 1.0)            │     │   ARS   │
+│ • Base: used_tools / total_tools     │────▶│  Score  │
+│ • Penalties: new & unused tools      │     │ (0-1.0) │
+└────────────┬─────────────────────────┘     └─────────┘
+             │ × 0.3 (30% weight)
+             ▼
+     ┌───────────────┐
+     │  Weighted     │
+     │  Tool         │───┘
+     │  Score        │
+     └───────────────┘
+```
+
+**Example:**
+- Output similarity: 0.95
+- Tool accuracy: 0.60 (used 4/5 tools, added 1 new, left 1 unused)
+- **ARS** = (0.95 × 0.7) + (0.60 × 0.3) = 0.665 + 0.18 = **0.845**
 
 ARS ranges from 0.0 to 1.0, where 1.0 indicates perfect replay fidelity.
 

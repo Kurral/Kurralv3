@@ -1,0 +1,128 @@
+{
+  "kurral_id": "fast-sse-aabbccdd-eeff-0011-2233-445566778899",
+  "run_id": "realtime_stock_monitor",
+  "tenant_id": "finance-team",
+  "environment": "production",
+  "schema_version": "1.0",
+  "created_at": "2025-12-16T14:00:00.000Z",
+  "deterministic": false,
+  "duration_ms": 850,
+  "mcp_session_id": "mcp-session-fast-001",
+  "mcp_servers_used": ["market-data-server"],
+  "llm_config": {
+    "model_name": "gpt-4-turbo",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "Get real-time price updates for AAPL stock" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Get real-time price updates for AAPL stock",
+        "output": "Monitored AAPL: $185.50 → $185.62 (+0.06%) over 850ms"
+      }
+    ]
+  },
+  "tool_calls": [],
+  "mcp_tool_calls": [
+    {
+      "id": "mcp-stock-001",
+      "timestamp": "2025-12-16T14:00:01.000Z",
+      "source": "mcp",
+      "server": "market-data-server",
+      "method": "tools/call",
+      "tool_name": "stream_stock_price",
+      "arguments": {
+        "symbol": "AAPL",
+        "interval_ms": 100,
+        "duration_ms": 800
+      },
+      "result": {
+        "symbol": "AAPL",
+        "start_price": 185.50,
+        "end_price": 185.62,
+        "change_percent": 0.06,
+        "ticks_received": 8
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {"message": "Connecting to market data feed...", "symbol": "AAPL"},
+          "timestamp": "2025-12-16T14:00:01.050Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 1, "price": 185.50, "volume": 1200, "timestamp": "14:00:01.100"},
+          "timestamp": "2025-12-16T14:00:01.150Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 2, "price": 185.51, "volume": 800, "timestamp": "14:00:01.200"},
+          "timestamp": "2025-12-16T14:00:01.250Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 3, "price": 185.52, "volume": 1500, "timestamp": "14:00:01.300"},
+          "timestamp": "2025-12-16T14:00:01.350Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 4, "price": 185.53, "volume": 900, "timestamp": "14:00:01.400"},
+          "timestamp": "2025-12-16T14:00:01.450Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 5, "price": 185.55, "volume": 2100, "timestamp": "14:00:01.500"},
+          "timestamp": "2025-12-16T14:00:01.550Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 6, "price": 185.58, "volume": 1700, "timestamp": "14:00:01.600"},
+          "timestamp": "2025-12-16T14:00:01.650Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 7, "price": 185.60, "volume": 1100, "timestamp": "14:00:01.700"},
+          "timestamp": "2025-12-16T14:00:01.750Z"
+        },
+        {
+          "event_type": "message",
+          "data": {"tick": 8, "price": 185.62, "volume": 1400, "timestamp": "14:00:01.800"},
+          "timestamp": "2025-12-16T14:00:01.850Z"
+        },
+        {
+          "event_type": "complete",
+          "data": {"total_ticks": 8, "price_change": 0.12, "percent_change": 0.06},
+          "timestamp": "2025-12-16T14:00:01.850Z"
+        }
+      ],
+      "duration_ms": 850,
+      "request_id": "req-stock-001",
+      "metrics": {
+        "total_duration_ms": 850,
+        "time_to_first_event_ms": 50,
+        "event_count": 10,
+        "events_per_second": 11.76
+      }
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:stock_monitor_graph_001",
+    "tool_schemas_hash": "sha256:stock_schemas_001"
+  },
+  "resolved_prompt": {
+    "template": "Monitor stock: {symbol}",
+    "template_hash": "sha256:stock_prompt_001",
+    "variables": {
+      "symbol": "AAPL"
+    },
+    "variables_hash": "sha256:stock_vars_001"
+  }
+}

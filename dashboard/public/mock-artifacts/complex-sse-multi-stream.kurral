@@ -1,0 +1,215 @@
+{
+  "kurral_id": "complex-sse-99887766-5544-3322-1100-aabbccddeeff",
+  "run_id": "multi_stream_data_pipeline",
+  "tenant_id": "enterprise",
+  "environment": "production",
+  "schema_version": "1.0",
+  "created_at": "2025-12-16T08:00:00.000Z",
+  "deterministic": false,
+  "duration_ms": 12500,
+  "mcp_session_id": "mcp-session-multi-001",
+  "mcp_servers_used": ["data-server", "ml-server", "analytics-server"],
+  "llm_config": {
+    "model_name": "gpt-4-turbo",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.5
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "Process customer data pipeline: extract → transform → analyze → predict" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "Process customer data pipeline: extract → transform → analyze → predict",
+        "output": "Pipeline completed: Extracted 50,000 records, transformed with 95% accuracy, analyzed trends, predicted churn rate of 12.3%"
+      }
+    ]
+  },
+  "tool_calls": [],
+  "mcp_tool_calls": [
+    {
+      "id": "mcp-extract-001",
+      "timestamp": "2025-12-16T08:00:01.000Z",
+      "source": "mcp",
+      "server": "data-server",
+      "method": "tools/call",
+      "tool_name": "extract_customer_data",
+      "arguments": {
+        "source": "database",
+        "filters": {"active": true, "created_after": "2024-01-01"}
+      },
+      "result": {
+        "records_extracted": 50000,
+        "columns": ["customer_id", "age", "purchases", "last_active"],
+        "extraction_time_ms": 3200
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {"message": "Connecting to database..."},
+          "timestamp": "2025-12-16T08:00:01.100Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"phase": "connection", "status": "connected", "progress": 0.1},
+          "timestamp": "2025-12-16T08:00:01.500Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"phase": "query_execution", "rows_scanned": 10000, "progress": 0.3},
+          "timestamp": "2025-12-16T08:00:02.200Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"phase": "data_retrieval", "rows_retrieved": 30000, "progress": 0.6},
+          "timestamp": "2025-12-16T08:00:03.000Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"phase": "finalization", "rows_retrieved": 50000, "progress": 0.9},
+          "timestamp": "2025-12-16T08:00:03.900Z"
+        },
+        {
+          "event_type": "complete",
+          "data": {"total_records": 50000, "success": true},
+          "timestamp": "2025-12-16T08:00:04.200Z"
+        }
+      ],
+      "duration_ms": 3200,
+      "request_id": "req-extract-001",
+      "metrics": {
+        "total_duration_ms": 3200,
+        "time_to_first_event_ms": 100,
+        "event_count": 6,
+        "events_per_second": 1.875
+      }
+    },
+    {
+      "id": "mcp-transform-002",
+      "timestamp": "2025-12-16T08:00:04.500Z",
+      "source": "mcp",
+      "server": "ml-server",
+      "method": "tools/call",
+      "tool_name": "transform_and_clean",
+      "arguments": {
+        "input_records": 50000,
+        "operations": ["normalize", "deduplicate", "validate"]
+      },
+      "result": {
+        "records_processed": 50000,
+        "records_valid": 47500,
+        "accuracy": 0.95,
+        "transform_time_ms": 4500
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {"message": "Starting data transformation pipeline"},
+          "timestamp": "2025-12-16T08:00:04.600Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"operation": "normalize", "records_processed": 12500, "progress": 0.25},
+          "timestamp": "2025-12-16T08:00:05.700Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"operation": "deduplicate", "records_processed": 25000, "duplicates_found": 1200, "progress": 0.5},
+          "timestamp": "2025-12-16T08:00:06.800Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"operation": "validate", "records_processed": 37500, "invalid_records": 1800, "progress": 0.75},
+          "timestamp": "2025-12-16T08:00:07.900Z"
+        },
+        {
+          "event_type": "complete",
+          "data": {"total_processed": 50000, "valid_records": 47500, "accuracy": 0.95},
+          "timestamp": "2025-12-16T08:00:09.000Z"
+        }
+      ],
+      "duration_ms": 4500,
+      "request_id": "req-transform-002",
+      "metrics": {
+        "total_duration_ms": 4500,
+        "time_to_first_event_ms": 100,
+        "event_count": 5,
+        "events_per_second": 1.11
+      }
+    },
+    {
+      "id": "mcp-analyze-003",
+      "timestamp": "2025-12-16T08:00:09.200Z",
+      "source": "mcp",
+      "server": "analytics-server",
+      "method": "tools/call",
+      "tool_name": "analyze_trends",
+      "arguments": {
+        "dataset": "transformed_customers",
+        "analysis_types": ["cohort", "behavior", "churn_prediction"]
+      },
+      "result": {
+        "insights": [
+          "Top cohort: 25-34 age group (35% of customers)",
+          "Purchase frequency increasing 8% YoY",
+          "Predicted churn rate: 12.3%"
+        ],
+        "confidence_score": 0.87
+      },
+      "was_sse": true,
+      "events": [
+        {
+          "event_type": "start",
+          "data": {"message": "Initializing analytics engine"},
+          "timestamp": "2025-12-16T08:00:09.300Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"analysis": "cohort_analysis", "segments_identified": 5, "progress": 0.33},
+          "timestamp": "2025-12-16T08:00:10.500Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"analysis": "behavior_patterns", "patterns_found": 12, "progress": 0.66},
+          "timestamp": "2025-12-16T08:00:11.200Z"
+        },
+        {
+          "event_type": "progress",
+          "data": {"analysis": "churn_prediction", "model_accuracy": 0.87, "at_risk_customers": 6163, "progress": 0.9},
+          "timestamp": "2025-12-16T08:00:12.000Z"
+        },
+        {
+          "event_type": "complete",
+          "data": {"total_insights": 15, "confidence": 0.87, "recommended_actions": 3},
+          "timestamp": "2025-12-16T08:00:12.500Z"
+        }
+      ],
+      "duration_ms": 3300,
+      "request_id": "req-analyze-003",
+      "metrics": {
+        "total_duration_ms": 3300,
+        "time_to_first_event_ms": 100,
+        "event_count": 5,
+        "events_per_second": 1.52
+      }
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:multi_stream_graph_001",
+    "tool_schemas_hash": "sha256:multi_stream_schemas_001"
+  },
+  "resolved_prompt": {
+    "template": "Execute data pipeline: {pipeline_steps}",
+    "template_hash": "sha256:pipeline_prompt_001",
+    "variables": {
+      "pipeline_steps": "extract → transform → analyze → predict"
+    },
+    "variables_hash": "sha256:pipeline_vars_001"
+  }
+}

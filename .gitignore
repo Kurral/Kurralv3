@@ -44,3 +44,19 @@ level3agent/file_hashes.json
 # Kurral API
 kurral-api-main/
 
+
+# Internal correction/analysis files (not for public repository)
+CORRECTIONS_*.md
+README_ORIGINAL_BACKUP.md
+README_CORRECTED.md
+README_CODE_CORRECTIONS.md
+README_CHANGES_APPLIED.md
+README_QUICK_FIX_DIFF.md
+REPLAY_LOGIC_DIAGRAM.md
+YOUR_ACTION_PLAN.md
+README_NEW_INTRO.md
+PRACTICAL_VALUE_SUMMARY.md
+START_HERE.md
+create_corrected_readme.py
+apply_readme_fixes.sh
+DEMO_GUIDE.md

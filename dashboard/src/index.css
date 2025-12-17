@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Kurral Dashboard Custom Styles */
+@layer base {
+  :root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Custom component styles */
+  .kurral-card {
+    @apply bg-white rounded-lg shadow-md p-6 border border-gray-200;
+  }
+
+  .kurral-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .kurral-badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .kurral-badge-warning {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .kurral-badge-error {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .kurral-badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+}

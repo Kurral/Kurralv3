@@ -1,0 +1,226 @@
+{
+  "kurral_id": "replay-detailed-aa11bb22-cc33-dd44-ee55-ff6677889900",
+  "run_id": "replay_weather_agent_detailed",
+  "tenant_id": "demo",
+  "environment": "testing",
+  "schema_version": "1.0",
+  "created_at": "2025-12-16T10:00:00.000Z",
+  "deterministic": true,
+  "duration_ms": 3450,
+  "replay_mode": "level1",
+  "original_artifact_id": "original-weather-agent-12345678",
+  "replay_info": {
+    "ars_score": 0.87,
+    "determinism_score": 1.0,
+    "total_tool_calls": 4,
+    "stubbed_calls": 4,
+    "live_calls": 0,
+    "per_tool_ars": [
+      {
+        "tool_id": "tool-001",
+        "tool_name": "get_weather",
+        "ars_score": 1.0,
+        "match_status": "exact",
+        "output_diff": null
+      },
+      {
+        "tool_id": "tool-002",
+        "tool_name": "get_forecast",
+        "ars_score": 0.95,
+        "match_status": "near_match",
+        "output_diff": {
+          "field": "temperature",
+          "original": "72°F",
+          "replay": "72.1°F",
+          "difference": "Slight numeric variance"
+        }
+      },
+      {
+        "tool_id": "tool-003",
+        "tool_name": "format_response",
+        "ars_score": 1.0,
+        "match_status": "exact",
+        "output_diff": null
+      },
+      {
+        "tool_id": "tool-004",
+        "tool_name": "log_interaction",
+        "ars_score": 0.5,
+        "match_status": "mismatch",
+        "output_diff": {
+          "field": "timestamp",
+          "original": "2025-12-15T10:00:00Z",
+          "replay": "2025-12-16T10:00:00Z",
+          "difference": "Timestamp changed (non-deterministic side effect)"
+        }
+      }
+    ],
+    "comparison_notes": "High ARS score indicates good determinism. Timestamp mismatch in log_interaction is expected for side-effect operations."
+  },
+  "llm_config": {
+    "model_name": "gpt-4-turbo",
+    "provider": "openai",
+    "parameters": {
+      "temperature": 0.0,
+      "max_tokens": 500
+    }
+  },
+  "inputs": {
+    "interactions": [
+      { "input": "What's the weather forecast for San Francisco this week?" }
+    ]
+  },
+  "outputs": {
+    "interactions": [
+      {
+        "input": "What's the weather forecast for San Francisco this week?",
+        "output": "San Francisco weather this week: Sunny with temperatures ranging from 68-75°F. Light winds from the west."
+      }
+    ]
+  },
+  "tool_calls": [
+    {
+      "id": "tool-001",
+      "tool_name": "get_weather",
+      "start_time": "2025-12-16T10:00:00.100Z",
+      "end_time": "2025-12-16T10:00:00.800Z",
+      "latency_ms": 700,
+      "timestamp": "2025-12-16T10:00:00.100Z",
+      "input": {
+        "location": "San Francisco, CA",
+        "units": "fahrenheit"
+      },
+      "input_hash": "sha256:weather_input_001",
+      "output": {
+        "temperature": 72,
+        "conditions": "Sunny",
+        "humidity": 65
+      },
+      "output_hash": "sha256:weather_output_001",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:weather_cache_001",
+      "stubbed_in_replay": true,
+      "metadata": {
+        "replay_cache_hit": true,
+        "ars_score": 1.0,
+        "match_status": "exact"
+      }
+    },
+    {
+      "id": "tool-002",
+      "tool_name": "get_forecast",
+      "start_time": "2025-12-16T10:00:00.850Z",
+      "end_time": "2025-12-16T10:00:01.750Z",
+      "latency_ms": 900,
+      "timestamp": "2025-12-16T10:00:00.850Z",
+      "input": {
+        "location": "San Francisco, CA",
+        "days": 7
+      },
+      "input_hash": "sha256:forecast_input_001",
+      "output": {
+        "forecast": [
+          {"day": "Mon", "high": 75, "low": 68, "conditions": "Sunny"},
+          {"day": "Tue", "high": 74, "low": 67, "conditions": "Partly Cloudy"},
+          {"day": "Wed", "high": 73, "low": 66, "conditions": "Sunny"}
+        ]
+      },
+      "output_hash": "sha256:forecast_output_001",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:forecast_cache_001",
+      "stubbed_in_replay": true,
+      "metadata": {
+        "replay_cache_hit": true,
+        "ars_score": 0.95,
+        "match_status": "near_match",
+        "output_diff": {
+          "field": "high temperature on Mon",
+          "original": "75°F",
+          "replay": "75.1°F"
+        }
+      }
+    },
+    {
+      "id": "tool-003",
+      "tool_name": "format_response",
+      "start_time": "2025-12-16T10:00:01.800Z",
+      "end_time": "2025-12-16T10:00:02.200Z",
+      "latency_ms": 400,
+      "timestamp": "2025-12-16T10:00:01.800Z",
+      "input": {
+        "weather_data": {"temperature": 72, "conditions": "Sunny"},
+        "forecast_data": [{"day": "Mon", "high": 75}]
+      },
+      "input_hash": "sha256:format_input_001",
+      "output": {
+        "formatted_text": "San Francisco weather this week: Sunny with temperatures ranging from 68-75°F. Light winds from the west."
+      },
+      "output_hash": "sha256:format_output_001",
+      "type": "tool",
+      "effect_type": "other",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:format_cache_001",
+      "stubbed_in_replay": true,
+      "metadata": {
+        "replay_cache_hit": true,
+        "ars_score": 1.0,
+        "match_status": "exact"
+      }
+    },
+    {
+      "id": "tool-004",
+      "tool_name": "log_interaction",
+      "start_time": "2025-12-16T10:00:02.250Z",
+      "end_time": "2025-12-16T10:00:03.450Z",
+      "latency_ms": 1200,
+      "timestamp": "2025-12-16T10:00:02.250Z",
+      "input": {
+        "user_query": "What's the weather forecast for San Francisco this week?",
+        "response": "San Francisco weather this week: Sunny..."
+      },
+      "input_hash": "sha256:log_input_001",
+      "output": {
+        "log_id": "log-20251216-100003",
+        "timestamp": "2025-12-16T10:00:03.450Z",
+        "status": "logged"
+      },
+      "output_hash": "sha256:log_output_replay_001",
+      "type": "tool",
+      "effect_type": "side_effect",
+      "status": "ok",
+      "error_flag": false,
+      "cache_key": "sha256:log_cache_001",
+      "stubbed_in_replay": true,
+      "metadata": {
+        "replay_cache_hit": true,
+        "ars_score": 0.5,
+        "match_status": "mismatch",
+        "output_diff": {
+          "field": "timestamp",
+          "original": "2025-12-15T10:00:00Z",
+          "replay": "2025-12-16T10:00:03.450Z",
+          "difference": "Non-deterministic timestamp (side effect)"
+        }
+      }
+    }
+  ],
+  "graph_version": {
+    "graph_hash": "sha256:weather_graph_v1",
+    "tool_schemas_hash": "sha256:weather_schemas_v1"
+  },
+  "resolved_prompt": {
+    "template": "Answer weather query: {query}",
+    "template_hash": "sha256:weather_prompt_001",
+    "variables": {
+      "query": "What's the weather forecast for San Francisco this week?"
+    },
+    "variables_hash": "sha256:weather_vars_001"
+  }
+}

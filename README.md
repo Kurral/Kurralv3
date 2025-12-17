@@ -3,16 +3,16 @@
 </p>
 
 <h1 align="center">KURRAL</h1>
-<h3 align="center">Deterministic Testing and Replay for AI Agents</h3>
-<p align="center">🔌 First-class MCP protocol support with SSE capture. </p>
-<p align="center">✨ NEW: Full MCP proxy with record/replay and SSE streaming support. </p>
+<h3 align="center">MCP Security, Observability & Deterministic Testing Platform</h3>
+<p align="center">Secure, observe, and reliably test Model Context Protocol (MCP) deployments and AI agents</p>
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/kurral" alt="PyPI" />
   <img src="https://img.shields.io/badge/License-Apache_2.0-blue" alt="License" />
   <img src="https://img.shields.io/badge/Python-3.9+-blue" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/MCP-Security_Ready-orange" alt="MCP Security" />
+  <img src="https://img.shields.io/badge/SAFE--MCP-Compatible-green" alt="SAFE-MCP" />
   <img src="https://img.shields.io/badge/LangChain-Compatible-green" alt="LangChain Compatible" />
-  <img src="https://img.shields.io/badge/MCP-Proxy_Support-orange" alt="MCP Proxy Support" />
 </p>
 
 <p align="center">
@@ -21,733 +21,272 @@
 
 ---
 
-**Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. It captures complete execution traces of your agents, enabling intelligent replay for regression detection, debugging, and quantifiable A/B performance comparison.
+## 🎯 The Growing MCP & Agent Challenge
 
-## Table of Contents
+Model Context Protocol (MCP) is rapidly becoming the standard for AI agent tool integration — adopted by Anthropic, OpenAI, Google, Microsoft and others. Yet enterprises face critical hurdles before full adoption:
 
-- [Why Kurral?](#why-kurral)
-- [Key Features](#key-features)
-- [When to Use Kurral](#when-to-use-kurral)
-- [MCP Proxy (NEW!)](#mcp-proxy-new-)
-- [How It Works](#how-it-works)
-- [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Storage Options](#storage-options)
-- [Deep Dive](#deep-dive)
-- [Architecture](#architecture)
-- [Best Practices](#best-practices)
-- [Contributing](#contributing)
+- **🔍 Visibility** – What tools are agents calling? What data is flowing?
+- **🛡️ Security** – Are MCP servers vulnerable to tool poisoning, prompt injection, or data exfiltration?
+- **🧪 Reliable Testing** – How to test agents deterministically without unpredictable outputs or massive API costs?
 
-## Why Kurral?
-
-Testing AI agents is fundamentally different from testing traditional software:
-
-- **Non-deterministic outputs**: LLMs don't return the same response twice
-- **Expensive API calls**: Every test run costs money
-- **Complex orchestration**: Multi-step tool chains are hard to debug
-- **No ground truth**: How do you know if a change broke something?
-
-Standard testing approaches (unit tests, mocks, integration tests) fall short because they assume deterministic behavior.
-
-**Kurral's solution**: Treat agent executions as **replayable artifacts** - complete snapshots of behavior that can be validated, compared, and debugged deterministically.
-
-## Key Features
-
-**Automatic Artifact Generation**
-
-- Captures complete execution traces: inputs, outputs, tool calls, LLM configs, and prompts
-- Zero configuration - just add two lines to your agent code
-- Session-based: accumulates all interactions within a single `main()` run
-
-**Intelligent Replay System**
-
-- Automatically detects changes (LLM model, tools, prompts, graph structure)
-- Switches between A replay (deterministic) and B replay (exploratory) based on determinism score
-- Semantic tool matching (85% threshold) caches similar tool calls to reduce API costs
-
-**Side Effect Protection**: Prevents dangerous operations (emails, payments, writes) during replay
-
-**Quantifiable Regression Detection**
-
-- Agent Regression Score (ARS) measures replay fidelity (0.0-1.0)
-- Combines output similarity and tool call accuracy
-- Use in CI/CD to catch regressions before deployment
-
-**Developer-Friendly Integration**
-
-- Works seamlessly with LangChain's `AgentExecutor` and ReAct agents
-- Minimal code changes - just `@trace_agent()` decorator and `trace_agent_invoke()` wrapper
-- Artifacts saved as readable JSON in `artifacts/` directory
-- **Intelligent Side Effect Detection**: Auto-generates configuration with smart suggestions based on tool names and descriptions
-
-## When to Use Kurral
-
-- ✅ **Regression testing**: Verify that code changes don't break existing behavior
-- ✅ **Model upgrades**: Test if GPT-4.5 behaves better than GPT-4 on your tasks
-- ✅ **Prompt engineering**: Compare different prompt variations quantitatively
-- ✅ **Debugging failures**: Reproduce and analyze production issues locally
-- ✅ **CI/CD integration**: Fail builds if ARS drops below threshold
-
-
-## MCP Proxy (NEW!) 🌊
-
-Capture and replay MCP tool calls with full SSE streaming support.
-
-Kurral now includes an HTTP/SSE proxy for the [Model Context Protocol](https://modelcontextprotocol.io), providing complete observability into MCP tool usage.
-
-### Quick Start
-
-```bash
-# Install with MCP support
-pip install kurral[mcp]
-
-# Start recording
-kurral mcp start --mode record
-
-# Export captured calls
-kurral mcp export -o session.json
-
-# Replay from cache
-kurral mcp start --mode replay --artifact session.json
-```
-
-### Key Features
-- ✅ Record all MCP tool calls to `.kurral` artifacts
-- ✅ Replay cached responses for deterministic testing
-- ✅ Full SSE event-by-event capture
-- ✅ Performance metrics (duration, event rates)
-- ✅ Multi-server routing
-
-**[📖 Full MCP Proxy Documentation →](MCP_PROXY_README.md)**
+**Kurral delivers all three:** observability and testing today, automated security testing in Q1 2026.
 
 ---
 
+## 🚀 Three Core Pillars
 
-## How It Works
+### 1. MCP Observability ✅ Available Now
 
-Kurral records the complete execution session (**Artifact**), which can include multiple user interactions, tool calls, and LLM steps within a single run of your agent's `main()` function.
-
-> 💡 **What's an Artifact?** A `.kurral` file is a complete snapshot of your agent's execution - think of it as a "recording" that captures every LLM call, tool execution, and decision point. You can replay this recording later to verify behavior or test changes.
-
-You can then replay this comprehensive session artifact against new code, different LLM configurations, or modified prompts. This allows you to verify behavioral consistency across the entire user dialogue, not just a single prompt-response cycle.
-
-**Intelligent Replay Types**
-
-Kurral detects what changed between runs and automatically switches strategies based on determinism score:
-
-- **Level 1 Replay (A Replay - Deterministic)**: When determinism score ≥ 0.8 AND no critical changes detected. Returns artifact outputs directly without re-executing LLM or tools.
-
-    - ✅ Zero API costs (uses cached outputs)
-    - ✅ Perfect for regression testing
-    - ✅ Verifies logic without re-running LLM
-
-    **Triggers:** High config similarity + no model/tool/provider changes
-
-- **Level 2 Replay (B Replay - Non-Deterministic / Exploratory)**: When determinism score < 0.8 OR critical changes detected. Re-executes the LLM but uses cached tool calls via semantic matching to benchmark the quality of the new model or prompt against the original run.
-  
-    - ✅ Benchmark new models against original runs
-    - ✅ Test prompt variations
-    - ✅ Reduced API costs via semantic tool caching
-
-    **Triggers:** Low config similarity OR model/tool/provider changes
-With minimal code changes (just two lines), Kurral's captured artifacts unlock intelligent, production-ready replay capabilities.
-
-## Installation
-
-### From PyPI (Recommended)
+**Full HTTP/SSE proxy with complete traffic visibility and replay**
 
 ```bash
-pip install kurral
+pip install kurral[mcp]
+kurral mcp start --mode record                           # Capture everything
+kurral mcp export -o session.kurral                      # Export artifact
+kurral mcp start --mode replay --artifact session.kurral # Replay offline
 ```
 
-### From Source
+**Capabilities:**
+- ✅ Capture & replay all MCP tool calls with full SSE streaming
+- ✅ Performance metrics (duration, TTFE, event rates)
+- ✅ Multi-server routing & semantic tool matching
+- ✅ Shareable .kurral artifacts for debugging
 
-```bash
-# Clone the repository
-git clone https://github.com/kurral/kurralv3.git
-cd kurralv3
+**Use Cases:** Production issue reproduction, cost-free development, team collaboration.
 
-# Install dependencies
-pip install -r requirements.txt
+**📖 [Full MCP Proxy Documentation →](MCP_PROXY_README.md)**
 
-# Or install in development mode
-pip install -e .
-```
+---
 
-## Quick Start
+### 2. Deterministic Agent Testing ✅ Available Now
 
-### 1. Integrate Kurral into Your Agent
-
-Add Kurral to your existing LangChain agent with just two changes:
+**Intelligent capture & replay for regression testing and A/B comparison**
 
 ```python
 from kurral import trace_agent, trace_agent_invoke
 
 @trace_agent()
 def main():
-    # Your existing agent setup
-    llm = ChatOpenAI(model="gpt-4", temperature=0)
-    tools = create_tools()
-    agent = create_react_agent(llm, tools, prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    
-    # Replace agent_executor.invoke() with trace_agent_invoke()
+    llm = ChatOpenAI(model="gpt-4o", temperature=0)
+    agent_executor = AgentExecutor(agent=agent, tools=tools)
+
     result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
     return result
 ```
 
-That's it! Kurral will automatically:
+**Intelligent Replay:**
+- **A Replay (Deterministic)**: High config similarity → cached outputs, zero API cost
+- **B Replay (Exploratory)**: Changes detected → re-execute LLM with semantic tool caching
 
-- Generate artifacts in `artifacts/` directory
-- Capture all interactions within the session
-- Save a single artifact per `main()` execution
+**Agent Regression Score (ARS):**
+```
+ARS = (Output Similarity × 0.7) + (Tool Accuracy × 0.3)
+```
+Penalties for new/unused tools. Perfect for CI/CD thresholds.
 
-### 2. Run Your Agent
+**Side Effect Protection:** Auto-generates config, requires manual review before replay.
+
+**Use Cases:**
+- ✅ Regression testing & CI/CD
+- ✅ Model upgrades (GPT-4o vs. newer models)
+- ✅ Prompt engineering comparisons
+- ✅ 99% API cost reduction in testing
+
+**📖 [Deep Dive: How Replay Works →](REPLAY_DEEP_DIVE.md)**
+
+---
+
+### 3. MCP Security Testing 🚧 Phase 1: Q1 2026
+
+**Automated testing against the SAFE-MCP threat framework**
+
+Kurral will systematically test deployments against critical MCP attacks:
+
+**Phase 1 (Q1 2026):**
+- ✅ **T1001** Tool Poisoning
+- ✅ **T1102** Prompt Injection
+- ✅ **T1201** MCP Rug Pull
+- ✅ Cross-Tool Shadowing
+- ✅ Data Exfiltration
+- ✅ Unauthorized Tool Execution
+- ✅ Malicious Server Distribution
 
 ```bash
-python agent.py
+kurral security test baseline.kurral --techniques T1001,T1102
 ```
 
-After execution, you'll see:
+**Deliverables:**
+- 50–70 attack variants tested
+- Detailed PDF/JSON reports with severity, findings & remediation
+- Baseline vs. attack comparison
 
-```
-[Kurral] Session artifact saved: artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral
-[Kurral] Run ID: local_agent_1234567890
-[Kurral] Kurral ID: 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
-[Kurral] Total interactions: 1
-```
+**📖 [Security Roadmap & Details →](MCP_SECURITY_ROADMAP.md)**
 
-### 3. Configure Side Effects (First Time Only)
+---
 
-On your first replay, Kurral will auto-generate a `side_effect/side_effects.yaml` file with intelligent suggestions:
-
-```yaml
-tools:
-  send_email: false    # Side effect - blocked during replay
-  tavily_search: true  # Safe - allowed during replay
-done: false            # Set to true after reviewing
-```
-
-Kurral automatically analyzes tool names, descriptions, and docstrings for keywords like "update", "send", "write" (case-insensitive) and suggests which tools should be blocked.
-
-**First Replay Output**:
-
-```
-============================================================
-REPLAY BLOCKED: Side Effect Configuration Required
-============================================================
-The side effect configuration file has been auto-generated or needs review.
-Please manually review and configure the side effects before replay:
-
-Config file: my_agent/side_effect/side_effects.yaml
-
-Tool Analysis & Suggestions:
-------------------------------------------------------------
-  send_email: false  [SIDE EFFECT]
-    → Contains side effect keywords in name/description/docstring
-  tavily_search: true  [SAFE]
-    → No side effect keywords found
-------------------------------------------------------------
-
-Instructions:
-1. Review each tool above - tools marked as SIDE EFFECT should be set to 'false'
-2. Tools marked as SAFE can remain 'true' (unless you know they have side effects)
-3. Manually edit the YAML file to adjust any values if needed
-4. Set 'done: true' when you have finished configuring
-
-Once you have set 'done: true', run the replay again.
-============================================================
-```
-
-**Important**: You must manually set `done: true` after reviewing the configuration to allow replay.
-
-### 4. Replay an Artifact
+## 📦 Installation
 
 ```bash
-# Option 1: Using kurral CLI (from agent directory)
-kurral replay <kurral_id>
-
-# Example
-kurral replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
-
-# Or using file path
-kurral replay artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral
-
-# Or replay latest artifact
-kurral replay --latest
-
-# Option 2: Using Python module (from agent directory)
-python -m kurral.replay <kurral_id>
-
-# Example
-python -m kurral.replay 4babbd1c-d250-4c7a-8e4b-25a1ac134f89
-
-# Or using partial UUID
-python -m kurral.replay 4babbd1c
-
-# Option 3: Using replay_cmd module with file path
-python -m kurral.cli.replay_cmd artifacts/4babbd1c-d250-4c7a-8e4b-25a1ac134f89.kurral --verbose
+pip install kurral                # Core testing
+pip install kurral[mcp]           # + MCP proxy & observability
 ```
 
-Kurral will automatically:
+**From source:**
+```bash
+git clone https://github.com/kurral/kurralv3.git
+cd kurralv3
+pip install -e ".[mcp]"
+```
 
-- Detect changes and determine replay type (A or B)
-- Check side effect configuration (blocks dangerous operations)
-- Print replay results to stdout
-- Save replay artifact to `replay_runs/` directory
-- Report any changes detected
-- Display ARS score
+---
 
-## Storage Options
+## 🎬 Quick Start: MCP Observability
 
-Kurral supports two storage backends for artifact storage:
+```bash
+kurral mcp init                     # Generate config
+kurral mcp start --mode record      # Proxy runs on localhost:3100
+# Point your agent to http://localhost:3100
+kurral mcp export -o session.kurral
+kurral mcp start --mode replay --artifact session.kurral
+```
 
-### Local Storage (Default)
+**📖 [Full MCP Proxy Guide →](MCP_PROXY_README.md)**
 
-By default, artifacts are stored in your local filesystem:
+---
+
+## 🎬 Quick Start: Agent Testing
 
 ```python
-from kurral import configure
+from kurral import trace_agent, trace_agent_invoke
 
-# Explicit configuration (optional - this is the default)
-configure(storage_backend="local")
+@trace_agent()
+def main():
+    # Your agent setup...
+    result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
+    print(result['output'])
 ```
 
-Artifacts will be saved to:
-- `artifacts/` - Original execution artifacts
-- `replay_runs/` - Replay artifacts
+Run → artifact saved automatically.
 
-### Cloudflare R2 / AWS S3 Storage
+First replay triggers auto-generation of `side_effect/side_effects.yaml` with smart suggestions. Review and set `done: true`.
 
-For production environments or team collaboration, use cloud storage:
+Then replay:
+```bash
+kurral replay --latest
+# or
+kurral replay <kurral_id>
+```
+
+Detailed output includes replay type, ARS score, cache hits, and changes detected.
+
+**📖 [Deep Dive: Replay System →](REPLAY_DEEP_DIVE.md)**
+
+---
+
+## 🗄️ Storage Options
+
+**Local (default)** → `artifacts/` and `replay_runs/`
+
+**Cloud (R2/S3-compatible)** → scalable, team-shared artifacts
 
 ```python
 from kurral import configure
 
 configure(
     storage_backend="r2",
-    r2_account_id="your-account-id",
-    r2_access_key_id="your-access-key",
-    r2_secret_access_key="your-secret-key",
+    r2_account_id="...",
     r2_bucket_name="kurral-artifacts"
 )
 ```
 
-Or via environment variables:
+---
 
-```bash
-# .env file
-KURRAL_STORAGE_BACKEND=r2
-R2_ACCOUNT_ID=your-account-id
-R2_ACCESS_KEY_ID=your-access-key
-R2_SECRET_ACCESS_KEY=your-secret-key
-R2_BUCKET_NAME=kurral-artifacts
-```
+## 📚 Real-World Use Cases
 
-**Benefits of R2/S3 Storage:**
-- ☁️ **Scalable**: No local disk space limits
-- 🔄 **Team Access**: Share artifacts across team members
-- 💰 **Cost-Effective**: Cloudflare R2 has zero egress fees
-- 🔒 **Secure**: Encrypted at rest
+### Development Debugging
+Customer shares .kurral artifact → You replay exact session locally → See exactly what they saw
 
-**Setup Cloudflare R2:**
+### CI/CD Regression Testing
+Capture golden path → Run tests against artifact → Fail build if ARS < 0.8 → Zero API costs
 
-1. Create an R2 bucket in Cloudflare Dashboard
-2. Generate API credentials (R2 → Manage R2 API Tokens)
-3. Copy Account ID, Access Key, and Secret Key
-4. Configure Kurral with your credentials
+### Model Upgrade Testing
+Run baseline with GPT-4 → Change to GPT-4.5 → Replay with new model → Get quantitative ARS comparison
 
-**Compatible with AWS S3:**
-
-Kurral works with any S3-compatible storage (AWS S3, MinIO, DigitalOcean Spaces, etc.):
-
-```python
-configure(
-    storage_backend="r2",  # Use "r2" for any S3-compatible storage
-    r2_endpoint_url="https://s3.amazonaws.com",  # For AWS S3
-    r2_bucket_name="your-bucket",
-    # ... other credentials
-)
-```
-
-## Deep Dive
-
-Want to understand how Kurral works under the hood? Read on.
-
-### What's in a `.kurral` artifact?
-
-Human-readable JSON with everything:
-
-- All user/agent hashed messages
-- Tool calls + results
-- Exact prompt templates (resolved)
-- LLM config (model, temp, seed, provider)
-- Graph/tool schema hash
-
-### Artifact Generation
-
-When you run your agent with Kurral, it automatically captures:
-
-- **Inputs**: All user inputs for each interaction
-- **Outputs**: Agent responses and final outputs
-- **Tool Calls**: Complete tool execution traces (name, inputs, outputs, timestamps)
-- **LLM Configuration**: Model name, provider, temperature, seed, and other parameters
-- **Prompt**: Resolved prompt template with variables
-- **Graph Version**: Hash of tool schemas and graph structure
-- **Metadata**: Timestamps, duration, errors, token usage
-
-All interactions within a single `main()` execution are accumulated into one session artifact.
-
-### Replay Types
-
-
-#### Determinism Score
-
-The determinism score measures **configuration similarity** between the artifact and current run.
-
-**Calculation:**
-```
-determinism_score = (temp_score + seed_score + model_score + provider_score) / 4
-```
-
-**Scoring factors (each 0.0-1.0):**
-
-| Factor | Weight | Scoring Logic |
-|--------|--------|---------------|
-| Temperature | 25% | 1.0 if identical, 0.5 if one missing, else (1.0 - abs(difference)) |
-| Seed | 25% | 1.0 if identical, 0.5 if both/one missing, 0.0 if different |
-| Model Name | 25% | 1.0 if identical, 0.0 if different |
-| Provider | 25% | 1.0 if identical, 0.0 if different |
-
-**Example:**
-- Same model (gpt-4) → +0.25
-- Same provider (openai) → +0.25
-- Temperature 0.0 vs 0.5 (diff 0.5) → +0.50
-- Same seed → +0.25
-- **Total:** 1.00 (perfect match → A replay)
-
-**Threshold:** Default 0.8
-- Score ≥ 0.8 → Config similar enough → A replay (if no critical changes)
-- Score < 0.8 → Config too different → B replay (must re-execute)
-
-**Note:** Even with high determinism score, critical changes (model name, provider, tools) always trigger B replay.
-
-**Decision Flow:**
-
-```
-┌─────────────────────────────────┐
-│ Calculate Determinism Score     │
-│ (0.0 - 1.0)                     │
-└────────────┬────────────────────┘
-             │
-             ▼
-   ┌──────────────────────┐
-   │ Check for Critical   │
-   │ Changes:             │
-   │ • Model changed?     │
-   │ • Provider changed?  │
-   │ • Tools changed?     │
-   └──────┬───────────────┘
-          │
-     ┌────┴────┐
-     │         │
-     ▼         ▼
-   YES        NO
-     │         │
-     │         ▼
-     │   ┌─────────────┐
-     │   │ Score < 0.8?│
-     │   └──┬──────┬───┘
-     │      │ YES  │ NO
-     │      │      │
-     ▼      ▼      ▼
-  ┌───────────┐ ┌───────────┐
-  │ B REPLAY  │ │ A REPLAY  │
-  │ (Re-exec) │ │ (Cached)  │
-  └───────────┘ └───────────┘
-```
-
-**Key:** High score (≥ 0.8) + no critical changes → A Replay | Low score (< 0.8) OR critical changes → B Replay
+### Cost Reduction
+100 test runs/day without Kurral: $50/day = $1,000/month
+With Kurral (record once, replay 99 times): $0.50/day = $10/month
+**Savings: $990/month (99% reduction)**
 
 ---
 
-Kurral uses intelligent change detection and determinism scoring to determine the appropriate replay strategy:
+## 🛣️ Roadmap
 
-#### A Replay (Deterministic)
+- ✅ **Now**: MCP observability, deterministic testing, intelligent replay
+- 🚧 **Q1 2026**: Phase 1 MCP security testing (7 critical threats)
+- 🔮 **Q2 2026+**: Full SAFE-MCP coverage, policy engine, continuous monitoring
 
-- **When**: Determinism score < 0.8 AND no changes detected (same LLM, tools, prompt template, graph structure)
-- **Behavior**: Returns cached outputs directly from artifact without re-executing LLM or tools
-- **Use Case**: Regression testing, verifying identical behavior
-- **Cost**: Zero API costs
+**📖 [Security Roadmap →](MCP_SECURITY_ROADMAP.md)**
 
-#### B Replay (Non-Deterministic / Exploratory)
+---
 
-- **When**: Determinism score >= 0.8 OR changes detected (different LLM, model parameters, tools, or prompt template)
-- **Behavior**: Re-executes LLM with semantic tool call matching (85% similarity threshold)
-- **Use Case**: Testing different models, comparing performance, A/B testing
-- **Cost**: Reduced API costs via semantic tool caching
+## ⚠️ Current Limitations
 
-### Semantic Tool Matching
+- ReAct & LCEL agents fully supported (LangGraph streaming coming soon)
+- Vision inputs not yet captured
+- Security testing in active development
 
-During B replay, Kurral uses semantic similarity to match tool calls:
+---
 
-- **Exact Match**: If tool name and inputs match exactly → use cached output
-- **Semantic Match**: If similarity ≥ 85% → use cached output (no tool execution)
-- **New Call**: If similarity < 85% → execute tool and cache result
+## 🏗️ Architecture
 
-This ensures:
+**Core Components:**
+- `trace_agent` - Decorator for agent main function
+- `trace_agent_invoke` - Wrapper for capturing traces
+- `replay` - Replay engine with A/B detection
+- `ars_scorer` - Agent Regression Score calculation
+- `side_effect_config` - Side effect management
 
-- Reduced API costs (fewer tool executions)
-- Faster replay execution
-- Accurate cache hit/miss tracking
+**MCP Components:**
+- `KurralMCPProxy` - FastAPI HTTP/SSE proxy
+- `MCPCaptureEngine` - Traffic capture to artifacts
+- `MCPReplayEngine` - Cached response replay
+- `MCPRouter` - Multi-server routing
 
-### Side Effect Management
+**📖 [Detailed Architecture →](REPLAY_DEEP_DIVE.md)**
 
-Kurral protects against dangerous operations during replay through a YAML-based configuration system:
+---
 
-**Auto-Generation**: On first replay, Kurral automatically:
+## 💬 Community & Contribution
 
-- Discovers all tools used in your agent
-- Analyzes tool names, descriptions, and docstrings
-- Suggests side effect status based on keywords ("update", "send", "write")
-- Creates `side_effect/side_effects.yaml` in your agent directory
-
-**Configuration Format**:
-
-```yaml
-tools:
-  send_email: false    # false = side effect (blocked), true = safe (allowed)
-  tavily_search: true
-  write_file: false
-done: false            # Must be set to true manually after review
-```
-
-**How It Works**:
-
-- **Cached Results Available**: Side effect tools use cached outputs from the original artifact (no execution)
-- **No Cache Available**: Side effect tools return a safe default message (blocked, never executed)
-- **Safe Tools**: Normal tools execute if no cache match is found
-
-**Safety First**: The `done` flag defaults to `false`, requiring manual review before any replay can proceed. This ensures you explicitly approve which tools can execute during replay.
-
-### Agent Regression Score (ARS)
-
-ARS provides a quantitative measure of replay fidelity:
-
-```
-ARS = (Output Similarity × 0.7) + (Tool Accuracy × 0.3)
-```
-
-Where:
-
-- **Output Similarity**: Semantic similarity between original and replayed outputs
-- **Tool Accuracy**: Base match ratio with penalties for deviations
-
-  **Formula:**
-  ```
-  base_score = (used_original_tools / total_original_tools)
-  new_penalty = min(0.5, new_tools_count × 0.1)      # -10% per new tool, max -50%
-  unused_penalty = min(0.5, unused_tools_count × 0.1) # -10% per unused tool, max -50%
-  tool_accuracy = max(0.0, base_score - new_penalty - unused_penalty)
-  ```
-
-  - **New tool calls** penalize score by 10% each (capped at -50%)
-  - **Unused original tools** penalize score by 10% each (capped at -50%)
-  - Score ranges from 0.0 (many changes) to 1.0 (perfect match)
-
-**ARS Calculation Flow:**
-
-```
-┌──────────────────────────────────────┐
-│ Output Similarity (0.0 - 1.0)        │
-│ • Semantic text comparison           │
-│ • 1.0 = exact match                  │
-└────────────┬─────────────────────────┘
-             │ × 0.7 (70% weight)
-             ▼
-     ┌───────────────┐
-     │  Weighted     │
-     │  Output       │───┐
-     │  Score        │   │
-     └───────────────┘   │
-                         ▼
-┌──────────────────────────────────────┐     ┌─────────┐
-│ Tool Accuracy (0.0 - 1.0)            │     │   ARS   │
-│ • Base: used_tools / total_tools     │────▶│  Score  │
-│ • Penalties: new & unused tools      │     │ (0-1.0) │
-└────────────┬─────────────────────────┘     └─────────┘
-             │ × 0.3 (30% weight)
-             ▼
-     ┌───────────────┐
-     │  Weighted     │
-     │  Tool         │───┘
-     │  Score        │
-     └───────────────┘
-```
-
-**Example:**
-- Output similarity: 0.95
-- Tool accuracy: 0.60 (used 4/5 tools, added 1 new, left 1 unused)
-- **ARS** = (0.95 × 0.7) + (0.60 × 0.3) = 0.665 + 0.18 = **0.845**
-
-ARS ranges from 0.0 to 1.0, where 1.0 indicates perfect replay fidelity.
-
-## Usage Examples
-
-### Basic Integration
-
-```python
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain_openai import ChatOpenAI
-from kurral import trace_agent, trace_agent_invoke
-
-@trace_agent()
-def main():
-    llm = ChatOpenAI(model="gpt-4", temperature=0)
-    tools = create_tools()
-    agent = create_react_agent(llm, tools, prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools)
-    
-    user_input = input("You: ")
-    result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
-    print(f"Agent: {result['output']}")
-
-if __name__ == "__main__":
-    main()
-```
-
-### Multiple Interactions
-
-Kurral automatically accumulates all interactions:
-
-```python
-@trace_agent()
-def main():
-    # ... setup agent ...
-    
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() == 'exit':
-            break
-        
-        result = trace_agent_invoke(agent_executor, {"input": user_input}, llm=llm)
-        print(f"Agent: {result['output']}")
-    
-    # All interactions saved in one artifact when main() exits
-```
-
-### Replay Output
-
-When you replay an artifact, Kurral provides detailed information:
-
-```
-Replay Type: B
-Determinism Score: 0.62 (threshold: 0.80)
-
-Changes Detected:
-  - llm_config:
-      model_name: {'artifact': 'llama-3.3-70b-versatile', 'current': 'gpt-4'}
-
-Executing B Replay (Re-executing agent with cached tool calls)...
-
-[Kurral] Replay Execution:
-  - Cache Hits: 1
-  - New Tool Calls: 2
-  - Unused Tool Calls: 0
-
-ARS (Agent Regression Score): 0.626
-  - Output Similarity: 0.5515
-  - Tool Accuracy: 0.8
-
-[Kurral] Replay artifact saved: replay_runs/5a9d2627-4dec-4954-96af-b127ba038056.kurral
-```
-
-## Architecture
-
-### Core Components
-
-- **`trace_agent`**: Decorator that wraps your agent's main function
-- **`trace_agent_invoke`**: Wrapper for `agent_executor.invoke()` that captures traces
-- **`replay`**: Replay engine with automatic A/B detection
-- **`replay_detector`**: Change detection logic and determinism scoring
-- **`tool_stubber`**: Semantic tool matching and caching during replay
-- **`side_effect_config`**: Side effect configuration management and auto-generation
-- **`ars_scorer`**: Agent Regression Score calculation
-- **`artifact_manager`**: Artifact storage and retrieval
-
-### Artifact Structure
-
-Kurral artifacts (`.kurral` files) are JSON files containing:
-
-```json
-{
-  "run_id": "local_agent_1234567890",
-  "kurral_id": "4babbd1c-d250-4c7a-8e4b-25a1ac134f89",
-  "inputs": {
-    "interactions": [...]
-  },
-  "outputs": {
-    "interactions": [...]
-  },
-  "llm_config": {
-    "model_name": "gpt-4",
-    "provider": "openai",
-    "parameters": {...}
-  },
-  "tool_calls": [...],
-  "resolved_prompt": {...},
-  "graph_version": {...}
-}
-```
-
-### Current Limitations (we're working on them!)
-
-- Only ReAct-style and LCEL agents fully supported (no native LangGraph streaming yet)
-- Vision / image inputs not captured
-- No built-in dashboard (yet – artifacts are JSON, just open one in VS Code/any editor)
-
-## Best Practices
-
-1. **Always pass `llm` parameter**: `trace_agent_invoke(agent_executor, input_data, llm=llm)` ensures accurate LLM config extraction
-2. **Use session artifacts**: Let Kurral accumulate interactions automatically within `main()`
-3. **Check ARS scores**: Monitor ARS to detect regressions when testing different models
-4. **Review replay artifacts**: Check `replay_runs/` directory for detailed replay analysis
-5. **Handle optional dependencies**: Kurral gracefully handles missing optional LLM packages
-6. **Review side effect configuration**: Always review `side_effect/side_effects.yaml` before enabling replay (`done: true`)
-7. **Mark dangerous tools as side effects**: Any tool that sends emails, makes payments, writes files, or modifies external state should be set to `false`
-
-## Requirements
-
-- Python 3.9+
-- LangChain
-- Pydantic
-- Optional: OpenAI, Google Generative AI, Groq, or other LLM providers
-
-## License
-
-Apache 2.0 - see [LICENSE](LICENSE) for details.
-
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## Community
-
-Join our Discord → [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
-
-## Support
-
+- **Discord**: [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
 - **Issues**: [github.com/kurral/kurralv3/issues](https://github.com/kurral/kurralv3/issues)
 - **Email**: team@kurral.com
 
+Contributions welcome — fork, branch, PR!
+
 ---
 
-⭐ Star this repo if Kurral just saved you $50 in OpenAI credits.
+## 📝 License
 
-Made with ❤️ for the agent-building community.
+Apache 2.0 - see [LICENSE](LICENSE) for details.
+
+---
+
+## 🌟 Why Kurral?
+
+MCP is becoming the standard for AI tool integration. As adoption accelerates, enterprises need:
+
+1. **Visibility** into what tools agents are calling
+2. **Security** assurance that MCP servers aren't compromised
+3. **Testing** capabilities that don't require expensive API calls
+
+Kurral provides all three in one platform.
+
+**Built for the MCP community.** If this solves a problem for you, please star the repo and join our Discord!
+
+---
+
+<p align="center">
+  <strong>Ready to secure, observe, and reliably test your MCP agents?</strong><br>
+  <code>pip install kurral[mcp]</code>
+</p>

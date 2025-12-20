@@ -20,7 +20,7 @@ Security notes:
 
 import os
 from pathlib import Path
-from langchain.tools import Tool
+from langchain_core.tools import Tool
 
 
 class FileSystemTool:

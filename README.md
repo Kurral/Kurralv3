@@ -27,11 +27,7 @@
 - Testing or upgrading agents → **Deterministic Agent Testing**
 - Want a hands-on demo in <5 minutes → **Project Generator**
 
-Kurral is framework-agnostic and operates at the execution and protocol layer.
-LangChain support is provided as a convenience, not a requirement.
-
-Templates are reference agent implementations, not framework requirements.
-They demonstrate correct Kurral integration patterns and are intended to be modified or replaced.
+**Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. Kurral is framework-agnostic and operates at the execution and protocol layer. LangChain support is provided as a convenience, not a requirement.
 
 ---
 
@@ -232,6 +228,9 @@ Check out `/examples` for three complete production examples:
 
 Each example includes cost analysis showing 75-98% savings with Kurral replay!
 
+**Templates** are reference agent implementations, not framework requirements.
+They demonstrate correct Kurral integration patterns and are intended to be modified or replaced.
+
 ---
 
 ## 🗄️ Storage Options
@@ -310,7 +309,7 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 ## 💬 Community & Contribution
 
 - **Discord**: [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
-- **Issues**: [github.com/Kurral/kurral/issues](https://github.com/Kurral/kurral/issues)
+- **Issues**: [github.com/Kurral/kurral/issues](https://github.com/Kurral/kurralv3/issues)
 - **Email**: team@kurral.com
 
 Contributions welcome — fork, branch, PR!
@@ -333,7 +332,7 @@ MCP is becoming the standard for AI tool integration. As adoption accelerates, e
 
 Kurral provides all three in one platform.
 
-**Built for the MCP community.** If this solves a problem for you, please star the repo and join our Discord!
+**Built for the MCP community.**  If KURRAL solves a problem for you, please star the repo and join our Discord!
 
 ---
 

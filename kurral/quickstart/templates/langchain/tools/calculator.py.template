@@ -1,0 +1,174 @@
+"""
+Calculator Tool
+
+Simple, secure mathematical calculator for agents.
+
+Demonstrates:
+  • Deterministic behavior (same input = same output, always)
+  • Fast execution (no API calls, no network)
+  • Perfect for regression testing with Kurral
+  • Input sanitization (security best practice)
+
+Kurral value:
+  - Deterministic tools are PERFECT for replay
+  - Testing 1000 calculations = instant with Kurral
+  - No cost, no latency, perfect reliability
+
+For advanced math:
+  If you need symbolic math (derivatives, integrals, equations):
+  - pip install sympy
+  - See: https://docs.sympy.org
+"""
+
+import re
+import math
+from langchain_core.tools import Tool
+
+
+class Calculator:
+    """Safe calculator for mathematical expressions."""
+
+    # Allowed functions for eval (whitelist approach)
+    SAFE_FUNCTIONS = {
+        'abs': abs,
+        'round': round,
+        'min': min,
+        'max': max,
+        'sum': sum,
+        'pow': pow,
+        # Math module functions
+        'sqrt': math.sqrt,
+        'sin': math.sin,
+        'cos': math.cos,
+        'tan': math.tan,
+        'log': math.log,
+        'log10': math.log10,
+        'exp': math.exp,
+        'pi': math.pi,
+        'e': math.e,
+    }
+
+    def calculate(self, expression: str) -> str:
+        """
+        Safely evaluate a mathematical expression.
+
+        Args:
+            expression: Math expression as string
+
+        Returns:
+            Result as string, or error message
+
+        Examples:
+            >>> calc.calculate("2 + 2")
+            "4"
+            >>> calc.calculate("sqrt(16)")
+            "4.0"
+            >>> calc.calculate("10 * 3.5")
+            "35.0"
+        """
+        expression = expression.strip()
+
+        if not expression:
+            return "Error: Empty expression"
+
+        try:
+            # Step 1: Input validation (prevent code injection)
+            if not self._is_safe_expression(expression):
+                return (
+                    f"Error: Invalid expression '{expression}'. "
+                    f"Only numbers, operators (+, -, *, /, **, %), "
+                    f"parentheses, and math functions allowed."
+                )
+
+            # Step 2: Safe evaluation with whitelisted functions
+            result = eval(
+                expression,
+                {"__builtins__": {}},  # No built-in functions
+                self.SAFE_FUNCTIONS     # Only our whitelisted math functions
+            )
+
+            # Step 3: Format result
+            # Round to 10 decimal places to avoid floating point noise
+            if isinstance(result, float):
+                result = round(result, 10)
+
+            return str(result)
+
+        except ZeroDivisionError:
+            return "Error: Division by zero"
+        except OverflowError:
+            return "Error: Result too large"
+        except Exception as e:
+            return f"Error: {type(e).__name__}: {str(e)}"
+
+    def _is_safe_expression(self, expr: str) -> bool:
+        """
+        Validate expression contains only safe characters.
+
+        Security: Prevents code injection attacks like:
+          - "import os; os.system('rm -rf /')"
+          - "__import__('os').system('...')"
+
+        Returns:
+            True if expression is safe
+        """
+        # Allow: digits, decimal points, operators, parens, spaces, letters (for functions)
+        pattern = r'^[0-9+\-*/().%\s,a-z_]+$'
+
+        if not re.match(pattern, expr.lower()):
+            return False
+
+        # Additional safety: Block dangerous keywords
+        dangerous_keywords = [
+            'import', '__', 'exec', 'eval', 'compile',
+            'open', 'file', 'input', 'raw_input'
+        ]
+
+        expr_lower = expr.lower()
+        for keyword in dangerous_keywords:
+            if keyword in expr_lower:
+                return False
+
+        return True
+
+
+def create_calculator_tool():
+    """
+    Factory function to create the calculator tool.
+
+    This is called by agent.py during setup.
+    """
+    calc = Calculator()
+
+    return Tool(
+        name="calculator",
+        description=(
+            "Calculate mathematical expressions. "
+            "Supports basic operators (+, -, *, /, **, %), "
+            "functions (sqrt, sin, cos, tan, log, exp, round, abs, min, max), "
+            "and constants (pi, e). "
+            "Examples: '2 + 2', 'sqrt(16)', '10 * 3.5', 'sin(pi/2)'"
+        ),
+        func=calc.calculate
+    )
+
+
+# For testing directly
+if __name__ == "__main__":
+    calc = Calculator()
+
+    # Test cases
+    tests = [
+        ("2 + 2", "4"),
+        ("10 * 3.5", "35.0"),
+        ("sqrt(16)", "4.0"),
+        ("2 ** 10", "1024"),
+        ("sin(pi/2)", "1.0"),
+        ("(10 + 5) * 2", "30"),
+    ]
+
+    print("Calculator Self-Test:")
+    for expr, expected in tests:
+        result = calc.calculate(expr)
+        status = "✅" if str(float(result)) == str(float(expected)) else "❌"
+        print(f"{status} {expr} = {result} (expected {expected})")

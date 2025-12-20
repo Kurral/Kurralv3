@@ -103,8 +103,10 @@ def show(artifact_id: str):
 @click.argument("project_name", required=False)
 @click.option("--output-dir", default=".", help="Output directory (default: current directory)")
 @click.option("--skip-git", is_flag=True, help="Skip git initialization")
+@click.option("--framework", default="vanilla", type=click.Choice(['vanilla', 'langchain']),
+              help="Framework to use: 'vanilla' (pure Python) or 'langchain' (default: vanilla)")
 @click.option("--verbose", "-v", is_flag=True, help="Show detailed progress")
-def init(project_name, output_dir, skip_git, verbose):
+def init(project_name, output_dir, skip_git, framework, verbose):
     """
     Initialize a new Kurral agent project.
 
@@ -112,9 +114,10 @@ def init(project_name, output_dir, skip_git, verbose):
     If no PROJECT_NAME, initializes Kurral in the current directory.
 
     Examples:
-        kurral init my-agent          # Create new project
-        kurral init my-bot --verbose  # With detailed output
-        kurral init                   # Just create directories
+        kurral init my-agent                      # Vanilla Python (default)
+        kurral init my-agent --framework langchain  # LangChain version
+        kurral init my-bot --verbose               # With detailed output
+        kurral init                                # Just create directories
     """
     from pathlib import Path
 
@@ -140,7 +143,8 @@ def init(project_name, output_dir, skip_git, verbose):
         generator.generate(
             project_name=project_name,
             target_dir=target_dir,
-            skip_git=skip_git
+            skip_git=skip_git,
+            framework=framework
         )
 
     except Exception as e:

@@ -100,7 +100,12 @@ include = ["kurral*"]
 exclude = ["tests*", "examples*"]
 
 [tool.setuptools.package-data]
-kurral = ["py.typed"]
+kurral = [
+    "py.typed",
+    "quickstart/templates/**/*.template",
+    "quickstart/templates/**/*.yml",
+    "quickstart/templates/**/*.yaml",
+]
 
 [tool.black]
 line-length = 100

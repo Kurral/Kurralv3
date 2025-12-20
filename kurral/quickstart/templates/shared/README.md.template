@@ -1,0 +1,301 @@
+# {{PROJECT_NAME}}
+
+A production-ready AI agent powered by [Kurral](https://github.com/kurral/kurralv3) for deterministic testing and cost-effective development.
+
+**Generated:** {{DATE}}
+**Kurral Version:** {{KURRAL_VERSION}}
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+Before running this agent, verify your environment:
+
+```bash
+# Check Kurral version (needs ≥{{KURRAL_VERSION}})
+kurral --version
+
+# Check Python version (needs ≥3.9)
+python --version
+```
+
+If `kurral --version` fails, install with:
+```bash
+pip install kurral[mcp]
+```
+
+### Installation
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Configure API keys
+cp .env.example .env
+# Edit .env and add your OPENAI_API_KEY and TAVILY_API_KEY
+
+# 3. Run the agent
+python agent.py
+```
+
+---
+
+## 💡 What's Included
+
+This project includes:
+
+- **agent.py** - Main agent with Kurral integration (just 2 decorators!)
+- **tools/** - Three production-ready tools:
+  - `web_search.py` - Internet search (Tavily API)
+  - `calculator.py` - Safe mathematical calculations
+  - `file_system.py` - Read files from project directory
+- **tests/** - Test suite with Kurral replay
+- **.kurral/** - Configuration for artifacts and replay
+
+---
+
+## 🧪 Testing with Kurral
+
+### First Run: Capture Baseline
+
+```bash
+python agent.py
+```
+
+This creates a `.kurral` artifact in `artifacts/` folder containing:
+- All LLM calls and responses
+- Tool invocations and results
+- Execution metadata
+
+**Cost:** ~$0.01-0.05 (depending on query complexity)
+
+### Subsequent Runs: Replay from Cache
+
+```bash
+kurral replay --latest
+```
+
+This replays the exact same session:
+- Zero API calls = **$0.00 cost**
+- Instant execution
+- Identical output (deterministic)
+
+**Savings:** 99%+ cost reduction for testing!
+
+---
+
+## 📊 Cost Tracking
+
+Check your savings:
+
+```bash
+kurral cost-report
+```
+
+Example output:
+```
+This Month: $247.50 saved
+This Year:  $2,970.00 saved
+```
+
+---
+
+## 🔧 Available Tools
+
+### 1. Web Search (`web_search`)
+
+Search the internet for current information.
+
+**Provider:** Tavily (free tier: 1,000 searches/month)
+**API Key:** Get at https://tavily.com
+**Cost:** ~$0.001 per search
+
+**Alternatives:**
+- Serper (Google Search API): https://serper.dev
+- You.com: https://api.you.com
+
+See `tools/web_search.py` for configuration.
+
+### 2. Calculator (`calculator`)
+
+Evaluate mathematical expressions safely.
+
+**Features:**
+- Basic operators: `+`, `-`, `*`, `/`, `**`, `%`
+- Functions: `sqrt()`, `sin()`, `cos()`, `log()`, etc.
+- Constants: `pi`, `e`
+- **Deterministic** - perfect for regression testing!
+
+**Security:** Input sanitization prevents code injection.
+
+### 3. File Read (`read_file`)
+
+Read text files from the project directory.
+
+**Security:**
+- Read-only (no write/delete)
+- Sandboxed to project directory
+- Path traversal protection
+
+**Kurral Note:** First replay will ask you to review this tool in `side_effect/side_effects.yaml` to ensure safe replay behavior.
+
+---
+
+## 🧪 Running Tests
+
+```bash
+# Run test suite
+pytest tests/
+
+# Run with coverage
+pytest tests/ --cov=. --cov-report=html
+
+# Run specific test
+pytest tests/test_agent.py::test_agent_basic
+```
+
+### Regression Testing
+
+The test suite uses Kurral for deterministic testing:
+
+```python
+# First run: Captures baseline
+pytest tests/test_agent.py::test_agent_basic
+
+# Subsequent runs: Replay from cache (zero cost!)
+pytest tests/test_agent.py::test_agent_replay
+```
+
+---
+
+## 🏗️ Project Structure
+
+```
+{{PROJECT_NAME}}/
+├── agent.py                 # Main agent entry point
+├── tools/                   # Tool implementations
+│   ├── web_search.py
+│   ├── calculator.py
+│   └── file_system.py
+├── tests/                   # Test suite
+│   └── test_agent.py
+├── .kurral/                 # Kurral configuration
+│   └── config.yaml
+├── artifacts/               # Captured sessions (.kurral files)
+├── side_effect/             # Side effect configuration
+│   └── side_effects.yaml   # Generated on first replay
+├── requirements.txt         # Python dependencies
+├── .env.example             # Environment variable template
+└── README.md                # This file
+```
+
+---
+
+## 🎯 Common Tasks
+
+### Switching LLM Providers
+
+**To use Anthropic Claude instead of OpenAI:**
+
+1. Edit `.env`:
+   ```bash
+   ANTHROPIC_API_KEY=your-key-here
+   ```
+
+2. Edit `agent.py`:
+   ```python
+   from langchain_anthropic import ChatAnthropic
+   llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0)
+   ```
+
+### Adding a New Tool
+
+1. Create `tools/my_tool.py`:
+   ```python
+   from langchain.tools import Tool
+
+   def my_function(input: str) -> str:
+       return f"Processed: {input}"
+
+   def create_my_tool():
+       return Tool(
+           name="my_tool",
+           description="What this tool does",
+           func=my_function
+       )
+   ```
+
+2. Import in `agent.py`:
+   ```python
+   from tools.my_tool import create_my_tool
+   tools = [..., create_my_tool()]
+   ```
+
+### Customizing Replay Behavior
+
+Edit `.kurral/config.yaml`:
+
+```yaml
+replay:
+  default_mode: auto  # or 'deterministic' or 'exploratory'
+  ars_threshold: 0.8  # Minimum regression score (0-1)
+  semantic_matching: true
+```
+
+---
+
+## 📚 Learn More
+
+- **Kurral Documentation**: https://github.com/kurral/kurralv3
+- **LangChain Docs**: https://python.langchain.com
+- **Example Agents**: https://github.com/kurral/kurralv3/tree/main/examples
+
+---
+
+## 🐛 Troubleshooting
+
+### Error: "OPENAI_API_KEY not set"
+
+**Solution:** Create `.env` file with your API key:
+```bash
+cp .env.example .env
+# Edit .env and add: OPENAI_API_KEY=your-key-here
+```
+
+### Error: "kurral command not found"
+
+**Solution:** Install Kurral:
+```bash
+pip install kurral[mcp]
+```
+
+### Web Search Returns Mock Data
+
+**Solution:** Get free Tavily API key:
+1. Visit https://tavily.com
+2. Sign up for free tier (1,000 searches/month)
+3. Add key to `.env`: `TAVILY_API_KEY=your-key-here`
+
+### Side Effect Warning on Replay
+
+**Solution:** Review `side_effect/side_effects.yaml`:
+1. Check which tools are marked for review
+2. Mark safe tools: `has_side_effects: false`
+3. Mark dangerous tools: `has_side_effects: true` (will be blocked)
+4. Set `done: true` when review is complete
+
+---
+
+## 📝 License
+
+This project was generated with [Kurral](https://github.com/kurral/kurralv3).
+See Kurral's license for details.
+
+---
+
+<p align="center">
+  <strong>Built with Kurral - Deterministic Agent Testing</strong><br>
+  ⭐ Star us on <a href="https://github.com/kurral/kurralv3">GitHub</a> if this saved you time or money!
+</p>

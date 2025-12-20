@@ -1,0 +1,165 @@
+"""
+Web Search Tool
+
+Supported providers:
+  • Tavily (default) - Best for AI applications, generous free tier
+    Get API key: https://tavily.com
+
+  • Serper (alternative) - Cost-effective, reliable Google Search API
+    Get API key: https://serper.dev
+
+  • You.com (alternative) - Real-time search with good summarization
+    Get API key: https://api.you.com
+
+To switch providers, uncomment the alternative imports and update the tool creation.
+
+Kurral value:
+  - Each search costs ~$0.001-0.01
+  - Testing 100 queries = $1-10 without Kurral
+  - With Kurral: Capture once, replay unlimited times = $0.01 total!
+"""
+
+import os
+from langchain_core.tools import Tool
+
+# Default: Tavily (recommended)
+try:
+    from tavily import TavilyClient
+    TAVILY_AVAILABLE = True
+except ImportError:
+    TAVILY_AVAILABLE = False
+
+# Alternative providers (uncomment to use):
+# from langchain_community.utilities import GoogleSerperAPIWrapper
+# from langchain_community.utilities import YouSearchAPIWrapper
+
+
+class WebSearchTool:
+    """Search the web for current information."""
+
+    def __init__(self, provider="tavily"):
+        """
+        Initialize web search tool.
+
+        Args:
+            provider: One of 'tavily', 'serper', 'you', or 'mock'
+        """
+        self.provider = provider
+        self.client = None
+
+        if provider == "tavily":
+            api_key = os.getenv("TAVILY_API_KEY")
+            if not api_key:
+                print("⚠️  TAVILY_API_KEY not set. Web search will use mock data.")
+                print("   Get a free API key at: https://tavily.com")
+                self.provider = "mock"
+            elif not TAVILY_AVAILABLE:
+                print("⚠️  tavily-python not installed. Run: pip install tavily-python")
+                self.provider = "mock"
+            else:
+                self.client = TavilyClient(api_key=api_key)
+
+        # Alternative providers (uncomment and configure as needed):
+        # elif provider == "serper":
+        #     api_key = os.getenv("SERPER_API_KEY")
+        #     if not api_key:
+        #         print("⚠️  SERPER_API_KEY not set. Using mock data.")
+        #         self.provider = "mock"
+        #     else:
+        #         self.client = GoogleSerperAPIWrapper(serper_api_key=api_key)
+
+        # elif provider == "you":
+        #     api_key = os.getenv("YOU_API_KEY")
+        #     if not api_key:
+        #         print("⚠️  YOU_API_KEY not set. Using mock data.")
+        #         self.provider = "mock"
+        #     else:
+        #         self.client = YouSearchAPIWrapper(ydc_api_key=api_key)
+
+    def search(self, query: str) -> str:
+        """
+        Execute web search.
+
+        Args:
+            query: Search query string
+
+        Returns:
+            Formatted search results
+        """
+        if self.provider == "mock":
+            return self._mock_search(query)
+
+        try:
+            if self.provider == "tavily":
+                return self._tavily_search(query)
+            # Add other provider implementations here
+            else:
+                return f"❌ Provider '{self.provider}' not yet implemented"
+
+        except Exception as e:
+            print(f"⚠️  Search error: {e}")
+            return f"Search failed: {str(e)}. Using mock results.\n\n{self._mock_search(query)}"
+
+    def _tavily_search(self, query: str) -> str:
+        """Execute Tavily search."""
+        results = self.client.search(
+            query=query,
+            max_results=3,
+            search_depth="basic"  # or "advanced" for more thorough search
+        )
+
+        return self._format_results(results.get('results', []))
+
+    def _format_results(self, results: list) -> str:
+        """Format search results for LLM consumption."""
+        if not results:
+            return "No results found."
+
+        formatted = []
+        for i, result in enumerate(results, 1):
+            title = result.get('title', 'No title')
+            url = result.get('url', '')
+            content = result.get('content', '')
+
+            # Truncate content to avoid token limits
+            if len(content) > 300:
+                content = content[:300] + "..."
+
+            formatted.append(f"{i}. {title}\n   URL: {url}\n   {content}\n")
+
+        return "\n".join(formatted)
+
+    def _mock_search(self, query: str) -> str:
+        """Return mock search results for testing without API key."""
+        return f"""[MOCK SEARCH RESULTS]
+Query: {query}
+
+1. Example Result for "{query}"
+   URL: https://example.com/result1
+   This is a mock search result. Set TAVILY_API_KEY in .env for real search.
+
+2. Getting Started with Tavily
+   URL: https://tavily.com/docs
+   Free tier: 1,000 searches/month. Perfect for development and testing.
+
+3. Alternative: Serper or You.com
+   URL: https://serper.dev
+   Consider Serper ($50/month unlimited) or You.com for production use.
+
+💡 To use real search: Get free API key at https://tavily.com and add to .env
+"""
+
+
+def create_web_search_tool():
+    """
+    Factory function to create the web search tool.
+
+    This is called by agent.py during setup.
+    """
+    searcher = WebSearchTool(provider="tavily")
+
+    return Tool(
+        name="web_search",
+        description="Search the internet for current information, news, or facts. Use this when you need up-to-date information that wasn't in your training data.",
+        func=searcher.search
+    )

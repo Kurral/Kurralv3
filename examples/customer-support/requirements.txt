@@ -1,0 +1,12 @@
+# Customer Support Agent Dependencies
+
+# Core
+openai>=1.0.0
+python-dotenv>=1.0.0
+
+# Kurral - Testing & Observability
+kurral[mcp]>=0.3.1
+
+# Development
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

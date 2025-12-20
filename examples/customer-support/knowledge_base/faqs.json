@@ -1,0 +1,54 @@
+{
+  "shipping": [
+    {
+      "question": "What are your shipping options?",
+      "answer": "We offer Standard (5-7 business days, $5.99), Express (2-3 business days, $12.99), and Overnight ($24.99) shipping. Free standard shipping on orders over $50."
+    },
+    {
+      "question": "Do you ship internationally?",
+      "answer": "Yes! We ship to over 100 countries. International shipping starts at $15.99 and typically takes 7-14 business days. Customs fees may apply."
+    },
+    {
+      "question": "How can I track my order?",
+      "answer": "You'll receive a tracking number via email once your order ships. You can also track your order by logging into your account and viewing order history."
+    }
+  ],
+  "returns": [
+    {
+      "question": "What is your return policy?",
+      "answer": "We accept returns within 30 days of purchase. Items must be unused and in original packaging. Refunds are processed within 5-7 business days of receiving the return."
+    },
+    {
+      "question": "How do I start a return?",
+      "answer": "Visit our Returns Center, enter your order number and email, select items to return, and print your prepaid return label. Drop off at any carrier location."
+    },
+    {
+      "question": "Are there any items that cannot be returned?",
+      "answer": "Final sale items, personalized products, and opened beauty/health products cannot be returned for hygiene reasons."
+    }
+  ],
+  "account": [
+    {
+      "question": "I forgot my password. How do I reset it?",
+      "answer": "Click 'Forgot Password' on the login page, enter your email, and we'll send you a reset link. The link expires in 24 hours."
+    },
+    {
+      "question": "How do I update my billing information?",
+      "answer": "Log into your account, go to Settings > Payment Methods, and add/edit your payment information. All data is encrypted and PCI-compliant."
+    },
+    {
+      "question": "Can I change my email address?",
+      "answer": "Yes, go to Account Settings > Profile and update your email. You'll receive a confirmation email at both old and new addresses."
+    }
+  ],
+  "pricing": [
+    {
+      "question": "Do you offer student discounts?",
+      "answer": "Yes! Students get 15% off with a valid .edu email address. Verify your status through our Student Discount page."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept Visa, MasterCard, American Express, Discover, PayPal, Apple Pay, and Google Pay."
+    }
+  ]
+}

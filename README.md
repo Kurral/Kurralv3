@@ -3,6 +3,7 @@
 </p>
 
 <h1 align="center">KURRAL</h1>
+  <h3 align="center">ACTION REPLAY FOR AI AGENTS</h3>
 <h3 align="center">MCP Security, Observability & Deterministic Testing Platform</h3>
 <p align="center">Secure, observe, and reliably test Model Context Protocol (MCP) deployments and AI agents</p>
 

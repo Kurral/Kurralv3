@@ -28,11 +28,7 @@
 - Testing or upgrading agents → **Deterministic Agent Testing**
 - Want a hands-on demo in <5 minutes → **Project Generator**
 
-Kurral is framework-agnostic and operates at the execution and protocol layer.
-LangChain support is provided as a convenience, not a requirement.
-
-Templates are reference agent implementations, not framework requirements.
-They demonstrate correct Kurral integration patterns and are intended to be modified or replaced.
+**Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. Kurral is framework-agnostic and operates at the execution and protocol layer. LangChain support is provided as a convenience, not a requirement.
 
 ---
 
@@ -219,6 +215,9 @@ kurral init my-agent --framework langchain
 # ✅ Test suite with replay
 # ✅ Full documentation
 ```
+
+Templates are reference agent implementations, not framework requirements.
+They demonstrate correct Kurral integration patterns and are intended to be modified or replaced.
 
 **Included Tools:**
 - `web_search` - Internet search (Tavily)

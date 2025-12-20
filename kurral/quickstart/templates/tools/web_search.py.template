@@ -20,7 +20,7 @@ Kurral value:
 """
 
 import os
-from langchain.tools import Tool
+from langchain_core.tools import Tool
 
 # Default: Tavily (recommended)
 try:

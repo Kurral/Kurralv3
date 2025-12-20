@@ -22,7 +22,7 @@ For advanced math:
 
 import re
 import math
-from langchain.tools import Tool
+from langchain_core.tools import Tool
 
 
 class Calculator:

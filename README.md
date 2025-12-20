@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/kurral/kurralv3">star the repo</a> — it helps a lot!
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/Kurral/kurral">star the repo</a> — it helps a lot!
 </p>
 
 ---
@@ -133,8 +133,8 @@ pip install kurral[mcp]           # + MCP proxy & observability
 
 **From source:**
 ```bash
-git clone https://github.com/kurral/kurralv3.git
-cd kurralv3
+git clone https://github.com/Kurral/kurral.git
+cd kurral
 pip install -e ".[mcp]"
 ```
 
@@ -180,6 +180,39 @@ kurral replay <kurral_id>
 Detailed output includes replay type, ARS score, cache hits, and changes detected.
 
 **📖 [Deep Dive: Replay System →](docs/REPLAY_DEEP_DIVE.md)**
+
+---
+
+## 🎬 Quick Start: Project Generator
+
+Generate a production-ready agent in seconds:
+
+```bash
+# Create new agent project (vanilla Python - framework-free)
+kurral init my-agent
+
+# Or use LangChain framework
+kurral init my-agent --framework langchain
+
+# What you get:
+# ✅ Complete agent with 3 production tools
+# ✅ Kurral integration (2 decorators)
+# ✅ Test suite with replay
+# ✅ Full documentation
+```
+
+**Included Tools:**
+- `web_search` - Internet search (Tavily)
+- `calculator` - Safe math evaluation (deterministic!)
+- `read_file` - Secure file reading
+
+**Explore Examples:**
+Check out `/examples` for three complete production examples:
+- Customer Support Agent (FAQ + web search)
+- Code Review Agent (security + style checks)
+- Research Assistant (multi-step reasoning)
+
+Each example includes cost analysis showing 75-98% savings with Kurral replay!
 
 ---
 
@@ -259,7 +292,7 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 ## 💬 Community & Contribution
 
 - **Discord**: [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
-- **Issues**: [github.com/kurral/kurralv3/issues](https://github.com/kurral/kurralv3/issues)
+- **Issues**: [github.com/Kurral/kurral/issues](https://github.com/Kurral/kurral/issues)
 - **Email**: team@kurral.com
 
 Contributions welcome — fork, branch, PR!

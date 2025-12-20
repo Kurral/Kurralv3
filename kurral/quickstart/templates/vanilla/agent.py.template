@@ -1,0 +1,263 @@
+"""
+{{PROJECT_NAME}} - Kurral-Integrated Vanilla Agent (No Framework)
+
+Generated: {{DATE}}
+Kurral Version: {{KURRAL_VERSION}}
+
+This agent demonstrates:
+- Framework-free agent loop (easy to understand + secure)
+- Minimal Kurral integration (2 decorators)
+- Tool calling with explicit routing
+- Capture & replay (zero-cost deterministic replays)
+
+Quick start:
+  1) cp .env.example .env
+  2) add OPENAI_API_KEY (or run with --mock)
+  3) python agent.py
+  4) kurral replay --latest
+"""
+
+import argparse
+import json
+import os
+import sys
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
+from dotenv import load_dotenv
+load_dotenv()
+
+# Kurral integration (minimal!)
+from kurral import trace_agent, trace_agent_invoke
+
+# Import our tools (same tools as LangChain version, but called directly)
+from tools.web_search import web_search
+from tools.calculator import calculator
+from tools.file_system import read_file
+
+
+# -----------------------------
+# Model client (vanilla)
+# -----------------------------
+
+def call_llm(messages: list[dict], model: str, temperature: float, api_key: str, mock: bool) -> str:
+    """
+    Minimal LLM call wrapper.
+    Returns a plain string response.
+    """
+    if mock:
+        # Mock response that tries to follow our format.
+        # (Useful for CI and offline demos)
+        return (
+            "THOUGHT: I should use the calculator.\n"
+            "ACTION: calculator\n"
+            "INPUT: 25 * 4"
+        )
+
+    # Keep this minimal for the Christmas release.
+    # If you want provider-neutral later, you can swap this function.
+    try:
+        from openai import OpenAI
+    except Exception:
+        raise RuntimeError(
+            "Missing dependency 'openai'. Install with: pip install openai"
+        )
+
+    client = OpenAI(api_key=api_key)
+
+    resp = client.chat.completions.create(
+        model=model,
+        temperature=temperature,
+        messages=messages,
+    )
+
+    return resp.choices[0].message.content or ""
+
+
+# -----------------------------
+# Agent loop (explicit)
+# -----------------------------
+
+@dataclass
+class ToolResult:
+    name: str
+    output: str
+
+
+TOOLS = {
+    "web_search": web_search,
+    "calculator": calculator,
+    "read_file": read_file,
+}
+
+TOOL_DESCRIPTIONS = {
+    "web_search": "Search the web for recent information. Input: a query string.",
+    "calculator": "Evaluate a math expression safely. Input: expression like '25 * 4'.",
+    "read_file": "Read a local text file. Input: file path like 'README.md'.",
+}
+
+
+SYSTEM_PROMPT = """You are a helpful assistant with access to tools.
+
+You MUST respond in one of these formats:
+
+1) If you need a tool:
+THOUGHT: <brief reasoning>
+ACTION: <tool_name>
+INPUT: <tool_input>
+
+2) If you are ready to answer:
+FINAL: <final answer>
+
+Available tools:
+{tool_list}
+
+Rules:
+- Only use tool names from the list.
+- Keep THOUGHT short.
+- Prefer tools when you need facts, math, or file contents.
+"""
+
+
+def parse_action(text: str) -> Dict[str, str]:
+    """
+    Parse the model output into either:
+    - {"type":"final", "final": "..."}
+    - {"type":"tool", "tool": "...", "input": "..."}
+    """
+    t = text.strip()
+
+    if t.startswith("FINAL:"):
+        return {"type": "final", "final": t[len("FINAL:"):].strip()}
+
+    # naive parsing; good enough for MVP
+    # expects:
+    # THOUGHT: ...
+    # ACTION: ...
+    # INPUT: ...
+    lines = [ln.strip() for ln in t.splitlines() if ln.strip()]
+    action = None
+    tool_input = None
+
+    for ln in lines:
+        if ln.startswith("ACTION:"):
+            action = ln[len("ACTION:"):].strip()
+        elif ln.startswith("INPUT:"):
+            tool_input = ln[len("INPUT:"):].strip()
+
+    if not action:
+        # If it doesn't comply, treat as final (keeps UX smooth)
+        return {"type": "final", "final": t}
+
+    return {"type": "tool", "tool": action, "input": tool_input or ""}
+
+
+def run_agent(user_input: str, model: str, temperature: float, api_key: str, mock: bool, max_steps: int = 6) -> Dict[str, Any]:
+    """
+    Explicit agent loop:
+    - Ask model for either tool call or final answer
+    - Execute tools directly (no framework)
+    - Feed tool results back into messages
+    """
+    tool_list = "\n".join([f"- {k}: {TOOL_DESCRIPTIONS[k]}" for k in TOOLS.keys()])
+
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT.format(tool_list=tool_list)},
+        {"role": "user", "content": user_input},
+    ]
+
+    for step in range(1, max_steps + 1):
+        assistant_text = call_llm(messages, model=model, temperature=temperature, api_key=api_key, mock=mock)
+        action = parse_action(assistant_text)
+
+        if action["type"] == "final":
+            return {"output": action["final"], "steps": step}
+
+        tool_name = action["tool"]
+        tool_in = action["input"]
+
+        if tool_name not in TOOLS:
+            # Guardrail: unknown tool → ask model to comply
+            messages.append({"role": "assistant", "content": assistant_text})
+            messages.append({"role": "user", "content": f"Tool '{tool_name}' is not available. Use one of: {list(TOOLS.keys())}."})
+            continue
+
+        try:
+            tool_fn = TOOLS[tool_name]
+            tool_out = tool_fn(tool_in)
+        except Exception as e:
+            tool_out = f"ERROR: {e}"
+
+        # Append traceable messages
+        messages.append({"role": "assistant", "content": assistant_text})
+        messages.append({"role": "tool", "content": tool_out, "name": tool_name})
+
+    return {"output": "Reached max steps without producing FINAL.", "steps": max_steps}
+
+
+# -----------------------------
+# Main entry with Kurral
+# -----------------------------
+
+@trace_agent()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mock", action="store_true", help="Run without calling the LLM API")
+    parser.add_argument("--model", default="gpt-4o-mini")
+    parser.add_argument("--temperature", type=float, default=0.0)
+    args = parser.parse_args()
+
+    api_key = os.getenv("OPENAI_API_KEY", "")
+
+    if not args.mock and not api_key:
+        print("❌ OPENAI_API_KEY not set. Either set it in .env or run with --mock.")
+        sys.exit(1)
+
+    print("=" * 60)
+    print("  {{PROJECT_NAME}} - Vanilla Agent (Powered by Kurral)")
+    print("=" * 60)
+    print()
+    print("🛠️ Available tools:")
+    for name, desc in TOOL_DESCRIPTIONS.items():
+        print(f"  - {name}: {desc}")
+    print()
+
+    user_input = input("You: ").strip()
+    if not user_input:
+        print("❌ No input provided.")
+        sys.exit(1)
+
+    print("\n🤖 Processing...\n" + "-" * 60)
+
+    # IMPORTANT: trace_agent_invoke wraps *any* callable.
+    # Here we trace the core function that includes LLM + tools.
+    result = trace_agent_invoke(
+        run_agent,
+        user_input=user_input,
+        model=args.model,
+        temperature=args.temperature,
+        api_key=api_key,
+        mock=args.mock,
+    )
+
+    print("-" * 60)
+    print("\n✅ Result:\n")
+    print(result["output"])
+    print()
+
+    # Check if artifact was saved
+    artifact_dir = os.path.join(os.getcwd(), "artifacts")
+    if os.path.exists(artifact_dir):
+        artifacts = sorted(os.listdir(artifact_dir))
+        if artifacts:
+            latest = artifacts[-1]
+            print(f"📦 Artifact saved: artifacts/{latest}")
+            print(f"   Replay with: kurral replay {latest.replace('.kurral', '')}")
+            print()
+
+    print("💡 Pro tip: Run 'kurral replay --latest' for zero-cost replay.")
+    return result
+
+
+if __name__ == "__main__":
+    main()

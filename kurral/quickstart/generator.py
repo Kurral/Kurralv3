@@ -45,7 +45,8 @@ class ProjectGenerator:
         self,
         project_name: str,
         target_dir: Path,
-        skip_git: bool = False
+        skip_git: bool = False,
+        framework: str = "vanilla"
     ) -> None:
         """
         Generate a new Kurral agent project.
@@ -54,14 +55,19 @@ class ProjectGenerator:
             project_name: Name of the project
             target_dir: Directory to create project in
             skip_git: Skip git initialization
+            framework: Framework to use ("vanilla" or "langchain")
 
         Raises:
             ValueError: If inputs are invalid
             FileExistsError: If target directory exists
             RuntimeError: If generation fails
         """
+        # Step 0: Validate framework
+        if framework not in ["vanilla", "langchain"]:
+            raise ValueError(f"Unknown framework: {framework}. Must be 'vanilla' or 'langchain'")
+
         # Step 1: Validate inputs
-        self._log("Validating inputs...")
+        self._log(f"Generating {framework} project...")
         self._validate_project_name(project_name)
         self._validate_target_directory(target_dir)
 
@@ -70,11 +76,11 @@ class ProjectGenerator:
         self._create_directories(target_dir)
 
         # Step 3: Build template context
-        context = self._build_template_context(project_name)
+        context = self._build_template_context(project_name, framework)
 
         # Step 4: Process templates
         self._log("Generating files from templates...")
-        self._process_templates(target_dir, context)
+        self._process_templates(target_dir, context, framework)
 
         # Step 5: Initialize git
         if not skip_git:
@@ -82,7 +88,7 @@ class ProjectGenerator:
             self._init_git(target_dir)
 
         # Step 6: Print success message
-        self._print_success(project_name, target_dir)
+        self._print_success(project_name, target_dir, framework)
 
     def _validate_project_name(self, name: str) -> None:
         """
@@ -154,7 +160,7 @@ class ProjectGenerator:
             directory.mkdir(parents=True, exist_ok=True)
             self._log(f"  Created: {directory.relative_to(target_dir.parent)}")
 
-    def _build_template_context(self, project_name: str) -> Dict[str, str]:
+    def _build_template_context(self, project_name: str, framework: str) -> Dict[str, str]:
         """
         Build template variable context.
 
@@ -164,6 +170,7 @@ class ProjectGenerator:
         - DATE: "2024-12-19"
         - YEAR: "2024"
         - KURRAL_VERSION: "0.3.1"
+        - FRAMEWORK: "vanilla" or "langchain"
         """
         now = datetime.now()
 
@@ -173,37 +180,39 @@ class ProjectGenerator:
             'DATE': now.strftime('%Y-%m-%d'),
             'YEAR': str(now.year),
             'KURRAL_VERSION': KURRAL_VERSION,
+            'FRAMEWORK': framework,
         }
 
-    def _process_templates(self, target_dir: Path, context: Dict[str, str]) -> None:
+    def _process_templates(self, target_dir: Path, context: Dict[str, str], framework: str) -> None:
         """
         Process all templates and write to target directory.
 
         Template variable syntax: {{VARIABLE_NAME}}
         """
         # Template mappings: source -> destination
-        template_mappings = {
-            # Base files
-            'base/agent.py.template': 'agent.py',
-            'base/requirements.txt.template': 'requirements.txt',
-            'base/.env.example.template': '.env.example',
-            'base/README.md.template': 'README.md',
-            'base/.gitignore.template': '.gitignore',
+        # Framework-specific templates (from vanilla/ or langchain/)
+        framework_templates = {
+            f'{framework}/agent.py.template': 'agent.py',
+            f'{framework}/requirements.txt.template': 'requirements.txt',
+            f'{framework}/tools/__init__.py.template': 'tools/__init__.py',
+            f'{framework}/tools/web_search.py.template': 'tools/web_search.py',
+            f'{framework}/tools/calculator.py.template': 'tools/calculator.py',
+            f'{framework}/tools/file_system.py.template': 'tools/file_system.py',
+        }
 
-            # Tools
-            'tools/__init__.py.template': 'tools/__init__.py',
-            'tools/web_search.py.template': 'tools/web_search.py',
-            'tools/calculator.py.template': 'tools/calculator.py',
-            'tools/file_system.py.template': 'tools/file_system.py',
-
-            # Tests
-            'tests/test_agent.py.template': 'tests/test_agent.py',
-
-            # Kurral config
+        # Shared templates (framework-agnostic)
+        shared_templates = {
+            'shared/.env.example.template': '.env.example',
+            'shared/README.md.template': 'README.md',
+            'shared/.gitignore.template': '.gitignore',
+            'shared/tests/test_agent.py.template': 'tests/test_agent.py',
             'kurral_config/config.yaml.template': '.kurral/config.yaml',
         }
 
-        for template_path, output_path in template_mappings.items():
+        # Combine all templates
+        all_templates = {**framework_templates, **shared_templates}
+
+        for template_path, output_path in all_templates.items():
             template_file = self.template_dir / template_path
             output_file = target_dir / output_path
 
@@ -248,11 +257,13 @@ class ProjectGenerator:
             # Git not installed
             self._log("  Warning: Git not found. Skipping git init.")
 
-    def _print_success(self, project_name: str, target_dir: Path) -> None:
+    def _print_success(self, project_name: str, target_dir: Path, framework: str) -> None:
         """Print success message with next steps."""
+        framework_label = "Vanilla Python" if framework == "vanilla" else "LangChain"
+
         print()
         print("=" * 60)
-        print("✨ Project created successfully!")
+        print(f"✨ Project created successfully! ({framework_label})")
         print("=" * 60)
         print()
         print(f"📁 Location: {target_dir}")

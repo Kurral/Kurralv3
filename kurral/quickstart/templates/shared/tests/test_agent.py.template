@@ -1,0 +1,171 @@
+"""
+Test suite for {{PROJECT_NAME}}
+
+Demonstrates Kurral's testing capabilities:
+- First run: Captures baseline (costs API fees)
+- Subsequent runs: Replays from cache (zero cost!)
+- Regression detection: ARS scores track behavior changes
+
+Run with:
+  pytest tests/test_agent.py -v
+"""
+
+import pytest
+import sys
+from pathlib import Path
+
+# Add project root to path
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from agent import main
+from kurral import replay
+
+
+# Deterministic test input (exercises all 3 tools)
+TEST_QUESTION = (
+    "Search for 'Python testing best practices', "
+    "calculate 25 * 4, "
+    "and read the README.md file."
+)
+
+
+def test_agent_basic():
+    """
+    Test: Agent executes successfully.
+
+    First run:
+      - Calls OpenAI API
+      - Invokes web_search, calculator, read_file tools
+      - Creates artifact in artifacts/ folder
+      - Cost: ~$0.01-0.05
+
+    Subsequent runs:
+      - Uses same captured artifact
+      - Zero cost (replayed from cache)
+    """
+    # Patch user input to avoid interactive prompt
+    import builtins
+    original_input = builtins.input
+    builtins.input = lambda _: TEST_QUESTION
+
+    try:
+        result = main()
+
+        # Verify result structure
+        assert result is not None, "Agent returned None"
+        assert 'output' in result, "Agent result missing 'output' key"
+
+        # Verify output is not empty
+        output = result['output']
+        assert len(output) > 0, "Agent output is empty"
+
+        print("\n✅ Agent executed successfully")
+        print(f"📊 Output length: {len(output)} characters")
+
+    finally:
+        # Restore original input
+        builtins.input = original_input
+
+
+def test_agent_replay():
+    """
+    Test: Replay produces consistent results.
+
+    This test:
+      1. Replays the latest captured artifact
+      2. Checks ARS (Agent Regression Score) ≥ 0.8
+      3. Verifies zero API cost
+
+    If this fails:
+      - Agent behavior may have regressed
+      - Check what changed in agent.py or tools/
+      - Review the ARS score breakdown
+    """
+    try:
+        # Replay latest artifact
+        replay_result = replay(artifact_id='latest')
+
+        # Check ARS score (0.8 = 80% similarity threshold)
+        ars_score = replay_result.get('ars_score', 0.0)
+        assert ars_score >= 0.8, (
+            f"Agent behavior regressed! ARS: {ars_score:.2f} (need ≥0.80)\n"
+            f"Check what changed in agent.py or tools/"
+        )
+
+        # Verify zero cost
+        cost = replay_result.get('cost', 0.0)
+        assert cost == 0.0, f"Replay should cost $0, but cost ${cost:.4f}"
+
+        print(f"\n✅ Replay successful")
+        print(f"📊 ARS Score: {ars_score:.2f} (80%+ = passing)")
+        print(f"💰 Cost: ${cost:.4f}")
+
+    except Exception as e:
+        pytest.fail(f"Replay failed: {e}")
+
+
+def test_tool_usage():
+    """
+    Test: Verify agent uses expected tools.
+
+    Ensures all 3 tools are actually being invoked.
+    """
+    import builtins
+    original_input = builtins.input
+    builtins.input = lambda _: TEST_QUESTION
+
+    try:
+        result = main()
+
+        # Check which tools were called
+        # (This assumes trace_agent_invoke populates tools_called)
+        tools_called = result.get('tools_called', [])
+
+        # We expect all 3 tools to be used for our test question
+        expected_tools = ['web_search', 'calculator', 'read_file']
+
+        for tool in expected_tools:
+            assert tool in tools_called, (
+                f"Expected tool '{tool}' not called. "
+                f"Called tools: {tools_called}"
+            )
+
+        print(f"\n✅ All expected tools invoked")
+        print(f"🛠️  Tools used: {', '.join(tools_called)}")
+
+    finally:
+        builtins.input = original_input
+
+
+def test_cost_savings():
+    """
+    Test: Calculate and display cost savings.
+
+    This is more of a demonstration than a test.
+    Shows the value of Kurral for cost reduction.
+    """
+    # Typical costs (estimates)
+    COST_PER_RUN = 0.02  # ~$0.02 per agent execution
+    RUNS_PER_DAY = 20    # Developer testing frequency
+
+    # Without Kurral
+    cost_without_kurral = COST_PER_RUN * RUNS_PER_DAY * 30  # per month
+
+    # With Kurral (1 capture + 599 replays)
+    cost_with_kurral = COST_PER_RUN * 1
+
+    savings = cost_without_kurral - cost_with_kurral
+    savings_percent = (savings / cost_without_kurral) * 100
+
+    print("\n💰 Cost Analysis (30 days, 20 runs/day):")
+    print(f"   Without Kurral: ${cost_without_kurral:.2f}/month")
+    print(f"   With Kurral:    ${cost_with_kurral:.2f}/month")
+    print(f"   Savings:        ${savings:.2f} ({savings_percent:.1f}%)")
+
+    assert savings > 0, "Kurral should save money!"
+
+
+if __name__ == "__main__":
+    # Run tests
+    pytest.main([__file__, "-v", "-s"])

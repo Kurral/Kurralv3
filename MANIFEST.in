@@ -1,0 +1,8 @@
+# Include all template files (including dotfiles)
+recursive-include kurral/quickstart/templates *.template
+recursive-include kurral/quickstart/templates *.yml
+recursive-include kurral/quickstart/templates *.yaml
+
+# Explicitly include dotfile templates
+include kurral/quickstart/templates/shared/.env.example.template
+include kurral/quickstart/templates/shared/.gitignore.template

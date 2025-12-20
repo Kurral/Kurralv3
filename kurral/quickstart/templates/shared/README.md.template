@@ -1,6 +1,6 @@
 # {{PROJECT_NAME}}
 
-A production-ready AI agent powered by [Kurral](https://github.com/kurral/kurralv3) for deterministic testing and cost-effective development.
+A production-ready AI agent powered by [Kurral](https://github.com/Kurral/kurral) for deterministic testing and cost-effective development.
 
 **Generated:** {{DATE}}
 **Kurral Version:** {{KURRAL_VERSION}}
@@ -248,9 +248,9 @@ replay:
 
 ## 📚 Learn More
 
-- **Kurral Documentation**: https://github.com/kurral/kurralv3
+- **Kurral Documentation**: https://github.com/Kurral/kurral
 - **LangChain Docs**: https://python.langchain.com
-- **Example Agents**: https://github.com/kurral/kurralv3/tree/main/examples
+- **Example Agents**: https://github.com/Kurral/kurral/tree/main/examples
 
 ---
 
@@ -290,12 +290,12 @@ pip install kurral[mcp]
 
 ## 📝 License
 
-This project was generated with [Kurral](https://github.com/kurral/kurralv3).
+This project was generated with [Kurral](https://github.com/Kurral/kurral).
 See Kurral's license for details.
 
 ---
 
 <p align="center">
   <strong>Built with Kurral - Deterministic Agent Testing</strong><br>
-  ⭐ Star us on <a href="https://github.com/kurral/kurralv3">GitHub</a> if this saved you time or money!
+  ⭐ Star us on <a href="https://github.com/Kurral/kurral">GitHub</a> if this saved you time or money!
 </p>

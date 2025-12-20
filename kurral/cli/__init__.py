@@ -100,19 +100,53 @@ def show(artifact_id: str):
 
 
 @main.command()
-def init():
-    """Initialize Kurral in the current directory."""
-    import os
+@click.argument("project_name", required=False)
+@click.option("--output-dir", default=".", help="Output directory (default: current directory)")
+@click.option("--skip-git", is_flag=True, help="Skip git initialization")
+@click.option("--verbose", "-v", is_flag=True, help="Show detailed progress")
+def init(project_name, output_dir, skip_git, verbose):
+    """
+    Initialize a new Kurral agent project.
 
-    # Create artifacts directory
-    os.makedirs("artifacts", exist_ok=True)
-    os.makedirs("replay_runs", exist_ok=True)
-    os.makedirs("side_effect", exist_ok=True)
+    If PROJECT_NAME is provided, creates a complete agent project with templates.
+    If no PROJECT_NAME, initializes Kurral in the current directory.
 
-    console.print("[green]✓[/green] Created artifacts/ directory")
-    console.print("[green]✓[/green] Created replay_runs/ directory")
-    console.print("[green]✓[/green] Created side_effect/ directory")
-    console.print("\n[bold]Kurral initialized![/bold] Add @trace_agent() to your agent.")
+    Examples:
+        kurral init my-agent          # Create new project
+        kurral init my-bot --verbose  # With detailed output
+        kurral init                   # Just create directories
+    """
+    from pathlib import Path
+
+    # If no project name, use legacy behavior (just create directories)
+    if not project_name:
+        import os
+        os.makedirs("artifacts", exist_ok=True)
+        os.makedirs("replay_runs", exist_ok=True)
+        os.makedirs("side_effect", exist_ok=True)
+        console.print("[green]✓[/green] Created artifacts/ directory")
+        console.print("[green]✓[/green] Created replay_runs/ directory")
+        console.print("[green]✓[/green] Created side_effect/ directory")
+        console.print("\n[bold]Kurral initialized![/bold] Add @trace_agent() to your agent.")
+        return
+
+    # Use new ProjectGenerator
+    try:
+        from kurral.quickstart import ProjectGenerator
+
+        generator = ProjectGenerator(verbose=verbose)
+        target_dir = Path(output_dir) / project_name
+
+        generator.generate(
+            project_name=project_name,
+            target_dir=target_dir,
+            skip_git=skip_git
+        )
+
+    except Exception as e:
+        console.print(f"[red]Error:[/red] {e}")
+        import sys
+        sys.exit(1)
 
 
 # Register MCP commands

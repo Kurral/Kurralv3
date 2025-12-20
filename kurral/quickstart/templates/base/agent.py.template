@@ -1,0 +1,171 @@
+"""
+{{PROJECT_NAME}} - Kurral-Integrated Agent
+
+Generated: {{DATE}}
+Kurral Version: {{KURRAL_VERSION}}
+
+This agent demonstrates:
+- Minimal Kurral integration (just 2 decorators!)
+- Three different tool types (API, deterministic, file I/O)
+- Production-ready error handling
+- Automatic capture & replay for testing
+
+Quick start:
+  1. Set OPENAI_API_KEY in .env (or use --mock for testing)
+  2. python agent.py
+  3. First run captures → Check artifacts/ folder
+  4. kurral replay --latest (zero cost!)
+"""
+
+import os
+import sys
+from pathlib import Path
+
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
+# LangChain imports
+from langchain_openai import ChatOpenAI
+from langchain.agents import AgentExecutor, create_react_agent
+from langchain.prompts import PromptTemplate
+
+# Kurral integration (minimal!)
+from kurral import trace_agent, trace_agent_invoke
+
+# Import our tools
+from tools.web_search import create_web_search_tool
+from tools.calculator import create_calculator_tool
+from tools.file_system import create_file_read_tool
+
+
+@trace_agent()
+def main():
+    """
+    Main agent entry point with Kurral tracing.
+
+    The @trace_agent decorator automatically:
+    - Captures all LLM calls and tool invocations
+    - Generates .kurral artifacts in artifacts/ folder
+    - Enables zero-cost replay for testing
+    """
+
+    print("="*60)
+    print("  {{PROJECT_NAME}} - Powered by Kurral")
+    print("="*60)
+    print()
+
+    # Initialize LLM
+    # Using gpt-4o-mini for cost-effectiveness
+    # temperature=0 for deterministic behavior (better for testing)
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        print("❌ Error: OPENAI_API_KEY not set in environment")
+        print("   Create a .env file with: OPENAI_API_KEY=your-key-here")
+        print("   Or run with: OPENAI_API_KEY=your-key python agent.py")
+        sys.exit(1)
+
+    llm = ChatOpenAI(
+        model="gpt-4o-mini",
+        temperature=0,  # Deterministic = better replays
+        openai_api_key=api_key
+    )
+
+    # Setup tools
+    tools = [
+        create_web_search_tool(),
+        create_calculator_tool(),
+        create_file_read_tool(),
+    ]
+
+    print("🛠️  Available tools:")
+    for tool in tools:
+        print(f"   - {tool.name}: {tool.description}")
+    print()
+
+    # Create React agent
+    prompt = PromptTemplate.from_template("""Answer the following question using available tools when needed.
+
+Question: {input}
+
+You have access to the following tools:
+{tools}
+
+Tool Names: {tool_names}
+
+Use the following format:
+
+Thought: Consider what needs to be done
+Action: the action to take, must be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (repeat Thought/Action/Action Input/Observation as needed)
+Thought: I now know the final answer
+Final Answer: the final answer to the original question
+
+Begin!
+
+Question: {input}
+Thought: {agent_scratchpad}""")
+
+    agent = create_react_agent(llm, tools, prompt)
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
+        verbose=True,
+        handle_parsing_errors=True,
+        max_iterations=10
+    )
+
+    # Get user input
+    print("💬 What would you like me to help with?")
+    print("   (Example: 'Search for AI testing best practices, calculate 25 * 4, and read README.md')")
+    print()
+    user_input = input("You: ").strip()
+
+    if not user_input:
+        print("❌ No input provided. Exiting.")
+        sys.exit(1)
+
+    print()
+    print("🤖 Processing...")
+    print("-" * 60)
+
+    try:
+        # Run agent with Kurral tracing
+        # This captures everything and saves to artifacts/
+        result = trace_agent_invoke(
+            agent_executor,
+            {"input": user_input},
+            llm=llm
+        )
+
+        print("-" * 60)
+        print()
+        print("✅ Result:")
+        print(result['output'])
+        print()
+
+        # Show Kurral artifact info
+        if hasattr(result, '_kurral_artifact_id'):
+            artifact_id = result._kurral_artifact_id
+            print(f"📦 Artifact saved: artifacts/{artifact_id}.kurral")
+            print(f"   Replay with: kurral replay {artifact_id}")
+            print()
+
+        return result
+
+    except KeyboardInterrupt:
+        print("\n\n⚠️  Interrupted by user")
+        sys.exit(0)
+    except Exception as e:
+        print()
+        print(f"❌ Error: {e}")
+        print()
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

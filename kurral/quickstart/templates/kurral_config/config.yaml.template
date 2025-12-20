@@ -1,0 +1,124 @@
+# Kurral Configuration for {{PROJECT_NAME}}
+# Generated: {{DATE}}
+#
+# This file controls how Kurral captures and replays your agent sessions.
+# Learn more: https://github.com/kurral/kurralv3
+
+# ========================================
+# Storage Backend
+# ========================================
+storage:
+  # Where to store artifacts: "local" or "r2" (S3-compatible)
+  backend: local
+
+  # Local storage settings
+  local_path: ./artifacts
+
+  # R2/S3 settings (uncomment if using cloud storage)
+  # r2_account_id: ${KURRAL_R2_ACCOUNT_ID}
+  # r2_access_key_id: ${KURRAL_R2_ACCESS_KEY_ID}
+  # r2_secret_access_key: ${KURRAL_R2_SECRET_ACCESS_KEY}
+  # r2_bucket_name: ${KURRAL_R2_BUCKET_NAME}
+
+# ========================================
+# Replay Settings
+# ========================================
+replay:
+  # Default replay mode: "auto", "deterministic", or "exploratory"
+  #
+  # auto: Kurral decides based on determinism score (recommended)
+  #   - High similarity → deterministic replay (100% cached)
+  #   - Low similarity → exploratory replay (re-execute LLM, cache tools)
+  #
+  # deterministic: Always use cached outputs (fails if config changed)
+  # exploratory: Always re-execute LLM (good for testing prompt changes)
+  default_mode: auto
+
+  # ARS (Agent Regression Score) threshold (0.0 - 1.0)
+  # Fail replay if behavior similarity drops below this
+  # 0.8 = 80% similarity required (recommended for CI/CD)
+  ars_threshold: 0.8
+
+  # Semantic tool matching
+  # Allow similar tools to match even if names differ slightly
+  semantic_matching: true
+  semantic_threshold: 0.85  # 85% similarity for tool matching
+
+  # On cache miss behavior: "error" or "passthrough"
+  # error: Fail the replay (strict testing)
+  # passthrough: Make real API call (flexible testing)
+  on_cache_miss: error
+
+# ========================================
+# Side Effect Protection
+# ========================================
+side_effects:
+  # Auto-generate side_effects.yaml on first replay
+  auto_generate: true
+
+  # Require manual review before allowing replay
+  # (Prevents accidental execution of dangerous tools)
+  require_review: true
+
+  # Keyword-based detection (tools with these keywords flagged for review)
+  detection_keywords:
+    - send
+    - email
+    - delete
+    - update
+    - write
+    - create
+    - modify
+    - execute
+
+# ========================================
+# Cost Tracking
+# ========================================
+cost_tracking:
+  # Enable cost tracking and reporting
+  enabled: true
+
+  # Currency for cost reports
+  currency: USD
+
+  # Model costs (per 1K tokens) - update as pricing changes
+  model_costs:
+    gpt-4o: { input: 0.0025, output: 0.01 }
+    gpt-4o-mini: { input: 0.00015, output: 0.0006 }
+    gpt-4-turbo: { input: 0.01, output: 0.03 }
+    claude-3-5-sonnet-20241022: { input: 0.003, output: 0.015 }
+
+# ========================================
+# MCP Proxy (Optional)
+# ========================================
+mcp:
+  # Enable MCP proxy for multi-server observability
+  enabled: false
+
+  # Proxy settings
+  host: 127.0.0.1
+  port: 3100
+  mode: record  # "record" or "replay"
+
+  # Upstream MCP servers to proxy
+  servers: []
+    # Example:
+    # - name: web_search_server
+    #   url: http://localhost:3001
+    #   tools: ["search_web", "get_news"]
+
+# ========================================
+# Advanced Settings
+# ========================================
+advanced:
+  # Maximum artifact size (MB)
+  max_artifact_size_mb: 100
+
+  # Compression for artifacts
+  compress_artifacts: true
+
+  # Verbose logging
+  verbose: false
+
+  # Capture screenshots (for debugging UI agents)
+  capture_screenshots: false

@@ -1,0 +1,148 @@
+"""
+File System Tool (Read-Only)
+
+Demonstrates:
+  • Side effect awareness (file operations can be dangerous!)
+  • Sandbox restrictions (only read from project directory)
+  • Security best practices (path traversal prevention)
+
+Kurral side effect protection:
+  - First replay generates side_effect/side_effects.yaml
+  - You review and mark tools as safe/dangerous
+  - Kurral blocks dangerous operations during replay
+  - This file_read tool will be marked as "needs review"
+
+Security notes:
+  - READ ONLY: No write, delete, or modify operations
+  - SANDBOXED: Can only read files in project directory
+  - VALIDATED: Prevents path traversal attacks (../, symlinks)
+"""
+
+import os
+from pathlib import Path
+from langchain.tools import Tool
+
+
+class FileSystemTool:
+    """Read files from the project directory (read-only, sandboxed)."""
+
+    def __init__(self, project_root=None):
+        """
+        Initialize file system tool.
+
+        Args:
+            project_root: Root directory for sandboxing. Defaults to current directory.
+        """
+        if project_root is None:
+            project_root = Path.cwd()
+        else:
+            project_root = Path(project_root)
+
+        self.project_root = project_root.resolve()
+
+    def read_file(self, file_path: str) -> str:
+        """
+        Read and return file contents.
+
+        Args:
+            file_path: Relative path to file from project root
+
+        Returns:
+            File contents as string, or error message
+
+        Security:
+            - Only reads files within project directory
+            - Prevents path traversal attacks (../, symlinks)
+            - Read-only (no writes, deletes, or modifications)
+        """
+        try:
+            # Step 1: Resolve path (handles .., symlinks, etc.)
+            requested_path = Path(file_path)
+            if requested_path.is_absolute():
+                full_path = requested_path.resolve()
+            else:
+                full_path = (self.project_root / requested_path).resolve()
+
+            # Step 2: Security check - prevent path traversal
+            if not str(full_path).startswith(str(self.project_root)):
+                return (
+                    f"Error: Access denied. File '{file_path}' is outside project directory.\n"
+                    f"Sandboxed to: {self.project_root}"
+                )
+
+            # Step 3: Check file exists
+            if not full_path.exists():
+                return f"Error: File not found: {file_path}"
+
+            if not full_path.is_file():
+                return f"Error: Not a file: {file_path}"
+
+            # Step 4: Check file size (prevent reading huge files)
+            file_size = full_path.stat().st_size
+            max_size = 1_000_000  # 1MB limit
+            if file_size > max_size:
+                return (
+                    f"Error: File too large ({file_size:,} bytes). "
+                    f"Max size: {max_size:,} bytes (1MB)"
+                )
+
+            # Step 5: Read file
+            # Try UTF-8 first, fall back to binary if needed
+            try:
+                content = full_path.read_text(encoding='utf-8')
+            except UnicodeDecodeError:
+                return f"Error: File '{file_path}' is not a text file (binary data detected)"
+
+            # Step 6: Truncate if very long (to avoid token limits)
+            max_lines = 500
+            lines = content.split('\n')
+            if len(lines) > max_lines:
+                truncated_content = '\n'.join(lines[:max_lines])
+                return (
+                    f"{truncated_content}\n\n"
+                    f"... [File truncated: showing first {max_lines} of {len(lines)} lines] ..."
+                )
+
+            return content
+
+        except PermissionError:
+            return f"Error: Permission denied reading '{file_path}'"
+        except Exception as e:
+            return f"Error reading file: {type(e).__name__}: {str(e)}"
+
+
+def create_file_read_tool():
+    """
+    Factory function to create the file read tool.
+
+    This is called by agent.py during setup.
+    """
+    fs = FileSystemTool()
+
+    return Tool(
+        name="read_file",
+        description=(
+            "Read the contents of a text file from the project directory. "
+            "Provide the file path relative to the project root. "
+            "Examples: 'README.md', 'docs/guide.md', '.env.example'. "
+            "Maximum file size: 1MB. Read-only (cannot modify files)."
+        ),
+        func=fs.read_file
+    )
+
+
+# For testing directly
+if __name__ == "__main__":
+    fs = FileSystemTool()
+
+    # Test: Read this file
+    print("Self-test: Reading own source code")
+    print("=" * 60)
+    result = fs.read_file("tools/file_system.py")
+    if result.startswith("Error:"):
+        print(f"❌ {result}")
+    else:
+        lines = result.split('\n')
+        print(f"✅ Successfully read {len(lines)} lines")
+        print(f"First 5 lines:")
+        print('\n'.join(lines[:5]))

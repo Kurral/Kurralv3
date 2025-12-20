@@ -1,0 +1,24 @@
+# {{PROJECT_NAME}} Dependencies
+# Generated: {{DATE}}
+
+# Core dependencies
+langchain>=0.1.0
+langchain-openai>=0.0.5
+python-dotenv>=1.0.0
+
+# Kurral - Agent testing & observability
+kurral[mcp]>={{KURRAL_VERSION}}
+
+# Web search (Tavily - recommended)
+# Get free API key: https://tavily.com
+tavily-python>=0.3.0
+
+# Alternative search providers (uncomment if using):
+# google-search-results>=2.4.2  # Serper
+# ydc>=1.0.0                     # You.com
+
+# Development dependencies (optional but recommended)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+black>=23.0.0
+ruff>=0.1.0

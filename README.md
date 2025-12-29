@@ -24,9 +24,9 @@
 
 ## 👋 New to Kurral? Start Here
 
-- Using MCP servers in production → **MCP Observability**
-- Testing or upgrading agents → **Deterministic Agent Testing**
-- Want a hands-on demo in <5 minutes → **Project Generator**
+- Testing or upgrading agents → **Deterministic Agent Testing** ✅ Available Now
+- Want a hands-on demo in <5 minutes → **Project Generator** ✅ Available Now
+- Interested in MCP security/observability → **[Join Early Access Program](#-early-access-mcp-observability)** 🚧 Q1 2026
 
 **Kurral** is a powerful open-source testing and replay framework that brings control and reliability to AI agent development. Kurral is framework-agnostic and operates at the execution and protocol layer. LangChain support is provided as a convenience, not a requirement.
 
@@ -40,34 +40,27 @@ Model Context Protocol (MCP) is rapidly becoming the standard for AI agent tool 
 - **🛡️ Security** – Are MCP servers vulnerable to tool poisoning, prompt injection, or data exfiltration?
 - **🧪 Reliable Testing** – How to test agents deterministically without unpredictable outputs or massive API costs?
 
-**Kurral delivers all three:** observability and testing today, automated security testing in Q1 2026.
+**Kurral addresses all three:** deterministic testing available now, MCP observability and security testing coming Q1 2026.
 
 ---
 
 ## 🚀 Three Core Pillars
 
-### 1. MCP Observability ✅ Available Now
+### 1. MCP Observability 🚧 Early Access Q1 2026
 
 **MCP Proxy with complete traffic visibility and deterministic replay**
 
-Kurral sits between agents and MCP servers, capturing execution, traffic, and side effects without requiring changes to MCP implementations.
+Kurral will sit between agents and MCP servers, capturing execution, traffic, and side effects without requiring changes to MCP implementations.
 
-```bash
-pip install kurral[mcp]
-kurral mcp start --mode record                           # Capture everything
-kurral mcp export -o session.kurral                      # Export .kurral artifact
-kurral mcp start --mode replay --artifact session.kurral # Replay offline
-```
-
-**Capabilities:**
-- ✅ Capture & replay all MCP tool calls with full SSE streaming
-- ✅ Performance metrics (duration, TTFE, event rates)
-- ✅ Multi-server routing & semantic tool matching
-- ✅ Shareable .kurral artifacts for debugging
+**Planned Capabilities:**
+- Capture & replay all MCP tool calls with full SSE streaming
+- Performance metrics (duration, TTFE, event rates)
+- Multi-server routing & semantic tool matching
+- Shareable .kurral artifacts for debugging
 
 **Use Cases:** Production issue reproduction, cost-free development, team collaboration.
 
-**📖 [Full MCP Proxy Documentation →](docs/MCP_PROXY.md)**
+**[Join Early Access Waitlist →](https://github.com/Kurral/kurral/issues)** to get notified when MCP proxy is available.
 
 ---
 
@@ -142,21 +135,25 @@ kurral security test baseline.kurral --techniques T1001,T1102
 ## 📦 Installation
 
 ```bash
-pip install kurral                # Core testing
-pip install kurral[mcp]           # + MCP proxy & observability
+pip install kurral                # Deterministic testing & replay
 ```
 
 **From source:**
 ```bash
 git clone https://github.com/Kurral/kurral.git
 cd kurral
-pip install -e ".[mcp]"
+pip install -e "."
 ```
+
+**Note:** MCP proxy features are coming in Q1 2026. Current release (v0.4.0) includes deterministic agent testing and project generator.
 
 ---
 
-## 🎬 Quick Start: MCP Observability
+## 🚧 Early Access: MCP Observability
 
+MCP proxy features are currently in development. Expected Q1 2026.
+
+**Planned workflow:**
 ```bash
 kurral mcp init                     # Generate config
 kurral mcp start --mode record      # Proxy runs on localhost:3100
@@ -165,7 +162,7 @@ kurral mcp export -o session.kurral
 kurral mcp start --mode replay --artifact session.kurral
 ```
 
-**📖 [Full MCP Proxy Guide →](docs/MCP_PROXY.md)**
+**[Join waitlist →](https://github.com/Kurral/kurral/issues)** to get early access when available.
 
 ---
 
@@ -272,8 +269,8 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 
 ## 🛣️ Roadmap
 
-- ✅ **Now**: MCP observability, deterministic testing, deterministic replay
-- 🚧 **Q1 2026**: Phase 1 MCP security testing (7 critical threats)
+- ✅ **Now (v0.4.0)**: Deterministic agent testing, project generator, replay system
+- 🚧 **Q1 2026**: MCP observability proxy + Phase 1 security testing (7 critical threats)
 - 🔮 **Q2 2026+**: Full SAFE-MCP coverage, policy engine, continuous monitoring
 
 **📖 [Security Roadmap →](docs/MCP_SECURITY_VISION.md)**
@@ -282,22 +279,23 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 
 ## ⚠️ Current Limitations
 
+- MCP proxy and observability features not yet released (Q1 2026)
+- Security testing in active development (Q1 2026)
 - ReAct & LCEL agents fully supported (LangGraph streaming coming soon)
 - Vision inputs not yet captured
-- Security testing in active development
 
 ---
 
 ## 🏗️ Architecture
 
-**Core Components:**
+**Core Components (Available Now):**
 - `trace_agent` - Decorator for agent main function
 - `trace_agent_invoke` - Wrapper for capturing traces
 - `replay` - Replay engine with A/B detection
 - `ars_scorer` - Agent Regression Score calculation
 - `side_effect_config` - Side effect management
 
-**MCP Components:**
+**MCP Components (Coming Q1 2026):**
 - `KurralMCPProxy` - FastAPI HTTP/SSE MCP Proxy
 - `MCPCaptureEngine` - Traffic capture to .kurral artifacts
 - `MCPReplayEngine` - Cached response replay
@@ -338,6 +336,7 @@ Kurral provides all three in one platform.
 ---
 
 <p align="center">
-  <strong>Ready to secure, observe, and reliably test your MCP agents?</strong><br>
-  <code>pip install kurral[mcp]</code>
+  <strong>Ready to test your AI agents with deterministic replay?</strong><br>
+  <code>pip install kurral</code><br>
+  <em>MCP observability coming Q1 2026</em>
 </p>

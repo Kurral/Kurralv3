@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/Kurral/kurral">star the repo</a> — it helps a lot!
+  ⭐ If Kurral saves you hours (or dollars), please <a href="https://github.com/Kurral/Kurralv3">star the repo</a> — it helps a lot!
 </p>
 
 ---
@@ -60,7 +60,7 @@ Kurral will sit between agents and MCP servers, capturing execution, traffic, an
 
 **Use Cases:** Production issue reproduction, cost-free development, team collaboration.
 
-**[Join Early Access Waitlist →](https://github.com/Kurral/kurral/issues)** to get notified when MCP proxy is available.
+**Email [team@kurral.com](mailto:team@kurral.com?subject=MCP%20Early%20Access)** with subject "MCP Early Access" to join the waitlist.
 
 ---
 
@@ -140,8 +140,8 @@ pip install kurral                # Deterministic testing & replay
 
 **From source:**
 ```bash
-git clone https://github.com/Kurral/kurral.git
-cd kurral
+git clone https://github.com/Kurral/Kurralv3.git
+cd Kurralv3
 pip install -e "."
 ```
 
@@ -162,7 +162,7 @@ kurral mcp export -o session.kurral
 kurral mcp start --mode replay --artifact session.kurral
 ```
 
-**[Join waitlist →](https://github.com/Kurral/kurral/issues)** to get early access when available.
+**Email [team@kurral.com](mailto:team@kurral.com?subject=MCP%20Early%20Access)** to get early access when available.
 
 ---
 
@@ -308,7 +308,7 @@ With Kurral (record once, replay 99 times): $0.50/day = $10/month
 ## 💬 Community & Contribution
 
 - **Discord**: [https://discord.gg/pan6GRRV](https://discord.gg/pan6GRRV)
-- **Issues**: [github.com/Kurral/kurral/issues](https://github.com/Kurral/kurral/issues)
+- **Issues**: [github.com/Kurral/Kurralv3/issues](https://github.com/Kurral/Kurralv3/issues)
 - **Email**: team@kurral.com
 
 Contributions welcome — fork, branch, PR!

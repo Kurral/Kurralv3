@@ -157,7 +157,7 @@ After running this example, you'll understand:
 
 1. Try the **code-review-agent** example (static analysis + AI review)
 2. Try the **research-assistant** example (multi-step reasoning)
-3. Read the [Kurral documentation](https://github.com/Kurral/kurral) for advanced features
+3. Read the [Kurral documentation](https://github.com/Kurral/Kurralv3) for advanced features
 4. Join our [Discord](https://discord.gg/pan6GRRV) to share your use case
 
 ---

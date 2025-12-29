@@ -85,10 +85,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Kurral/kurral"
-Documentation = "https://github.com/Kurral/kurral#readme"
-Repository = "https://github.com/Kurral/kurral"
-Issues = "https://github.com/Kurral/kurral/issues"
+Homepage = "https://github.com/Kurral/Kurralv3"
+Documentation = "https://github.com/Kurral/Kurralv3#readme"
+Repository = "https://github.com/Kurral/Kurralv3"
+Issues = "https://github.com/Kurral/Kurralv3/issues"
 Discord = "https://discord.gg/pan6GRRV"
 
 [project.scripts]

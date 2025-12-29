@@ -142,7 +142,7 @@ All examples are fully functional starting points. Common customizations:
 
 After running these examples:
 
-1. **Read the docs:** [Kurral GitHub](https://github.com/Kurral/kurral)
+1. **Read the docs:** [Kurral GitHub](https://github.com/Kurral/Kurralv3)
 2. **Join Discord:** [Community](https://discord.gg/pan6GRRV)
 3. **Build your agent:** `kurral init your-use-case`
 4. **Share your results:** We love hearing about your use cases!

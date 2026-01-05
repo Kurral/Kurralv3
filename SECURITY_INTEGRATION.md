@@ -44,7 +44,7 @@ python -c "from kurral_security.assessment import AttackInjector; print('✓ Sec
 
 ## Usage Examples
 
-### Basic MCP Proxy (Public Features)
+### Basic MCP Proxy (Public Features Only)
 
 ```python
 from kurral.mcp import KurralMCPProxy, MCPConfig
@@ -58,7 +58,8 @@ await proxy.start()
 ### With Security Monitoring (Requires Private Package)
 
 ```python
-from kurral.mcp import KurralMCPProxy, MCPConfig
+from kurral_security import KurralSecurityProxy
+from kurral.mcp.config import MCPConfig
 
 # Enable passive security monitoring
 config = MCPConfig(
@@ -69,14 +70,15 @@ config = MCPConfig(
         "baseline_tracking": True
     }
 )
-proxy = KurralMCPProxy(config)
+proxy = KurralSecurityProxy(config)
 await proxy.start()
 ```
 
 ### Adversarial Assessment Mode (Requires Private Package)
 
 ```python
-from kurral.mcp import KurralMCPProxy, MCPConfig
+from kurral_security import KurralSecurityProxy
+from kurral.mcp.config import MCPConfig
 
 # Run full security assessment
 config = MCPConfig(
@@ -90,7 +92,7 @@ config = MCPConfig(
         "report_output": "./security_report.html"
     }
 )
-proxy = KurralMCPProxy(config)
+proxy = KurralSecurityProxy(config)
 await proxy.start()
 
 # After assessment completes, check ./security_report.html
@@ -223,15 +225,18 @@ cd kurral-security-private
 pip install -e .
 ```
 
-### "ImportError: cannot import name 'SecurityInspector'"
+### "ImportError: cannot import name 'KurralSecurityProxy'"
 
-**Cause**: You don't have access to the private repository.
+**Cause**: You don't have access to the private repository, or haven't installed it.
 
 **Solution**: Request access from your team lead, then clone and install:
 ```bash
 git clone https://github.com/Kurral/kurral-security-private.git
 cd kurral-security-private
 pip install -e .
+
+# Verify installation
+python -c "from kurral_security import KurralSecurityProxy; print('✓ Security proxy ready')"
 ```
 
 ### Security features not working
